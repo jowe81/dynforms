@@ -46,7 +46,7 @@ const formTypes = [
             {
                 key: "updates",
                 label: "Updates",
-                type: "subfield_array",
+                type: "array",
                 rank: 2,
                 fields: [
                     {
@@ -58,10 +58,24 @@ const formTypes = [
                     {
                         key: "date",
                         label: "Date",
-                        type: "textarea",
-                        rows: 4,
+                        type: "date",
                         rank: 1,
                     },
+                    {
+                        label: "Details",
+                        key: "details",
+                        type: "array",
+                        rank: 3,
+                        fields: [
+                            {
+                                label: "Number",
+                                key: "phone_number",
+                                type: "text",
+                                rank: 0,
+                            },
+                        ],
+                    },
+        
                 ],
             },
         ],
@@ -98,7 +112,7 @@ const formTypes = [
             {
                 label: "Phone Numbers",
                 key: "phone_numbers",
-                type: "subfield_array",
+                type: "array",
                 rank: 3,
                 fields: [
                     {
@@ -125,7 +139,7 @@ const formTypes = [
             {
                 label: "Email Addresses",
                 key: "email_addresses",
-                type: "subfield_array",
+                type: "array",
                 rank: 4,
                 fields: [
                     {

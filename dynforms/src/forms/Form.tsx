@@ -1,7 +1,4 @@
-import InputField from './InputField.tsx';
-import TextareaField from './TextareaField.tsx';
-import DateField from './DateField.tsx';
-import SubfieldArray from './SubfieldArray.tsx';
+import ArrayField from './ArrayField.tsx';
 
 import './form.css';
 
@@ -11,8 +8,6 @@ function Form(props: any) {
     const [ record, setRecord ] = useState({});
 
     function updateRecord(fullKeySet: String[], data: any) {
-        console.log('UpdateRecord for key: ', fullKeySet.join('.'), 'data: ', data);
-        console.log('Current Full Record', record);
         const newRecord = {...record};        
         arrSet(newRecord, fullKeySet, data);
         console.log('New record:', newRecord);
@@ -22,15 +17,12 @@ function Form(props: any) {
     let collectionName: string = props.collectionName;
     let formDefinition: any = props.formDefinition;
     
-    console.log(collectionName, formDefinition);
-
     if (!formDefinition) {
         return <div>Definition for '{collectionName}' not found.</div>;
     }
     
 
     if (!Object.keys(record).length) {
-        console.log('Initializing Record');
         setRecord(initializeRecord(formDefinition.fields));
     }
 
@@ -43,7 +35,7 @@ function Form(props: any) {
         updateRecord,
     }
 
-    return <div className='form-container'><SubfieldArray {...formProps}/></div>
+    return <div className='form-container'><ArrayField {...formProps}/></div>
 }
 
 
@@ -57,7 +49,7 @@ function initializeRecord(fields: []) {
 
         switch (type) {
 
-            case "subfield_array":
+            case "array":
                 record[key] = initializeRecord(field['fields']);
                 break;
 

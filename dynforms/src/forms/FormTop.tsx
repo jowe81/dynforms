@@ -3,7 +3,7 @@ import _ from 'lodash';
 import InputField from './InputField.tsx';
 import TextareaField from './TextareaField.tsx';
 import DateField from './DateField.tsx';
-import SubfieldArray from './SubfieldArray.tsx';
+import ArrayField from './ArrayField.tsx';
 
 function FormTop(props: any) {
     const [ record, setRecord ] = useState({});
@@ -56,13 +56,13 @@ function FormTop(props: any) {
             case 'date':
                 return (<div key={index} className="form-element-container"><DateField {...props}/></div>);
 
-            case 'subfield_array':
+            case 'array':
                 const subfieldKeys = [ ...keys, field.key ];
                 const subRecord = record[field.key as keyof Object];
 
                 return (
                     <div key={index} className="form-subfield-array-container">
-                        <SubfieldArray 
+                        <ArrayField 
                             keys={subfieldKeys} 
                             record={subRecord}
                             {...field}
@@ -86,7 +86,7 @@ function initializeRecord(fields: []) {
 
         switch (type) {
 
-            case "subfield_array":
+            case "array":
                 record[key] = initializeRecord(field['fields']);
                 break;
 

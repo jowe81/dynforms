@@ -2,7 +2,7 @@ import InputField from './InputField.tsx';
 import TextareaField from './TextareaField.tsx';
 import DateField from './DateField.tsx';
 
-function SubfieldArray(props: any) {
+function ArrayField(props: any) {
     const { record, updateRecord, fields, keys } = props;
     
 
@@ -10,16 +10,16 @@ function SubfieldArray(props: any) {
         return <>Subfield Array contains no fields.</>
     }
 
-    return fields.map((field, index) => {
+    return fields.map((field: any, index: number) => {
         const path = keys.join('.');
         const fullKey = path ? `${path}.${field.key}` : field.key; 
     
-        function onChange(event: Event) {        
+        function onChange(event: any) {        
             const key = event?.currentTarget?.dataset?.key;
             const fullKeySet = [ ...keys, key ];
 
             const fieldValue = event.target.value;
-            
+
             console.log(`*** Setting field ${fullKeySet.join('.')} to '${fieldValue}'` );
             console.log('Current record:', record);
             updateRecord(fullKeySet, fieldValue);
@@ -43,14 +43,14 @@ function SubfieldArray(props: any) {
             case 'date':
                 return (<div key={index} className="form-element-container"><DateField {...props}/></div>);
 
-            case 'subfield_array':
+            case 'array':
                 const subfieldKeys = [ ...keys, field.key ];
                 const subRecord = record[field.key as keyof Object];
 
 
                 return (
                     <div key={index} className="form-subfield-array-container">
-                        <SubfieldArray 
+                        <ArrayField 
                             keys={subfieldKeys} 
                             record={subRecord}
                             updateRecord={updateRecord}
@@ -64,4 +64,4 @@ function SubfieldArray(props: any) {
     })
 }
 
-export default SubfieldArray;
+export default ArrayField;
