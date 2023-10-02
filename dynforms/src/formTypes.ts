@@ -58,7 +58,8 @@ const formTypes = [
                     {
                         key: "date",
                         label: "Date",
-                        type: "date",
+                        type: "textarea",
+                        rows: 4,
                         rank: 1,
                     },
                 ],
