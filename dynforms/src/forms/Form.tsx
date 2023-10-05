@@ -124,7 +124,9 @@ export namespace Interfaces {
         fields: Field[];
     }
 
-    export type FieldTypeString = 'text'|'textarea'|'boolean'|'date'|'array'|'subfieldArray';
+    export type FieldTypeString = 
+        'text' | 'phone' | 'email' |
+        'textarea'|'boolean'|'date'|'array'|'subfieldArray';
     
     export type Field = BaseField | BooleanField | TextField | TextareaField | SubfieldArray;
 
@@ -132,8 +134,10 @@ export namespace Interfaces {
         key: string;
         label?: string;
         type: FieldTypeString;
-        rank: number;
-        defaultValue?: string;
+        rank?: number;
+        defaultValue?: string | boolean;
+        placeholder?: string;
+        hidden?: boolean;
     }
 
     export interface BooleanField extends BaseField {

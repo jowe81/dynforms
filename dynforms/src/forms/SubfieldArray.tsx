@@ -3,6 +3,8 @@ import TextareaField from './TextareaField.tsx';
 import DateField from './DateField.tsx';
 import ArrayField from './ArrayField.tsx';
 
+import Field from './Field.tsx';
+
 import { Interfaces } from './Form.tsx';
 
 
@@ -30,10 +32,8 @@ function SubfieldArray(props: any) {
         return item;
     }
 
-    console.log('SFA', fields);
-
     return (
-    <div>
+        <div>            
             <div>
                 <div className='form-link' onClick={addEntry}>
                     + Add Entry
@@ -62,21 +62,14 @@ function SubfieldArray(props: any) {
                         fullKey,
                         keys,
                         field,
-                        record: arrayItem,            
+                        record: arrayItem,
+                        itemIndex,
                         onChange,
+                        updateRecord,
                     }
-                    
-                    switch (field.type) {
-                        case 'text':
-                            return (<div key={fieldIndex} className="form-element-container"><TextField {...props}/></div>);
-                        
-                        case 'textarea':
-                            return (<div key={fieldIndex} className="form-element-container"><TextareaField {...props}/></div>);
-                            
-                        case 'date':
-                            return (<div key={fieldIndex} className="form-element-container"><DateField {...props}/></div>);
-
-                    }
+                                
+                    return <Field key={fieldIndex} {...props}></Field>;
+            
                 })
             })}
         </div>

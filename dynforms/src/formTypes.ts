@@ -89,6 +89,7 @@ const formTypes: Interfaces.FormType[] = [
                 key: "date_of_birth",
                 type: "date",
                 rank: 2,
+                hidden: true,
             },
             {
                 label: "Display Birthday",
@@ -105,8 +106,9 @@ const formTypes: Interfaces.FormType[] = [
                 fields: [
                     {
                         label: "Number",
-                        key: "phone_number",
-                        type: "phone_number",
+                        key: "phone",
+                        type: "phone",
+                        placeholder:"123 456-7890",
                         rank: 0,
                     },
                     {
@@ -118,9 +120,9 @@ const formTypes: Interfaces.FormType[] = [
                     },
                     {
                         key: "updated_at",
-                        type: "date",
+                        type: "date",                        
                         rank: 2,
-                        visible: false,
+                        hidden: true,
                     },
                 ],
             },
@@ -133,7 +135,8 @@ const formTypes: Interfaces.FormType[] = [
                     {
                         label: "Email",
                         key: "email",
-                        type: "email_address",
+                        type: "email",
+                        placeholder: "email@example.com", 
                         rank: 0,
                     },
                     {
@@ -145,9 +148,9 @@ const formTypes: Interfaces.FormType[] = [
                     },
                     {
                         key: "updated_at",
-                        type: "date",
+                        type: "date",                        
                         rank: 2,
-                        visible: false,
+                        hidden: true,
                     },
                 ],
             },

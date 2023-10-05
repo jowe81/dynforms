@@ -12,7 +12,7 @@ import { formTypes } from './formTypes.ts';
 
 function App() {
 
-    const collectionName = 'prayer_requests';
+    const collectionName = 'address_book';
     const formDefinition = formTypes.find((item) => item.collectionName === collectionName);
 
     const props = {

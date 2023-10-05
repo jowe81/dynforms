@@ -9,6 +9,8 @@ function ArrayField(props: any) {
         return <>Array field contains no fields.</>
     }
 
+    console.log('Array fields', fields.map(field => field.key), keys.join('.'), record)
+
     return fields.map((field: any, index: number) => {
         
         const props = {
