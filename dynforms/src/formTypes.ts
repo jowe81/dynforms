@@ -1,4 +1,6 @@
-const formTypes = [
+import { Interfaces } from "./forms/Form";
+
+const formTypes: Interfaces.FormType[] = [
     {
         collectionName: "recipes",
         title: "Recipes",
@@ -46,7 +48,7 @@ const formTypes = [
             {
                 key: "updates",
                 label: "Updates",
-                type: "subfield_array",
+                type: "subfieldArray",
                 rank: 2,
                 fields: [
                     {
@@ -98,7 +100,7 @@ const formTypes = [
             {
                 label: "Phone Numbers",
                 key: "phone_numbers",
-                type: "array",
+                type: "subfieldArray",
                 rank: 3,
                 fields: [
                     {
@@ -125,7 +127,7 @@ const formTypes = [
             {
                 label: "Email Addresses",
                 key: "email_addresses",
-                type: "array",
+                type: "subfieldArray",
                 rank: 4,
                 fields: [
                     {

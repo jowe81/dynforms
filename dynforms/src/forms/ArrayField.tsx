@@ -1,4 +1,4 @@
-import InputField from './InputField.tsx';
+import TextField from './TextField.tsx';
 import TextareaField from './TextareaField.tsx';
 import DateField from './DateField.tsx';
 import SubfieldArray from './SubfieldArray.tsx';
@@ -37,10 +37,10 @@ function ArrayField(props: any) {
 
         const subfieldKeys = [ ...keys, field.key ];
         const subRecord = record[field.key as keyof Object];
-
+        // console.log(field.type)
         switch (field.type) {
             case 'text':
-                return (<div key={index} className="form-element-container"><InputField {...props}/></div>);
+                return (<div key={index} className="form-element-container"><TextField {...props}/></div>);
             
             case 'textarea':
                 return (<div key={index} className="form-element-container"><TextareaField {...props}/></div>);
@@ -60,8 +60,7 @@ function ArrayField(props: any) {
                     </div>
                 );
             
-            case 'subfield_array':
-                console.log('subfield_array', subRecord);
+            case 'subfieldArray':
                 return (
                     <div key={index} className="form-subfield-array-container">
                         <SubfieldArray 

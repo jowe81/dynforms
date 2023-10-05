@@ -1,4 +1,4 @@
-function Input(props: any) {
+function TextField(props: any) {
 
     let { keys, field, record, onChange } = props;
 
@@ -25,4 +25,4 @@ function Input(props: any) {
     )
 }
 
-export default Input;
+export default TextField;

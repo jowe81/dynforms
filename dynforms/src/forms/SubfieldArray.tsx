@@ -1,7 +1,9 @@
-import InputField from './InputField.tsx';
+import TextField from './TextField.tsx';
 import TextareaField from './TextareaField.tsx';
 import DateField from './DateField.tsx';
 import ArrayField from './ArrayField.tsx';
+
+import { Interfaces } from './Form.tsx';
 
 
 function SubfieldArray(props: any) {
@@ -19,15 +21,16 @@ function SubfieldArray(props: any) {
         updateRecord(keys, [...record, getBlankItem(fields)]);
     }
 
-    function getBlankItem(fields) {
+    function getBlankItem(fields: Interfaces.Field[]) {
         const item = {};
-        fields.forEach((field) => {
+        fields.forEach((field: Interfaces.Field) => {
             item[field.key] = field.defaultValue ?? '';
         });
 
         return item;
     }
 
+    console.log('SFA', fields);
 
     return (
     <div>
@@ -45,7 +48,6 @@ function SubfieldArray(props: any) {
                     function onChange(event: any) {       
                         const key = event?.currentTarget?.dataset?.key;
                         const fullKeySet = [ ...keys, itemIndex, key ];
-
                         const fieldValue = event.target.value;
 
                         console.log(`Setting field ${fullKeySet.join('.')} to '${fieldValue}'` );
@@ -66,7 +68,7 @@ function SubfieldArray(props: any) {
                     
                     switch (field.type) {
                         case 'text':
-                            return (<div key={fieldIndex} className="form-element-container"><InputField {...props}/></div>);
+                            return (<div key={fieldIndex} className="form-element-container"><TextField {...props}/></div>);
                         
                         case 'textarea':
                             return (<div key={fieldIndex} className="form-element-container"><TextareaField {...props}/></div>);

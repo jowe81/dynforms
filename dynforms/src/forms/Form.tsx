@@ -5,23 +5,25 @@ import './form.css';
 import { useState, useEffect } from 'react';
 
 function Form(props: any) {
-    const [ record, setRecord ] = useState({
+    const testRecord = {
         'title': 'Travel',
         'request': 'Sufficient funds',
         'updates': [
-            {
-                'update': 'Transfer',
-                'date': '2023-09-30',
-            },
-            {
-                'update': 'Another transfer',
-                'date': '2023-10-01',
-            },
+            // {
+            //     'update': 'Transfer',
+            //     'date': '2023-09-30',
+            // },
+            // {
+            //     'update': 'Another transfer',
+            //     'date': '2023-10-01',
+            // },
         ]
-    });
+    };
+
+    const [ record, setRecord ] = useState({});
 
     useEffect(() => {
-        console.log('Effect', record);
+        // console.log('Effect', record);
     }, [record]);
 
     function updateRecord(fullKeySet: String[], data: any) {
@@ -39,7 +41,7 @@ function Form(props: any) {
     }
     
 
-    if (!Object.keys(record).length) {
+    if (!Object.keys(record).length) {        
         setRecord(initializeRecord(formDefinition.fields));
     }
 
@@ -56,18 +58,24 @@ function Form(props: any) {
 }
 
 
-function initializeRecord(fields: []) {
+function initializeRecord(fields: Interfaces.Field[]) {
 
-    const record = {};
+    const record: any = {};
 
     fields.forEach(field => {
-        const type: String = field['type'];
-        const key: String = field['key'];
-
+        const type: Interfaces.FieldTypeString = field.type;
+        const key: string = field.key;        
+    
+        console.log(`Initializing field: ${key} (${type})`, field);
+        
         switch (type) {
 
-            case "array":
-                record[key] = initializeRecord(field['fields']);
+            case 'subfieldArray':
+                record[key] = [];//initializeRecord(field.fields);
+                break;
+
+            case 'array':
+                record[key] = initializeRecord(field.fields);
                 break;
 
             default:
@@ -75,11 +83,11 @@ function initializeRecord(fields: []) {
                 break;
         }
     });
-
+    console.log('finished record', record)
     return record;
 }
 
-function arrSet(obj: Object, key: Object | string, value: any) {
+function arrSet(obj: any, key: Object | string, value: any) {
     const keys = typeof key === 'object' ? key : key.split('.');
 
     if (!Array.isArray(keys)) {
@@ -90,7 +98,7 @@ function arrSet(obj: Object, key: Object | string, value: any) {
     let current = obj;
 
     while (keys.length) {
-        const key: String = keys.shift();
+        const key: string = keys.shift();
 
         if (keys.length) {
             if (typeof current[key] === undefined) { 
@@ -107,3 +115,45 @@ function arrSet(obj: Object, key: Object | string, value: any) {
 }
 
 export default Form;
+
+
+export namespace Interfaces {
+    export interface FormType {
+        collectionName: string;
+        title: string;
+        fields: Field[];
+    }
+
+    export type FieldTypeString = 'text'|'textarea'|'boolean'|'date'|'array'|'subfieldArray';
+    
+    export type Field = BaseField | BooleanField | TextField | TextareaField | SubfieldArray;
+
+    export interface BaseField {
+        key: string;
+        label?: string;
+        type: FieldTypeString;
+        rank: number;
+        defaultValue?: string;
+    }
+
+    export interface BooleanField extends BaseField {
+        value?: true | false | null;
+    }
+    
+    export interface TextField extends BaseField {
+        maxLength?: number;
+    }
+
+    export interface TextareaField extends BaseField {
+        rows?: number;
+    }
+
+    export interface ArrayField extends BaseField {
+        fields: Field[];
+    }
+
+    export interface SubfieldArray extends BaseField {
+        fields: Field[];
+    }
+}
+

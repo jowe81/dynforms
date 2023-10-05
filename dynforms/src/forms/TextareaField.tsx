@@ -1,6 +1,9 @@
+import { Interfaces } from "./Form";
+
 function Textarea(props: any) {
 
-    let { keys, field, record, onChange } = props;
+    const field: Interfaces.TextareaField = props.field;    
+    let { keys, record, onChange } = props;
 
     if(!field) {
         return;
