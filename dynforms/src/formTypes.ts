@@ -46,13 +46,14 @@ const formTypes = [
             {
                 key: "updates",
                 label: "Updates",
-                type: "array",
+                type: "subfield_array",
                 rank: 2,
                 fields: [
                     {
                         key: "update",
                         label: "Update",
                         type: "textarea",
+                        defaultValue: 'hello',
                         rank: 0,
                     },
                     {
@@ -60,22 +61,7 @@ const formTypes = [
                         label: "Date",
                         type: "date",
                         rank: 1,
-                    },
-                    {
-                        label: "Details",
-                        key: "details",
-                        type: "array",
-                        rank: 3,
-                        fields: [
-                            {
-                                label: "Number",
-                                key: "phone_number",
-                                type: "text",
-                                rank: 0,
-                            },
-                        ],
-                    },
-        
+                    },                    
                 ],
             },
         ],

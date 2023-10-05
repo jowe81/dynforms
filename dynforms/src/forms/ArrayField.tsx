@@ -1,6 +1,8 @@
 import InputField from './InputField.tsx';
 import TextareaField from './TextareaField.tsx';
 import DateField from './DateField.tsx';
+import SubfieldArray from './SubfieldArray.tsx';
+
 
 function ArrayField(props: any) {
     const { record, updateRecord, fields, keys } = props;
@@ -33,6 +35,9 @@ function ArrayField(props: any) {
             onChange,
         }
 
+        const subfieldKeys = [ ...keys, field.key ];
+        const subRecord = record[field.key as keyof Object];
+
         switch (field.type) {
             case 'text':
                 return (<div key={index} className="form-element-container"><InputField {...props}/></div>);
@@ -43,13 +48,9 @@ function ArrayField(props: any) {
             case 'date':
                 return (<div key={index} className="form-element-container"><DateField {...props}/></div>);
 
-            case 'array':
-                const subfieldKeys = [ ...keys, field.key ];
-                const subRecord = record[field.key as keyof Object];
-
-
+            case 'array':                                
                 return (
-                    <div key={index} className="form-subfield-array-container">
+                    <div key={index} className="form-array-container">
                         <ArrayField 
                             keys={subfieldKeys} 
                             record={subRecord}
@@ -58,6 +59,20 @@ function ArrayField(props: any) {
                         />
                     </div>
                 );
+            
+            case 'subfield_array':
+                console.log('subfield_array', subRecord);
+                return (
+                    <div key={index} className="form-subfield-array-container">
+                        <SubfieldArray 
+                            keys={subfieldKeys} 
+                            record={subRecord}
+                            updateRecord={updateRecord}
+                            {...field}
+                        />
+                    </div>
+                );
+                
 
         }
         

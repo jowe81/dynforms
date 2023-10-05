@@ -2,10 +2,27 @@ import ArrayField from './ArrayField.tsx';
 
 import './form.css';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Form(props: any) {
-    const [ record, setRecord ] = useState({});
+    const [ record, setRecord ] = useState({
+        'title': 'Travel',
+        'request': 'Sufficient funds',
+        'updates': [
+            {
+                'update': 'Transfer',
+                'date': '2023-09-30',
+            },
+            {
+                'update': 'Another transfer',
+                'date': '2023-10-01',
+            },
+        ]
+    });
+
+    useEffect(() => {
+        console.log('Effect', record);
+    }, [record]);
 
     function updateRecord(fullKeySet: String[], data: any) {
         const newRecord = {...record};        
