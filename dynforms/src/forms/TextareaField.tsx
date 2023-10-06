@@ -18,7 +18,7 @@ function Textarea(props: any) {
     
     return (
         <>
-            <div>{ field.label }</div>
+            <label>{ field.label }</label>
             <div>
                 <textarea 
                     name={ field.key } 

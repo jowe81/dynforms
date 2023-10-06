@@ -9,7 +9,7 @@ function BooleanField(props: any) {
     if (!record) {
         record = {};
     }
-    console.log(`field ${field.key}: ${record[field.key]}`);
+
     return (
         <>
             <div></div>

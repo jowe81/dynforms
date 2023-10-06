@@ -23,6 +23,13 @@ function SubfieldArray(props: any) {
         updateRecord(keys, [...record, getBlankItem(fields)]);
     }
 
+    function removeEntry(event) {
+        const itemIndex = event.target.dataset.itemIndex;
+        console.log('Delete index', itemIndex);
+
+        updateRecord(keys, record.toSpliced(itemIndex, 1));
+    }
+
     function getBlankItem(fields: Interfaces.Field[]) {
         const item = {};
         fields.forEach((field: Interfaces.Field) => {
@@ -33,14 +40,18 @@ function SubfieldArray(props: any) {
     }
 
     return (
-        <>            
-            <div className='form-link' onClick={addEntry}>
-                + Add Entry
+        <>  
+            <div className="form-subfield-array-header form-header">                
+                <a className='form-link' onClick={addEntry}>
+                    + Add Entry
+                </a>
             </div>
-            { record.map((arrayItem, itemIndex) => {
-
+            { record.map((arrayItem, itemIndex) => {                
                 return (
-                    <div className="form-subfield-array-item-container" key={itemIndex}> 
+                    <div className="form-subfield-array-item-container" key={itemIndex}>
+                        <div className="form-subfield-array-item-header form-header">
+                            <a className='form-link' data-item-index={itemIndex} onClick={removeEntry}>Delete</a>
+                        </div>
                         {
                                     
                             fields.map((field: any, fieldIndex: number) => {            

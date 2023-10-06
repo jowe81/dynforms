@@ -61,7 +61,7 @@ function App() {
         record: testRecord,
     }
 
-    console.log('FormDef', formDefinition)
+    console.log('Form Definition:', formDefinition)
     return (
         <>
             <Form {...props}/>

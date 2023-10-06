@@ -12,7 +12,7 @@ function DateField(props: any) {
         
     return (
         <>
-            <div>{ field.label }</div>
+            <label>{ field.label }</label>
             <div>
                 <input 
                     name={ field.key } 

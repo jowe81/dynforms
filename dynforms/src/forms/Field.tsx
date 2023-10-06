@@ -77,7 +77,7 @@ function Field(props: any) {
         case 'subfieldArray':
             return (
                 <>
-                    { field.label }
+                    <div className="form-subfield-array-outer-header"><label>{ field.label }</label></div>
                     <div className="form-subfield-array-container">                    
                         <SubfieldArray 
                             keys={subfieldKeys} 
