@@ -89,7 +89,6 @@ const formTypes: Interfaces.FormType[] = [
                 key: "date_of_birth",
                 type: "date",
                 rank: 2,
-                hidden: true,
             },
             {
                 label: "Display Birthday",
