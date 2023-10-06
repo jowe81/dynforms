@@ -5,22 +5,10 @@ import './form.css';
 import { useState, useEffect } from 'react';
 
 function Form(props: any) {
-    const testRecord = {
-        'title': 'Travel',
-        'request': 'Sufficient funds',
-        'updates': [
-            // {
-            //     'update': 'Transfer',
-            //     'date': '2023-09-30',
-            // },
-            // {
-            //     'update': 'Another transfer',
-            //     'date': '2023-10-01',
-            // },
-        ]
-    };
+    const inputRecord = typeof props.record === 'object' ? props.record : {};
 
-    const [ record, setRecord ] = useState({});
+    console.log('Input Record', inputRecord)
+    const [ record, setRecord ] = useState(inputRecord);
 
     useEffect(() => {
         // console.log('Effect', record);

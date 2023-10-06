@@ -112,10 +112,10 @@ const formTypes: Interfaces.FormType[] = [
                         rank: 0,
                     },
                     {
-                        label: "Active",
+                        label: "Number is Active",
                         key: "active",
                         type: "boolean",
-                        defaultValue: true,
+                        defaultValue: false,
                         rank: 1,
                     },
                     {

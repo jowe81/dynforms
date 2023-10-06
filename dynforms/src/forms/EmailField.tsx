@@ -18,6 +18,7 @@ function EmailField(props: any) {
                     name={field.key} 
                     data-key={field.key}
                     value={record[field.key]}
+                    placeholder={field.placeholder}
                     onChange={onChange}
                 />
             </div>

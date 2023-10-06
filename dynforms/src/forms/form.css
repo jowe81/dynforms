@@ -13,10 +13,25 @@ input[type="checkbox"] {
 }
 
 .form-element-container {
-    
+    padding-right: 10px;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
+
+.form-array-container {
+    border: 1px solid red;
+}
+
+.form-subfield-array-item-container {
+    margin: 5px 0px 15px 0px;
+    padding: 5px 2px;
+    border: 1px solid rgb(147, 147, 147);
+    border-radius: 3px;
+}
+
 
 .form-subfield-array-container {    
     padding-left: 10px;
-    margin-left: 20px;    
+    margin-left: 20px;
 }

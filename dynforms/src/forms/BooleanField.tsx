@@ -9,7 +9,7 @@ function BooleanField(props: any) {
     if (!record) {
         record = {};
     }
-    
+    console.log(`field ${field.key}: ${record[field.key]}`);
     return (
         <>
             <div></div>
@@ -18,8 +18,9 @@ function BooleanField(props: any) {
                     type="checkbox"
                     name={field.key} 
                     data-key={field.key}
-                    value={record[field.key]}
+                    checked={record[field.key]}                    
                     onChange={onChange}
+                    
                 />
                 { field.label }
             </div>

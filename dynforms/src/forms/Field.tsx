@@ -13,7 +13,7 @@ function Field(props: any) {
 
     if (field.hidden) {
         // For now don't render hidden fields at all.
-        //return;
+        return;
     }
 
     const path = keys.join('.');
@@ -25,7 +25,10 @@ function Field(props: any) {
         // The itemIndex will be undefined if the field isn't part of an array; it then needs to be excluded from the keyset.
         const fullKeySet = [ ...keys, itemIndex, key ].filter(item => ![undefined, null].includes(item));
 
-        const fieldValue = event.target.value;
+        let keyToValue = Object.keys(event.target).includes('checked') ? 'checked' : 'value';
+
+        const fieldValue = event.target[keyToValue];
+
         updateRecord(fullKeySet, fieldValue);
     }
 
@@ -57,7 +60,7 @@ function Field(props: any) {
             return (<div className="form-element-container"><PhoneField {...fieldProps}/></div>);
     
         case 'email':
-            return (<div className="form-element-container"><PhoneField {...fieldProps}/></div>);    
+            return (<div className="form-element-container"><EmailField {...fieldProps}/></div>);    
     
         case 'array':                                
             return (
