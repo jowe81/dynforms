@@ -132,6 +132,21 @@ const formTypes: Interfaces.FormType[] = [
                 rank: 4,
                 fields: [
                     {
+                        label: "Type",
+                        key: "type",
+                        type: "select",
+                        options: [
+                            {
+                                label: "Home",
+                                value: "home",
+                            },
+                            {
+                                label: "Work",
+                                value: "work",
+                            },
+                        ]
+                    },
+                    {
                         label: "Email",
                         key: "email",
                         type: "email",

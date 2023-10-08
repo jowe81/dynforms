@@ -4,6 +4,7 @@ import DateField from './DateField.tsx';
 import BooleanField from './BooleanField.tsx';
 import PhoneField from './PhoneField.tsx';
 import EmailField from './EmailField.tsx';
+import SelectField from './SelectField.tsx';
 import ArrayField from './ArrayField.tsx';
 import SubfieldArray from './SubfieldArray.tsx';
 
@@ -61,7 +62,10 @@ function Field(props: any) {
     
         case 'email':
             return (<div className="form-element-container"><EmailField {...fieldProps}/></div>);    
-    
+
+        case 'select':
+            return (<div className="form-element-container"><SelectField {...fieldProps}/></div>);                
+
         case 'array':                                
             return (
                 <div className="form-array-container">

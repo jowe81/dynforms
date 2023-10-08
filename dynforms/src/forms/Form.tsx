@@ -114,7 +114,7 @@ export namespace Interfaces {
 
     export type FieldTypeString = 
         'text' | 'phone' | 'email' |
-        'textarea'|'boolean'|'date'|'array'|'subfieldArray';
+        'textarea'|'boolean'|'date'|'select'|'array'|'subfieldArray';
     
     export type Field = BaseField | BooleanField | TextField | TextareaField | SubfieldArray;
 
@@ -139,6 +139,15 @@ export namespace Interfaces {
     export interface TextareaField extends BaseField {
         rows?: number;
     }
+
+    export interface SelectField extends BaseField {
+        options: SelectFieldOption[];
+    }
+
+    export type SelectFieldOption = {
+        label: string;
+        value: string|number;
+    }    
 
     export interface ArrayField extends BaseField {
         fields: Field[];
