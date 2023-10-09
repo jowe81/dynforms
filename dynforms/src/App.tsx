@@ -1,11 +1,7 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import Form from "./forms/Form";
 
 import { formTypes } from './formTypes.ts';
-
 
 // const testRecord = {
 //     'title': 'Travel',
@@ -60,7 +56,7 @@ function App() {
     const props = {
         collectionName,
         formDefinition,
-        record: testRecord,
+        //record: testRecord,
     }
 
     console.log('Form Definition:', formDefinition)

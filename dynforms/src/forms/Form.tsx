@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import ArrayField from './ArrayField.tsx';
 
 import './form.css';
@@ -14,15 +16,29 @@ function Form(props: any) {
         // console.log('Effect', record);
     }, [record]);
 
+    let collectionName: string = props.collectionName;
+    let formDefinition: any = props.formDefinition;
+
     function updateRecord(fullKeySet: String[], data: any) {
         const newRecord = {...record};        
         arrSet(newRecord, fullKeySet, data);
         console.log('New record:', newRecord);
         setRecord(newRecord);
     }
+
+    function handleSubmit(event) {
+        console.log(`Submitting`, record)
+        axios
+            .post(`http://localhost:3010/db/post/${collectionName}`, record)
+            .then((data) => {
+
+            })
+            .catch(err => {
+                console.log('Axios error: ', err);
+            })
+
+    }
     
-    let collectionName: string = props.collectionName;
-    let formDefinition: any = props.formDefinition;
     
     if (!formDefinition) {
         return <div>Definition for '{collectionName}' not found.</div>;
@@ -42,7 +58,12 @@ function Form(props: any) {
         updateRecord,
     }
 
-    return <div className='form-container'><ArrayField {...formProps}/></div>
+    return (
+        <div className='form-container'>
+            <ArrayField {...formProps}/>
+            <button onClick={handleSubmit}>Submit</button>
+        </div>
+    )
 }
 
 

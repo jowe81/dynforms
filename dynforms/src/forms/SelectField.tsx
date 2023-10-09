@@ -22,7 +22,7 @@ function SelectField(props: any) {
         value: '',
         disabled: true,
     }, {
-        label: '________________________________________________________',
+        label: '_'.repeat(55),
         value: '',
         disabled: true,
     });
