@@ -104,6 +104,26 @@ const formTypes: Interfaces.FormType[] = [
                 rank: 3,
                 fields: [
                     {
+                        label: "Type",
+                        key: "type",
+                        type: "select",
+                        //multiple: true,
+                        options: [
+                            {
+                                label: "Home",
+                                value: "home",
+                            },
+                            {
+                                label: "Work",
+                                value: "work",
+                            },
+                            {
+                                label: "Mobile",
+                                value: "mobile",
+                            },
+                        ]
+                    },
+                    {
                         label: "Number",
                         key: "phone",
                         type: "phone",
@@ -131,21 +151,6 @@ const formTypes: Interfaces.FormType[] = [
                 type: "subfieldArray",
                 rank: 4,
                 fields: [
-                    {
-                        label: "Type",
-                        key: "type",
-                        type: "select",
-                        options: [
-                            {
-                                label: "Home",
-                                value: "home",
-                            },
-                            {
-                                label: "Work",
-                                value: "work",
-                            },
-                        ]
-                    },
                     {
                         label: "Email",
                         key: "email",

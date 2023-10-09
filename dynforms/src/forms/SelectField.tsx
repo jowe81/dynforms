@@ -1,7 +1,6 @@
 import { Interfaces } from "./Form";
 
 function SelectField(props: any) {
-
     const field: Interfaces.SelectField = props.field;    
     let { keys, record, onChange } = props;
 
@@ -14,8 +13,24 @@ function SelectField(props: any) {
     }
     
     const path = keys.join('.');
-    const fullKey = path ? `${path}.${field.key}` : field.key; 
+    const fullKey = path ? `${path}.${field.key}` : field.key;     
     
+    const options = [...field.options];
+    
+    options.unshift({
+        label: 'Select one...',
+        value: '',
+        disabled: true,
+    }, {
+        label: '________________________________________________________',
+        value: '',
+        disabled: true,
+    });
+    
+    const optionsJsx = options.map(
+        (option, index) => <option key={index} value={option.value} disabled={option.disabled}>{option.label}</option>
+    )
+
     return (
         <>
             <label>{ field.label }</label>
@@ -23,14 +38,11 @@ function SelectField(props: any) {
                 <select 
                     name={ field.key }                     
                     data-key={field.key} 
-                    value={record[field.key]} 
+                    value={record[field.key]}                    
                     onChange={onChange}
+                    multiple={field.multiple}
                 >
-                { 
-                    field.options.map(
-                        (option, index) => <option key={index} value={option.value}>{option.label}</option>
-                    )
-                }
+                    {optionsJsx}
                 </select>
             </div>
         </>

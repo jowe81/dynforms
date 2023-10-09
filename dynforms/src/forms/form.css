@@ -1,4 +1,4 @@
-input, textarea {    
+input, textarea, select {    
     width: 100%;
     margin: 5px;    
 }
@@ -10,6 +10,8 @@ input[type="checkbox"] {
 .form-container {    
     padding: 10px;
     display: block;
+    width: 500px;
+    background-color: rgb(228, 228, 228);
 }
 
 .form-element-container {

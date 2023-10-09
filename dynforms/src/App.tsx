@@ -32,11 +32,13 @@ const testRecord = {
             phone: '123-456-7890',
             active: true,
             updated_at: '234567890',
+            type: 'mobile',
         },
         {
             phone: '123-456-7891',
             active: false,
             updated_at: '234567890',
+            type: 'work',
         },
     ],
     email_addresses: [

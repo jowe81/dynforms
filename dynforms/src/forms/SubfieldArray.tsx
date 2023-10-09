@@ -57,27 +57,13 @@ function SubfieldArray(props: any) {
                             fields.map((field: any, fieldIndex: number) => {            
                                 const path = keys.join('.');
                                 const fullKey = path ? `${path}.${field.key}` : field.key; 
-                            
-                                function onChange(event: any) {       
-                                    const key = event?.currentTarget?.dataset?.key;
-                                    const fullKeySet = [ ...keys, itemIndex, key ];
-                                    const fieldValue = event.target.value;
-
-                                    console.log(`Setting field ${fullKeySet.join('.')} to '${fieldValue}'` );
-                                                            
-                                    const newArray = [ ...record ];
-                                    newArray[itemIndex][key] = fieldValue;
-                                    
-                                    updateRecord(keys, newArray);
-                                }
-                            
+                                                        
                                 const props = {
                                     fullKey,
                                     keys,
                                     field,
                                     record: arrayItem,
                                     itemIndex,
-                                    onChange,
                                     updateRecord,
                                 }
                                             

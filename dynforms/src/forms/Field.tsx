@@ -1,3 +1,5 @@
+import { Interfaces } from "./forms/Form";
+
 import TextField from './TextField.tsx';
 import TextareaField from './TextareaField.tsx';
 import DateField from './DateField.tsx';
@@ -22,7 +24,7 @@ function Field(props: any) {
 
     function onChange(event: any) {        
         const key = event?.currentTarget?.dataset?.key;        
-
+        
         // The itemIndex will be undefined if the field isn't part of an array; it then needs to be excluded from the keyset.
         const fullKeySet = [ ...keys, itemIndex, key ].filter(item => ![undefined, null].includes(item));
 
@@ -30,6 +32,7 @@ function Field(props: any) {
 
         const fieldValue = event.target[keyToValue];
 
+        console.log(`Updating field "${fullKey}" to `,fieldValue);
         updateRecord(fullKeySet, fieldValue);
     }
 

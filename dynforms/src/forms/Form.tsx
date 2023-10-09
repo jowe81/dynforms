@@ -126,6 +126,7 @@ export namespace Interfaces {
         defaultValue?: string | boolean;
         placeholder?: string;
         hidden?: boolean;
+        fields?: Field[];
     }
 
     export interface BooleanField extends BaseField {
@@ -142,11 +143,13 @@ export namespace Interfaces {
 
     export interface SelectField extends BaseField {
         options: SelectFieldOption[];
+        multiple: boolean;
     }
 
     export type SelectFieldOption = {
         label: string;
         value: string|number;
+        disabled?: boolean;
     }    
 
     export interface ArrayField extends BaseField {
