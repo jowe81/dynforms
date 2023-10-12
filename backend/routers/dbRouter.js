@@ -15,10 +15,18 @@ const initRouter = (express, db) => {
     next();
   })
   
+  dbRouter.get('/records/:collectionName', async (req, res) => {
+    const { collectionName } = req.params;
+    const collection = db.collection(collectionName);
+    try {
+        const records = await collection.find({}).toArray();        
+        res.json(records);    
+    } catch {
+        res.status(500).send();
+    }
+  });
 
   dbRouter.post('/post/:collectionName', async (req, res) => {
-    //res.sendStatus(404);
-    console.log(req.paramsm, req.body);
     const { collectionName } = req.params;
     const data = req.body;
     const collection = db.collection(collectionName);
@@ -27,10 +35,6 @@ const initRouter = (express, db) => {
     console.log(`Data`, data);
     //storeUpdateRecord();
     res.json(result);
-  });
-
-  dbRouter.post('/post', (req, res) => {
-
   });
   
   return dbRouter;

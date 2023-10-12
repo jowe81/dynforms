@@ -11,6 +11,7 @@ export default function useAppData() {
 
         appState.collectionName = collectionName;
         setAppState(appState);
+        loadRecords(collectionName);
     }
 
     const setFormDefinition = (formDefinition: any) => {
@@ -26,14 +27,26 @@ export default function useAppData() {
         setAppState(appState);
     }
 
+    const loadRecords = async (collectionName) => {
+        console.log(`Loading records in ${collectionName}`);
+        const data = await axios.get(`${constants.apiRoot}/records/${collectionName}`);
+        appState.records = data.data;
+        setAppState(appState);
+    }
     
 
     return {
-        appState,        
+        constants,
+        appState,
         setCollectionName,
         setFormDefinition,
-        setBlankRecord,
+        setBlankRecord,        
     }
 
 };
+
+
+const constants = {
+    apiRoot: 'http://localhost:3010/db',
+}
 

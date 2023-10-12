@@ -8,7 +8,7 @@ import {
 
 import Root from "./Root.tsx";
 import Form from "./forms/Form.tsx";
-import CollectionTable from "./records/CollectionTable.tsx";
+import RecordsTable from "./records/RecordsTable.tsx";
 
 import "./index.css";
 
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
             },
             {   
                 path: "/records",
-                element: <CollectionTable /> 
+                element: <RecordsTable /> 
             },
         ]
     }, 

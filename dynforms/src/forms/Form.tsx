@@ -10,7 +10,7 @@ import './form.css';
 function Form(props: any) {    
 
     const [ record, setRecord ] = useState({});
-    const { appState, setFormDefinition } = useAppData();
+    const { appState, constants, setFormDefinition } = useAppData();
     const { collectionName } = appState;
 
     const formDefinition = formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
@@ -33,9 +33,9 @@ function Form(props: any) {
     function handleSubmit(event: any) {
         console.log(`Submitting`, record)
         axios
-            .post(`http://localhost:3010/db/post/${collectionName}`, record)
+            .post(`${constants.apiRoot}/post/${collectionName}`, record)
             .then((data) => {
-
+                console.log('Success', data)
             })
             .catch(err => {
                 console.log('Axios error: ', err);
