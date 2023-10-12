@@ -1,32 +1,36 @@
 import axios from 'axios';
-
-import ArrayField from './ArrayField.tsx';
-
-import './form.css';
-
 import { useState, useEffect } from 'react';
 
-function Form(props: any) {
-    const inputRecord = typeof props.record === 'object' ? props.record : {};
+import { formTypes } from '../formTypes.ts';
+import useAppData from '../hooks/useAppData.ts';
+import ArrayField from './ArrayField.tsx';
+import './form.css';
 
-    console.log('Input Record', inputRecord)
-    const [ record, setRecord ] = useState(inputRecord);
+
+function Form(props: any) {    
+
+    const [ record, setRecord ] = useState({});
+    const { appState, setFormDefinition } = useAppData();
+    const { collectionName } = appState;
+
+    const formDefinition = formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
 
     useEffect(() => {
-        // console.log('Effect', record);
-    }, [record]);
+        // Selected Collection changed.
+        setFormDefinition(formDefinition);
 
-    let collectionName: string = props.collectionName;
-    let formDefinition: any = props.formDefinition;
+        if (formDefinition) {
+            setRecord(initializeRecord(formDefinition.fields));
+        }        
+    }, [collectionName]);
 
     function updateRecord(fullKeySet: String[], data: any) {
         const newRecord = {...record};        
         arrSet(newRecord, fullKeySet, data);
-        console.log('New record:', newRecord);
         setRecord(newRecord);
     }
 
-    function handleSubmit(event) {
+    function handleSubmit(event: any) {
         console.log(`Submitting`, record)
         axios
             .post(`http://localhost:3010/db/post/${collectionName}`, record)
@@ -39,17 +43,14 @@ function Form(props: any) {
 
     }
     
-    
+    if (!collectionName) {
+        return;
+    }
+
     if (!formDefinition) {
         return <div>Definition for '{collectionName}' not found.</div>;
     }
     
-
-    if (!Object.keys(record).length) {        
-        setRecord(initializeRecord(formDefinition.fields));
-    }
-
-
     const formProps = {
         ...formDefinition,
         keyPath: '',
@@ -60,6 +61,7 @@ function Form(props: any) {
 
     return (
         <div className='form-container'>
+            <label>Collection: {collectionName}</label>
             <ArrayField {...formProps}/>
             <button onClick={handleSubmit}>Submit</button>
         </div>
@@ -74,8 +76,6 @@ function initializeRecord(fields: Interfaces.Field[]) {
     fields.forEach(field => {
         const type: Interfaces.FieldTypeString = field.type;
         const key: string = field.key;        
-    
-        console.log(`Initializing field: ${key} (${type})`, field);
         
         switch (type) {
 
@@ -92,7 +92,7 @@ function initializeRecord(fields: Interfaces.Field[]) {
                 break;
         }
     });
-    console.log('finished record', record)
+    console.log('Initialized record to', record);
     return record;
 }
 

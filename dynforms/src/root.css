@@ -1,0 +1,30 @@
+#ui-root {
+    height: 100%;
+    min-height: 100%;
+    display: flex;
+    
+    
+    background-color: rgb(216, 229, 255);
+    width: 100%;
+}
+
+#sidebar {
+    width: 200px;
+    padding-right: 10px;
+    margin: 10px;    
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding:0;
+    margin:10p 0px;
+
+}
+
+#sidebar ul li {
+}
+
+#main-content-area {
+    padding: 10px;
+    
+}

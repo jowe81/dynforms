@@ -17,7 +17,7 @@ function EmailField(props: any) {
                 <input 
                     name={field.key} 
                     data-key={field.key}
-                    value={record[field.key]}
+                    value={record[field.key] ?? ''}
                     placeholder={field.placeholder}
                     onChange={onChange}
                 />

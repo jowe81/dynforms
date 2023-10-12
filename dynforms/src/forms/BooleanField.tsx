@@ -18,7 +18,7 @@ function BooleanField(props: any) {
                     type="checkbox"
                     name={field.key} 
                     data-key={field.key}
-                    checked={record[field.key]}                    
+                    checked={record[field.key] ?? false}                    
                     onChange={onChange}
                     
                 />

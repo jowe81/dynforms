@@ -17,7 +17,7 @@ function TextField(props: any) {
                 <input 
                     name={field.key} 
                     data-key={field.key}
-                    value={record[field.key]}
+                    value={record[field.key] ?? ''}
                     onChange={onChange}
                 />
             </div>

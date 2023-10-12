@@ -16,7 +16,7 @@ function DateField(props: any) {
             <div>
                 <input 
                     name={ field.key } 
-                    value={record[field.key]} 
+                    value={record[field.key] ?? ''} 
                     data-key={field.key}
                     onChange={onChange}/>
                 </div>            

@@ -24,7 +24,7 @@ function Textarea(props: any) {
                     name={ field.key } 
                     rows={ field.rows } 
                     data-key={field.key} 
-                    value={record[field.key]} 
+                    value={record[field.key] ?? ''} 
                     onChange={onChange}
                 />
             </div>

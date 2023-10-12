@@ -38,7 +38,7 @@ function SelectField(props: any) {
                 <select 
                     name={ field.key }                     
                     data-key={field.key} 
-                    value={record[field.key]}                    
+                    value={record[field.key] ?? ''}                    
                     onChange={onChange}
                     multiple={field.multiple}
                 >
