@@ -2,16 +2,17 @@
     height: 100%;
     min-height: 100%;
     display: flex;
-    
+    flex-direction: column;
     
     background-color: rgb(216, 229, 255);
     width: 100%;
 }
 
 #sidebar {
-    width: 200px;
-    padding-right: 10px;
-    margin: 10px;    
+    width: 100%;    
+    margin: 0px;   
+    display: flex; 
+    border-bottom: 1px solid rgb(164, 164, 164);
 }
 
 #sidebar ul {
@@ -22,6 +23,16 @@
 }
 
 #sidebar ul li {
+}
+
+#collection-selector-container {
+    width: 400px;
+    display: flex;
+    padding-right: 10px;
+}
+
+.top-nav-item {
+    padding: 10px;
 }
 
 #main-content-area {

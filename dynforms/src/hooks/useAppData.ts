@@ -8,6 +8,8 @@ export default function useAppData() {
 
     const [appState, setAppState] = <any>useAppState();
 
+    const axiosError = (err: any) => console.log('Axios error: ', err);
+
     const setCollectionName = (collectionName: string) => {
         console.log('Setting collection name to ', collectionName);
 
@@ -23,13 +25,6 @@ export default function useAppData() {
         appState.formDefinition = formDefinition;
         setAppState(appState);
     }
-    
-
-    const setBlankRecord = (blankRecord: any) => {
-        console.log('Setting blank record to ', blankRecord);
-        appState.blankRecord = blankRecord;
-        setAppState(appState);
-    }
 
     const loadRecords = async (collectionName: string) => {
         appState.records = [];
@@ -43,28 +38,40 @@ export default function useAppData() {
                 appState.records = data.data;
                 setAppState(appState);        
             })
-            .catch(err => console.log('Axios error: ', err));
+            .catch(axiosError);
     }
 
-    const deleteRecord = async (recordId: string) => {
+    const dbDeleteRecord = async (recordId: string) => {
         const collectionName = appState.collectionName;
-        
+        console.log(`Deleting record ${recordId} from collection ${collectionName}`);
+
         axios
             .delete(`${constants.apiRoot}/records/${collectionName}/${recordId}`)
             .then(result => {
                 loadRecords(collectionName);
             })
-            .catch(err => console.log('Axios error: ', err));
+            .catch(axiosError);
     }
     
+    const dbUpdateRecord = async (record: any) => {
+        const collectionName = appState.collectionName;
+        console.log(`Updating record in ${collectionName}`, record);
+        return axios
+            .post(`${constants.apiRoot}/post/${collectionName}`, record)
+            .then(data => {
+                loadRecords(collectionName);
+            })
+            .catch(axiosError);
+    }
 
     return {
         constants,
         appState,
         setCollectionName,
         setFormDefinition,
-        setBlankRecord,        
-        deleteRecord,
+
+        dbDeleteRecord,
+        dbUpdateRecord,
     }
 
 };

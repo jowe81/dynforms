@@ -1,7 +1,7 @@
 import axios from 'axios';
 import _ from 'lodash';
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { formTypes } from '../formTypes.ts';
 import useAppData from '../hooks/useAppData.ts';
@@ -10,8 +10,9 @@ import './form.css';
 import ArrayField from './ArrayField.tsx';
 
 function Form(props: any) {    
+    const navigate = useNavigate();
     const [ record, setRecord ] = useState({});
-    const { appState, constants } = useAppData();
+    const { appState, dbUpdateRecord } = useAppData();
     const { collectionName } = appState;
 
     const formDefinition = formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
@@ -34,16 +35,13 @@ function Form(props: any) {
     }
 
     function handleSubmit(event: any) {
-        console.log(`Submitting`, record)
-        axios
-            .post(`${constants.apiRoot}/post/${collectionName}`, record)
-            .then((data) => {
-                console.log('Success', data)
-            })
-            .catch(err => {
-                console.log('Axios error: ', err);
-            })
-
+        dbUpdateRecord(record)
+        .then(() => {
+            navigate('/records');
+        })
+        .catch(err => {
+            console.log('Axios error: ', err);
+        });
     }
     
     if (!collectionName) {
@@ -66,7 +64,7 @@ function Form(props: any) {
         <div className='form-container'>
             <label>Collection: {collectionName}</label>
             <ArrayField {...formProps}/>
-            <button onClick={handleSubmit}>Submit</button>
+            <button onClick={handleSubmit}>Save</button>
         </div>
     )
 }

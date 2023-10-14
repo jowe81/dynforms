@@ -32,7 +32,6 @@ function Field(props: any) {
 
         const fieldValue = event.target[keyToValue];
 
-        console.log(`Updating field "${fullKey}" to `,fieldValue);
         updateRecord(fullKeySet, fieldValue);
     }
 

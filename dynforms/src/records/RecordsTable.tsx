@@ -6,7 +6,7 @@ import { Interfaces } from '../forms/Form.tsx';
 import './records.css';
 function RecordsTable(props: any) {
 
-    const { appState, deleteRecord } = useAppData();
+    const { appState, dbDeleteRecord } = useAppData();
     const { state } = useLocation();
     
     const fields = appState.formDefinition?.fields;
@@ -16,9 +16,8 @@ function RecordsTable(props: any) {
     const recordId = state?.recordId;
 
     useEffect(() => {
-        if (action === 'delete' && recordId) {
-            console.log(`Deleting record ${recordId}`);
-            deleteRecord(recordId);            
+        if (action === 'delete' && recordId) {            
+            dbDeleteRecord(recordId);            
         }
     }, [action, recordId]);
 
@@ -35,7 +34,7 @@ function RecordsTable(props: any) {
         const cellsJsx = Object.keys(record).map((key, index) => {
 
             const value = record[key];
-            
+
             let cellJsx;
 
             if (index === 0) {
@@ -54,11 +53,28 @@ function RecordsTable(props: any) {
                     console.warn(`No field for key ${key} at index ${index}!`);
                 }
 
-                cellJsx = (
-                    <td key={index}>
-                        {typeof record[key] !== 'object' ? record[key] : '...'}
-                    </td>
-                )
+                let displayValue = '';
+
+                switch(field.type) {
+                    case 'subfieldArray':                        
+                        if (!value.length) {
+                            displayValue = `none`;
+                        } else if (value.length === 1) {
+                            displayValue = value.length + ' item';
+                        } else {
+                            displayValue = value.length + ' items';
+                        }
+                        break;
+
+                    case 'boolean':
+                        displayValue = value ? "yes" : "no";
+                        break;
+
+                    default:
+                        displayValue = value;
+                }
+
+                cellJsx = (<td key={index}>{displayValue}</td>)
             }
             return cellJsx;
         });
@@ -70,7 +86,6 @@ function RecordsTable(props: any) {
 
     return (
         <>
-            <div>Records:</div>
             <table>
                 <tbody>
                     {getHeaderRow(fields)}

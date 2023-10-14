@@ -23,22 +23,16 @@ export default function Root() {
     return (
         <div id="ui-root">
             <div id="sidebar">
-                <div>
-                    <label>Collection</label>
+                <div id="collection-selector-container" className="top-nav-item">
+                    <label>Collection:</label>
                     <CollectionSelector value={collectionName} onChange={onCollectionSelect}/>
+                </div>                
+                <div className="top-nav-item">
+                    <Link to="/records">Records</Link>
                 </div>
-                
-                <nav>
-                    <ul>
-                        <li><Link to="/records">Records</Link></li>
-                    </ul>
-                    <ul>
-                        <li><Link to="/form">New Record</Link></li>
-                    </ul>
-                    <ul>
-                        <li><Link to="/collections">Collections</Link></li>
-                    </ul>
-                </nav>
+                <div className="top-nav-item">
+                    <Link to="/form">New Record</Link>
+                </div>
             </div>
             <div id="main-content-area">
                 <Outlet />

@@ -4,8 +4,8 @@ import { ObjectId } from 'mongodb';
 
 const initRouter = (express, db) => {
   const castId = obj => obj._id = obj._id ? new ObjectId(obj._id) : null;
-  const axiosError = err => log(`Axios error: ${err.message}`);
-  
+  const logError = err => log(`Error: ${err.message}`);
+
   const dbRouter = express.Router();
 
   dbRouter.use((err, req, res, next) => {
@@ -25,7 +25,8 @@ const initRouter = (express, db) => {
     try {
         const records = await collection.find({}).toArray();        
         res.json(records);    
-    } catch {
+    } catch (err) {
+        logError(err);
         res.status(500).send();
     }
   });
@@ -40,8 +41,8 @@ const initRouter = (express, db) => {
     try {
         const result = await collection.deleteOne({ _id });
         res.json(result);
-    } catch (error) {
-        console.log(error.message);        
+    } catch (err) {
+        logError(err);      
         res.status(500).send();
     }
 
@@ -54,11 +55,15 @@ const initRouter = (express, db) => {
     const record = req.body;
     castId (record);
     
-    const result = await record._id ? 
-        collection.replaceOne({ _id: record._id }, record) :
-        collection.insertOne(record);
-
-    res.json(result);
+    try {
+        const result = await record._id ? 
+            collection.replaceOne({ _id: record._id }, record) :
+            collection.insertOne(record);
+        res.json(result);
+    } catch (err) {
+        logError(err);
+        res.status(500).send();
+    }
   });
   
   return dbRouter;

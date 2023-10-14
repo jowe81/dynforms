@@ -1,5 +1,6 @@
 import { Interfaces } from "../forms/Form";
 import { formTypes } from '../formTypes.ts';
+import './collectionSelector.css';
 
 function CollectionSelector(props: any) {
 
@@ -21,7 +22,7 @@ function CollectionSelector(props: any) {
     )
 
     return (
-        <select 
+        <select id="collection-selector"
             value={props.value ?? ''} 
             onChange={onChange}
         >   

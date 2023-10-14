@@ -2,12 +2,22 @@
     font-size: 8px;
 }
 
+table {
+    width: 100%;
+}
+
 td {
-    padding-bottom: 20px;
+    padding-bottom: 7px;
     
     
 }
+
+th {
+    text-align: left;
+    padding-bottom: 7px;
+}
+
 .row {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;    
 }
 
