@@ -1,20 +1,30 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 import useAppData from '../hooks/useAppData.ts';
 import { Interfaces } from '../forms/Form.tsx';
 import './records.css';
 function RecordsTable(props: any) {
 
-    const { appState } = useAppData();
-
+    const { appState, deleteRecord } = useAppData();
+    const { state } = useLocation();
+    
     const fields = appState.formDefinition?.fields;
     const records = appState.records;
+
+    const action = state?.action;
+    const recordId = state?.recordId;
+
+    useEffect(() => {
+        if (action === 'delete' && recordId) {
+            console.log(`Deleting record ${recordId}`);
+            deleteRecord(recordId);            
+        }
+    }, [action, recordId]);
 
     if (!fields || !Array.isArray(records)) {
         return
     }
-    console.log("Fields:", fields );
-    console.log("Records:", records)
 
     const getHeaderRow = (fields: Interfaces.Field[]) => {
         return (<tr><th></th>{fields.map((field, index) => <th key={index}>{field.label}</th>)}</tr>);
@@ -31,7 +41,10 @@ function RecordsTable(props: any) {
             if (index === 0) {
                 cellJsx = (
                     <td key={index}>
-                        <div><a>Delete</a> <Link to="/form" state={{recordId:value}}>Edit</Link></div>   
+                        <div>
+                            <Link to="/records" state={{action: 'delete', recordId: value}}>Delete</Link>&nbsp;
+                            <Link to="/form" state={{recordId:value}}>Edit</Link>
+                        </div>   
                     </td>
                 );
             } else {

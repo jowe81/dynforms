@@ -45,6 +45,17 @@ export default function useAppData() {
             })
             .catch(err => console.log('Axios error: ', err));
     }
+
+    const deleteRecord = async (recordId: string) => {
+        const collectionName = appState.collectionName;
+        
+        axios
+            .delete(`${constants.apiRoot}/records/${collectionName}/${recordId}`)
+            .then(result => {
+                loadRecords(collectionName);
+            })
+            .catch(err => console.log('Axios error: ', err));
+    }
     
 
     return {
@@ -53,6 +64,7 @@ export default function useAppData() {
         setCollectionName,
         setFormDefinition,
         setBlankRecord,        
+        deleteRecord,
     }
 
 };
