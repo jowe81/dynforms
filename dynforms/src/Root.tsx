@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 
 import useAppData from "./hooks/useAppData";
 
@@ -7,6 +7,7 @@ import CollectionSelector from "./sidebar/CollectionSelector";
 import './root.css';
 
 export default function Root() {
+    const navigate = useNavigate();
     const { appState, setCollectionName } = useAppData();
     const collectionName = appState.collectionName;
 
@@ -14,7 +15,8 @@ export default function Root() {
         const value = event.target.value;
 
         if (value) {
-            setCollectionName(value);            
+            setCollectionName(value);
+            navigate('/records');
         }
     }
 

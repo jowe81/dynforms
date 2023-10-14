@@ -2,6 +2,8 @@ import axios from "axios";
 
 import useAppState from "./useAppState";
 
+import { formTypes } from "../formTypes";
+
 export default function useAppData() {
 
     const [appState, setAppState] = <any>useAppState();
@@ -9,9 +11,11 @@ export default function useAppData() {
     const setCollectionName = (collectionName: string) => {
         console.log('Setting collection name to ', collectionName);
 
-        appState.collectionName = collectionName;
+        appState.collectionName = collectionName;        
+        setFormDefinition(formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
         setAppState(appState);
         loadRecords(collectionName);
+
     }
 
     const setFormDefinition = (formDefinition: any) => {
@@ -27,11 +31,19 @@ export default function useAppData() {
         setAppState(appState);
     }
 
-    const loadRecords = async (collectionName) => {
-        console.log(`Loading records in ${collectionName}`);
-        const data = await axios.get(`${constants.apiRoot}/records/${collectionName}`);
-        appState.records = data.data;
+    const loadRecords = async (collectionName: string) => {
+        appState.records = [];
         setAppState(appState);
+
+        console.log(`Loading records in ${collectionName}`);
+
+        axios
+            .get(`${constants.apiRoot}/records/${collectionName}`)
+            .then((data) => {
+                appState.records = data.data;
+                setAppState(appState);        
+            })
+            .catch(err => console.log('Axios error: ', err));
     }
     
 

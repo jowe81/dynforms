@@ -1,28 +1,31 @@
 import axios from 'axios';
+import _ from 'lodash';
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { formTypes } from '../formTypes.ts';
 import useAppData from '../hooks/useAppData.ts';
-import ArrayField from './ArrayField.tsx';
 import './form.css';
 
+import ArrayField from './ArrayField.tsx';
 
 function Form(props: any) {    
-
     const [ record, setRecord ] = useState({});
-    const { appState, constants, setFormDefinition } = useAppData();
+    const { appState, constants } = useAppData();
     const { collectionName } = appState;
 
     const formDefinition = formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
 
-    useEffect(() => {
-        // Selected Collection changed.
-        setFormDefinition(formDefinition);
+    const { state } = useLocation();
+    const recordId = state?.recordId;
 
-        if (formDefinition) {
-            setRecord(initializeRecord(formDefinition.fields));
+    useEffect(() => {
+        // Selected Collection and/or recordId changed.
+        if (formDefinition) {            
+            const dbRecord = _.cloneDeep(appState?.records?.find((record: Interfaces.MongoRecord) => record._id === recordId));
+            setRecord(dbRecord ? dbRecord : initializeRecord(formDefinition.fields));
         }        
-    }, [collectionName]);
+    }, [collectionName, recordId]);
 
     function updateRecord(fullKeySet: String[], data: any) {
         const newRecord = {...record};        
@@ -179,6 +182,11 @@ export namespace Interfaces {
 
     export interface SubfieldArray extends BaseField {
         fields: Field[];
+    }
+
+
+    export interface MongoRecord {
+        _id: string;
     }
 }
 
