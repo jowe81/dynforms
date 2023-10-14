@@ -1,5 +1,6 @@
 import { log } from '../helpers/jUtils.js';
 import { storeUpdateRecord } from '../db/mongodb.js';
+import { ObjectId } from 'mongodb';
 
 const initRouter = (express, db) => {
   const dbRouter = express.Router();
@@ -28,12 +29,17 @@ const initRouter = (express, db) => {
 
   dbRouter.post('/post/:collectionName', async (req, res) => {
     const { collectionName } = req.params;
-    const data = req.body;
+    const record = req.body;
+
+    // If an ID came back it came back as a string; cast it to ObjectId.
+    if (record._id) {
+        record._id = new ObjectId(record._id);
+    }
+    
     const collection = db.collection(collectionName);
-    const result = await collection.insertOne(data);
-    console.log('insert result', result);
-    console.log(`Data`, data);
-    //storeUpdateRecord();
+
+    const result = await record._id ? collection.replaceOne({ _id: record._id }, record) : collection.insertOne(record);
+
     res.json(result);
   });
   
