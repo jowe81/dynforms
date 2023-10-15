@@ -23,13 +23,13 @@
 }
 
 .top-selector-container {
-    width: 300px;
+    width: 250px;
     display: flex;
     padding-right: 10px;
 }
 
 .top-selector-container-wide {
-    width: 400px;
+    width: 500px;
     display: flex;
     padding-right: 10px;
 }

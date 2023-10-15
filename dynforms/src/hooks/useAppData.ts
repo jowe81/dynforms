@@ -19,22 +19,44 @@ export default function useAppData() {
         loadRecords(collectionName);
     }
 
-    const setOrderColumn = (key: string) => {        
+    const setOrderColumn = (key: string, priority: string) => {        
         const parts = key.split('|');
-        console.log('parts', parts);
         const newKey: string = parts[0];
         const desc: boolean = parts.length ? !!parts[1] : false;
-        
-        appState.order = { key: newKey, desc };
+        const pri = parseInt(priority);
 
-        console.log('Setting order column to ', appState.order);
+        if (!Array.isArray(appState.order)) {
+            appState.order = [{ key: null, desc: false }];
+        }
+
+        if (pri === 0) {
+            appState.order[0] = { key: newKey, desc };
+        }
+
+        if (pri === 1) {
+            if (appState.order.length < 2) {
+                appState.order.push([]);
+            }
+
+            appState.order[1] = { key: newKey, desc };
+        }
+        
+        const primary = appState.order[0];
+        const secondary = appState.order[1];
+
         appState.records.sort((a: any, b: any) => {
-            if (desc) {
-                return a[newKey] < b[newKey] ? 1 : -1;
+            if (a[primary.key] < b[primary.key]) {
+                return primary.desc ? 1 : -1;
+            } else if (a[primary.key] > b[primary.key]) {
+                return primary.desc ? -1 : 1;
             } else {
-                return a[newKey] > b[newKey] ? 1 : -1;
-            }           
-            
+                // Primary values are equal
+                if (a[secondary.key] < b[secondary.key]) {
+                    return secondary.desc ? 1 : -1;
+                } else {
+                    return secondary.desc ? -1 : 1;
+                }
+            }            
         });
     
         setAppState(appState);        

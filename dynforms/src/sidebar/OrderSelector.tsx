@@ -10,7 +10,7 @@ function OrderSelector(props: any) {
         return;
     }
 
-    const { orderColumn, onOrderColumnSelect } = props;
+    const { orderColumn, onOrderColumnSelect, priority } = props;
 
     const options: Interfaces.SelectFieldOption[] = fields.map((field: Interfaces.Field) => { return { label: field.label, value: field.key }});
             
@@ -25,6 +25,7 @@ function OrderSelector(props: any) {
         <select id="order-selector"
             value={orderColumn} 
             onChange={onOrderColumnSelect}
+            data-priority={priority}
         >   
             <option disabled>Select a column</option>
             <option disabled>{'_'.repeat(50)}</option>

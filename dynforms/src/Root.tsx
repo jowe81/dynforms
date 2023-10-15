@@ -24,9 +24,10 @@ export default function Root() {
 
     function onOrderColumnSelect(event: any) {
         const value = event.target.value;
+        const priority = event.target.dataset.priority;
 
         if (value) {
-            setOrderColumn(value);            
+            setOrderColumn(value, priority);            
         }
     }
 
@@ -39,7 +40,8 @@ export default function Root() {
                 </div>                
                 <div className="top-selector-container-wide top-nav-item">
                     <label>Order by:</label>
-                    <OrderSelector orderColumn={orderColumn} onOrderColumnSelect={onOrderColumnSelect} />
+                    <OrderSelector orderColumn={orderColumn} onOrderColumnSelect={onOrderColumnSelect} priority="0"/>
+                    <OrderSelector orderColumn={orderColumn} onOrderColumnSelect={onOrderColumnSelect} priority="1"/>
                 </div>         
 
                 <div className="top-nav-item">
