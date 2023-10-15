@@ -22,14 +22,18 @@
 
 }
 
-#sidebar ul li {
+.top-selector-container {
+    width: 300px;
+    display: flex;
+    padding-right: 10px;
 }
 
-#collection-selector-container {
+.top-selector-container-wide {
     width: 400px;
     display: flex;
     padding-right: 10px;
 }
+
 
 .top-nav-item {
     padding: 10px;

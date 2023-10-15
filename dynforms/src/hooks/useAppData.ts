@@ -17,8 +17,28 @@ export default function useAppData() {
         setFormDefinition(formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
         setAppState(appState);
         loadRecords(collectionName);
-
     }
+
+    const setOrderColumn = (key: string) => {        
+        const parts = key.split('|');
+        console.log('parts', parts);
+        const newKey: string = parts[0];
+        const desc: boolean = parts.length ? !!parts[1] : false;
+        
+        appState.order = { key: newKey, desc };
+
+        console.log('Setting order column to ', appState.order);
+        appState.records.sort((a: any, b: any) => {
+            if (desc) {
+                return a[newKey] < b[newKey] ? 1 : -1;
+            } else {
+                return a[newKey] > b[newKey] ? 1 : -1;
+            }           
+            
+        });
+    
+        setAppState(appState);        
+    };
 
     const setFormDefinition = (formDefinition: any) => {
         console.log('Setting formDefinition to ', formDefinition);
@@ -68,6 +88,7 @@ export default function useAppData() {
         constants,
         appState,
         setCollectionName,
+        setOrderColumn,
         setFormDefinition,
 
         dbDeleteRecord,

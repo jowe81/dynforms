@@ -65,6 +65,8 @@ function Form(props: any) {
             <label>Collection: {collectionName}</label>
             <ArrayField {...formProps}/>
             <button onClick={handleSubmit}>Save</button>
+            &nbsp;
+            <button onClick={() => navigate('/records')}>Cancel</button>
         </div>
     )
 }

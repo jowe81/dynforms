@@ -9,7 +9,7 @@ const initRouter = (express, db) => {
   const dbRouter = express.Router();
 
   dbRouter.use((err, req, res, next) => {
-    console.log('- An error occurred: ', err);
+    logError(err);
     res.status(500).send(err);
     next(err);
   });
