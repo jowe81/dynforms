@@ -15,7 +15,8 @@ export default function useAppData() {
         appState.collectionName = collectionName;        
         setAppState(appState);
         setFormDefinition(formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
-        resetOrder();        
+        resetOrder();
+        resetSearchValue();
         loadRecords(collectionName);
     }
 
@@ -64,6 +65,14 @@ export default function useAppData() {
         setAppState(appState);
     }
 
+    const setSearchValue = (searchValue: string) => {
+        console.log('Searching for: ', searchValue);
+        appState.searchValue = searchValue;
+        setAppState(appState);
+    }
+
+    const resetSearchValue = () => setSearchValue('');
+
     const setFormDefinition = (formDefinition: any) => {
         console.log('Setting formDefinition to ', formDefinition);
         appState.formDefinition = formDefinition;
@@ -85,8 +94,8 @@ export default function useAppData() {
     }
 
     const dbDeleteRecord = async (recordId: string) => {
-        console.log(`Deleting record ${recordId} from collection ${collectionName}`);
         const collectionName = appState.collectionName;
+        console.log(`Deleting record ${recordId} from collection ${collectionName}`);
 
         axios
             .delete(`${constants.apiRoot}/records/${collectionName}/${recordId}`)
@@ -107,9 +116,10 @@ export default function useAppData() {
             .catch(axiosError);
     }
 
-    // Initialize the order array
+    // Initialize.
     if (!Array.isArray(appState.order)) {
         resetOrder();
+        resetSearchValue();
     }
 
     return {
@@ -117,6 +127,7 @@ export default function useAppData() {
         appState,
         setCollectionName,
         setOrderColumn,
+        setSearchValue,
         setFormDefinition,
         resetOrder,
 

@@ -4,13 +4,14 @@ import useAppData from "./hooks/useAppData";
 
 import CollectionSelector from "./sidebar/CollectionSelector";
 import OrderSelector from "./sidebar/OrderSelector";
+import SearchField from "./sidebar/SearchField";
 
 import './root.css';
 
 export default function Root() {
     const navigate = useNavigate();
 
-    const { appState, setCollectionName, setOrderColumn } = useAppData();
+    const { appState, setCollectionName, setOrderColumn, setSearchValue } = useAppData();
     const collectionName = appState.collectionName;
     const primaryColumn = appState.order[0].selectValue;
     const secondaryColumn = appState.order[1].selectValue;    
@@ -32,7 +33,7 @@ export default function Root() {
             setOrderColumn(value, priority);            
         }
     }
-    
+        
     return (
         <div id="ui-root">
             <div id="sidebar">
@@ -44,6 +45,7 @@ export default function Root() {
                     { appState.collectionName && <label>Order by:</label> }
                     <OrderSelector orderColumn={primaryColumn ?? "none"} onOrderColumnSelect={onOrderColumnSelect} priority="0"/>
                     <OrderSelector orderColumn={secondaryColumn ?? "none"} onOrderColumnSelect={onOrderColumnSelect} priority="1"/>
+                    <SearchField searchValue={appState.searchValue} setSearchValue={setSearchValue}/>
                 </div>         
 
                 <div className="top-nav-item">
