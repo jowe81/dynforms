@@ -14,7 +14,7 @@ const useAppState = () => {
 
   const updateState = (stateObject: any) => {
     state = _.cloneDeep(stateObject);
-    console.log('Updating global state to ', state)
+    //console.log('Updating global state to ', state)
     for (const listener of listeners) {
       listener(state);
     }

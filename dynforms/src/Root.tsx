@@ -9,9 +9,11 @@ import './root.css';
 
 export default function Root() {
     const navigate = useNavigate();
+
     const { appState, setCollectionName, setOrderColumn } = useAppData();
     const collectionName = appState.collectionName;
-    const orderColumn = appState.order?.key;    
+    const primaryColumn = appState.order[0].selectValue;
+    const secondaryColumn = appState.order[1].selectValue;    
 
     function onCollectionSelect(event: any) {
         const value = event.target.value;
@@ -30,7 +32,7 @@ export default function Root() {
             setOrderColumn(value, priority);            
         }
     }
-
+    
     return (
         <div id="ui-root">
             <div id="sidebar">
@@ -39,13 +41,13 @@ export default function Root() {
                     <CollectionSelector value={collectionName} onChange={onCollectionSelect}/>
                 </div>                
                 <div className="top-selector-container-wide top-nav-item">
-                    <label>Order by:</label>
-                    <OrderSelector orderColumn={orderColumn} onOrderColumnSelect={onOrderColumnSelect} priority="0"/>
-                    <OrderSelector orderColumn={orderColumn} onOrderColumnSelect={onOrderColumnSelect} priority="1"/>
+                    { appState.collectionName && <label>Order by:</label> }
+                    <OrderSelector orderColumn={primaryColumn ?? "none"} onOrderColumnSelect={onOrderColumnSelect} priority="0"/>
+                    <OrderSelector orderColumn={secondaryColumn ?? "none"} onOrderColumnSelect={onOrderColumnSelect} priority="1"/>
                 </div>         
 
                 <div className="top-nav-item">
-                    <Link to="/form">New Record</Link>
+                    { appState.collectionName && <Link to="/form">New Record</Link> }
                 </div>
             </div>
             <div id="main-content-area">

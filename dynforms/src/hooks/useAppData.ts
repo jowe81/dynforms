@@ -11,26 +11,22 @@ export default function useAppData() {
     const axiosError = (err: any) => console.log('Axios error: ', err);
 
     const setCollectionName = (collectionName: string) => {
-        console.log('Setting collection name to ', collectionName);
-
+        console.log('Setting collection name to', collectionName);
         appState.collectionName = collectionName;        
-        setFormDefinition(formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
         setAppState(appState);
+        setFormDefinition(formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
+        resetOrder();        
         loadRecords(collectionName);
     }
 
-    const setOrderColumn = (key: string, priority: string) => {        
-        const parts = key.split('|');
+    const setOrderColumn = (selectValue: string, priority: string) => {        
+        const parts = selectValue.split('|');
         const newKey: string = parts[0];
         const desc: boolean = parts.length ? !!parts[1] : false;
         const pri = parseInt(priority);
 
-        if (!Array.isArray(appState.order)) {
-            appState.order = [{ key: null, desc: false }];
-        }
-
         if (pri === 0) {
-            appState.order[0] = { key: newKey, desc };
+            appState.order[0] = { key: newKey, desc, selectValue };
         }
 
         if (pri === 1) {
@@ -38,7 +34,7 @@ export default function useAppData() {
                 appState.order.push([]);
             }
 
-            appState.order[1] = { key: newKey, desc };
+            appState.order[1] = { key: newKey, desc, selectValue};
         }
         
         const primary = appState.order[0];
@@ -58,9 +54,15 @@ export default function useAppData() {
                 }
             }            
         });
-    
+        console.log('Sorting by:', appState.order[0].selectValue, appState.order[1].selectValue);
         setAppState(appState);        
     };
+
+    const resetOrder = () => {
+        console.log('Resetting order');
+        appState.order = [{ key: null, desc: false }, { key: null, desc: false }];
+        setAppState(appState);
+    }
 
     const setFormDefinition = (formDefinition: any) => {
         console.log('Setting formDefinition to ', formDefinition);
@@ -69,10 +71,9 @@ export default function useAppData() {
     }
 
     const loadRecords = async (collectionName: string) => {
+        console.log(`Loading records in ${collectionName}`);
         appState.records = [];
         setAppState(appState);
-
-        console.log(`Loading records in ${collectionName}`);
 
         axios
             .get(`${constants.apiRoot}/records/${collectionName}`)
@@ -84,8 +85,8 @@ export default function useAppData() {
     }
 
     const dbDeleteRecord = async (recordId: string) => {
-        const collectionName = appState.collectionName;
         console.log(`Deleting record ${recordId} from collection ${collectionName}`);
+        const collectionName = appState.collectionName;
 
         axios
             .delete(`${constants.apiRoot}/records/${collectionName}/${recordId}`)
@@ -96,8 +97,8 @@ export default function useAppData() {
     }
     
     const dbUpdateRecord = async (record: any) => {
-        const collectionName = appState.collectionName;
         console.log(`Updating record in ${collectionName}`, record);
+        const collectionName = appState.collectionName;
         return axios
             .post(`${constants.apiRoot}/post/${collectionName}`, record)
             .then(data => {
@@ -106,19 +107,24 @@ export default function useAppData() {
             .catch(axiosError);
     }
 
+    // Initialize the order array
+    if (!Array.isArray(appState.order)) {
+        resetOrder();
+    }
+
     return {
         constants,
         appState,
         setCollectionName,
         setOrderColumn,
         setFormDefinition,
+        resetOrder,
 
         dbDeleteRecord,
         dbUpdateRecord,
     }
 
 };
-
 
 const constants = {
     apiRoot: 'http://localhost:3010/db',
