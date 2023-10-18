@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import useAppState from "./useAppState";
+import { Interfaces } from "../forms/Form";
 
 import { formTypes } from "../formTypes";
 
@@ -71,6 +72,34 @@ export default function useAppData() {
         setAppState(appState);
     }
 
+    const getRecords = () => {
+        if (!appState.searchValue) {
+            return appState.records;
+            
+        }
+        return appState.records?.filter((record: any) => {
+            let found = false;
+
+            appState.formDefinition.fields?.every((field: Interfaces.Field, index: number) => {
+                if (['subfieldArray', 'boolean'].includes(field.type)) {
+                    // Don't attempt to search on these.
+                    return true;
+                }
+
+                if (typeof record[field.key] === 'string' && record[field.key].includes(appState.searchValue)) { 
+                    found = true;
+                    return false;
+                }
+                
+                return true;
+            });
+
+            if (found) {
+                return true;
+            }
+        })
+    }
+
     const resetSearchValue = () => setSearchValue('');
 
     const setFormDefinition = (formDefinition: any) => {
@@ -130,6 +159,8 @@ export default function useAppData() {
         setSearchValue,
         setFormDefinition,
         resetOrder,
+
+        getRecords,
 
         dbDeleteRecord,
         dbUpdateRecord,
