@@ -3,8 +3,8 @@ import { Interfaces } from "../forms/Form";
 import './orderSelector.css';
 
 function OrderSelector(props: any) {
-    const { appState } = useAppData();
-    const fields = appState?.formDefinition?.fields;
+    const { appData } = useAppData();
+    const fields = appData?.formDefinition?.fields;
 
     if (!fields) {
         return;

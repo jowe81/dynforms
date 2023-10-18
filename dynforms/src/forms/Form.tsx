@@ -12,8 +12,8 @@ import ArrayField from './ArrayField.tsx';
 function Form(props: any) {    
     const navigate = useNavigate();
     const [ record, setRecord ] = useState({});
-    const { appState, dbUpdateRecord } = useAppData();
-    const { collectionName } = appState;
+    const { appData, dbUpdateRecord } = useAppData();
+    const { collectionName } = appData;
 
     const formDefinition = formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
 
@@ -23,7 +23,7 @@ function Form(props: any) {
     useEffect(() => {
         // Selected Collection and/or recordId changed.
         if (formDefinition) {            
-            const dbRecord = _.cloneDeep(appState?.records?.find((record: Interfaces.MongoRecord) => record._id === recordId));
+            const dbRecord = _.cloneDeep(appData?.records?.find((record: Interfaces.MongoRecord) => record._id === recordId));
             setRecord(dbRecord ? dbRecord : initializeRecord(formDefinition.fields));
         }        
     }, [collectionName, recordId]);
@@ -189,4 +189,6 @@ export namespace Interfaces {
         _id: string;
     }
 }
+
+
 

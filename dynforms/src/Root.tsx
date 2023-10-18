@@ -11,10 +11,10 @@ import './root.css';
 export default function Root() {
     const navigate = useNavigate();
 
-    const { appState, setCollectionName, setOrderColumn, setSearchValue } = useAppData();
-    const collectionName = appState.collectionName;
-    const primaryColumn = appState.order[0].selectValue;
-    const secondaryColumn = appState.order[1].selectValue;    
+    const { appData, setCollectionName, setOrderColumn, setSearchValue } = useAppData();
+    const collectionName = appData.collectionName;
+    const primaryColumn = appData.order[0].selectValue;
+    const secondaryColumn = appData.order[1].selectValue;    
 
     function onCollectionSelect(event: any) {
         const value = event.target.value;
@@ -42,14 +42,14 @@ export default function Root() {
                     <CollectionSelector value={collectionName} onChange={onCollectionSelect}/>
                 </div>                
                 <div className="top-selector-container-wide top-nav-item">
-                    { appState.collectionName && <label>Order by:</label> }
+                    { appData.collectionName && <label>Order by:</label> }
                     <OrderSelector orderColumn={primaryColumn ?? "none"} onOrderColumnSelect={onOrderColumnSelect} priority="0"/>
                     <OrderSelector orderColumn={secondaryColumn ?? "none"} onOrderColumnSelect={onOrderColumnSelect} priority="1"/>
-                    <SearchField searchValue={appState.searchValue} setSearchValue={setSearchValue}/>
+                    <SearchField searchValue={appData.searchValue} setSearchValue={setSearchValue}/>
                 </div>         
 
                 <div className="top-nav-item">
-                    { appState.collectionName && <Link to="/form">New Record</Link> }
+                    { appData.collectionName && <Link to="/form">New Record</Link> }
                 </div>
             </div>
             <div id="main-content-area">

@@ -7,14 +7,14 @@ import { formTypes } from "../formTypes";
 
 export default function useAppData() {
 
-    const [appState, setAppState] = <any>useAppState();
+    const [appData, setAppData] = <any>useAppState();
 
     const axiosError = (err: any) => console.log('Axios error: ', err);
 
     const setCollectionName = (collectionName: string) => {
         console.log('Setting collection name to', collectionName);
-        appState.collectionName = collectionName;        
-        setAppState(appState);
+        appData.collectionName = collectionName;        
+        setAppData(appData);
         setFormDefinition(formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
         resetOrder();
         resetSearchValue();
@@ -28,21 +28,21 @@ export default function useAppData() {
         const pri = parseInt(priority);
 
         if (pri === 0) {
-            appState.order[0] = { key: newKey, desc, selectValue };
+            appData.order[0] = { key: newKey, desc, selectValue };
         }
 
         if (pri === 1) {
-            if (appState.order.length < 2) {
-                appState.order.push([]);
+            if (appData.order.length < 2) {
+                appData.order.push([]);
             }
 
-            appState.order[1] = { key: newKey, desc, selectValue};
+            appData.order[1] = { key: newKey, desc, selectValue};
         }
         
-        const primary = appState.order[0];
-        const secondary = appState.order[1];
+        const primary = appData.order[0];
+        const secondary = appData.order[1];
 
-        appState.records.sort((a: any, b: any) => {
+        appData.records.sort((a: any, b: any) => {
             if (a[primary.key] < b[primary.key]) {
                 return primary.desc ? 1 : -1;
             } else if (a[primary.key] > b[primary.key]) {
@@ -56,37 +56,37 @@ export default function useAppData() {
                 }
             }            
         });
-        console.log('Sorting by:', appState.order[0].selectValue, appState.order[1].selectValue);
-        setAppState(appState);        
+        console.log('Sorting by:', appData.order[0].selectValue, appData.order[1].selectValue);
+        setAppData(appData);        
     };
 
     const resetOrder = () => {
         console.log('Resetting order');
-        appState.order = [{ key: null, desc: false }, { key: null, desc: false }];
-        setAppState(appState);
+        appData.order = [{ key: null, desc: false }, { key: null, desc: false }];
+        setAppData(appData);
     }
 
     const setSearchValue = (searchValue: string) => {
         console.log('Searching for: ', searchValue);
-        appState.searchValue = searchValue;
-        setAppState(appState);
+        appData.searchValue = searchValue;
+        setAppData(appData);
     }
 
     const getRecords = () => {
-        if (!appState.searchValue) {
-            return appState.records;
-            
+        if (!appData.searchValue) {
+            return appData.records;            
         }
-        return appState.records?.filter((record: any) => {
+
+        return appData.records?.filter((record: any) => {
             let found = false;
 
-            appState.formDefinition.fields?.every((field: Interfaces.Field, index: number) => {
+            appData.formDefinition.fields?.every((field: Interfaces.Field, index: number) => {
                 if (['subfieldArray', 'boolean'].includes(field.type)) {
                     // Don't attempt to search on these.
                     return true;
                 }
 
-                if (typeof record[field.key] === 'string' && record[field.key].includes(appState.searchValue)) { 
+                if (typeof record[field.key] === 'string' && record[field.key].toLowerCase().includes(appData.searchValue.toLowerCase())) { 
                     found = true;
                     return false;
                 }
@@ -104,26 +104,26 @@ export default function useAppData() {
 
     const setFormDefinition = (formDefinition: any) => {
         console.log('Setting formDefinition to ', formDefinition);
-        appState.formDefinition = formDefinition;
-        setAppState(appState);
+        appData.formDefinition = formDefinition;
+        setAppData(appData);
     }
 
     const loadRecords = async (collectionName: string) => {
         console.log(`Loading records in ${collectionName}`);
-        appState.records = [];
-        setAppState(appState);
+        appData.records = [];
+        setAppData(appData);
 
         axios
             .get(`${constants.apiRoot}/records/${collectionName}`)
             .then((data) => {
-                appState.records = data.data;
-                setAppState(appState);        
+                appData.records = data.data;
+                setAppData(appData);        
             })
             .catch(axiosError);
     }
 
     const dbDeleteRecord = async (recordId: string) => {
-        const collectionName = appState.collectionName;
+        const collectionName = appData.collectionName;
         console.log(`Deleting record ${recordId} from collection ${collectionName}`);
 
         axios
@@ -134,9 +134,10 @@ export default function useAppData() {
             .catch(axiosError);
     }
     
-    const dbUpdateRecord = async (record: any) => {
+    const dbUpdateRecord = async (record: any) => {        
+        const collectionName = appData.collectionName;
         console.log(`Updating record in ${collectionName}`, record);
-        const collectionName = appState.collectionName;
+
         return axios
             .post(`${constants.apiRoot}/post/${collectionName}`, record)
             .then(data => {
@@ -146,14 +147,14 @@ export default function useAppData() {
     }
 
     // Initialize.
-    if (!Array.isArray(appState.order)) {
+    if (!Array.isArray(appData.order)) {
         resetOrder();
         resetSearchValue();
     }
 
     return {
         constants,
-        appState,
+        appData,
         setCollectionName,
         setOrderColumn,
         setSearchValue,

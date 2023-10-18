@@ -6,10 +6,10 @@ import { Interfaces } from '../forms/Form.tsx';
 import './records.css';
 function RecordsTable(props: any) {
 
-    const { appState, getRecords, dbDeleteRecord } = useAppData();
+    const { appData, getRecords, dbDeleteRecord } = useAppData();
     const { state } = useLocation();
     
-    const fields = appState.formDefinition?.fields;
+    const fields = appData.formDefinition?.fields;
     const records = getRecords();
 
     const action = state?.action;
