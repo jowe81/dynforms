@@ -146,10 +146,23 @@ export default function useAppData() {
             .catch(axiosError);
     }
 
+    const loadFormTypes = async () => {
+        console.log(`Querying server for form definitions`);
+        return axios
+            .get(`${constants.apiRoot}/formtypes`)
+            .then(data => {                
+                appData.formTypes = data.data;
+                setAppData(appData);
+            })
+            .catch(axiosError);
+    }
+
     // Initialize.
     if (!Array.isArray(appData.order)) {
         resetOrder();
         resetSearchValue();
+
+        loadFormTypes();
     }
 
     return {

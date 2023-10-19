@@ -1,6 +1,7 @@
 import { log } from '../helpers/jUtils.js';
 import { storeUpdateRecord } from '../db/mongodb.js';
 import { ObjectId } from 'mongodb';
+import formTypes from '../formTypes.js';
 
 const initRouter = (express, db) => {
   const castId = obj => obj._id = obj._id ? new ObjectId(obj._id) : null;
@@ -19,6 +20,10 @@ const initRouter = (express, db) => {
     next();
   })
   
+  dbRouter.get('/formtypes', async (rec, res) => {
+    res.json(formTypes);
+  });
+
   dbRouter.get('/records/:collectionName', async (req, res) => {
     const { collectionName } = req.params;
     const collection = db.collection(collectionName);

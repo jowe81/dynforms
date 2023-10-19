@@ -1,11 +1,17 @@
 import { Interfaces } from "../forms/Form";
 import { formTypes } from '../formTypes.ts';
 import './collectionSelector.css';
+import useAppData from "../hooks/useAppData.ts";
 
 function CollectionSelector(props: any) {
 
+    const { appData } = useAppData();
     const onChange = props.onChange;
-    const options: Interfaces.SelectFieldOption[] = formTypes.map((formDefinition) => { return { label: formDefinition.title, value: formDefinition.collectionName }});
+    let options: Interfaces.SelectFieldOption[] = [];
+
+    if (Array.isArray(appData.formTypes)) {
+        options = appData.formTypes.map((formDefinition: Interfaces.FormType) => { return { label: formDefinition.title, value: formDefinition.collectionName }});
+    }    
     
     options.unshift({
         label: 'Select...',

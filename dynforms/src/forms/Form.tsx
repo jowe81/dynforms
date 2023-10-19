@@ -1,4 +1,3 @@
-import axios from 'axios';
 import _ from 'lodash';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,7 +8,7 @@ import './form.css';
 
 import ArrayField from './ArrayField.tsx';
 
-function Form(props: any) {    
+function Form() {    
     const navigate = useNavigate();
     const [ record, setRecord ] = useState({});
     const { appData, dbUpdateRecord } = useAppData();
@@ -34,7 +33,7 @@ function Form(props: any) {
         setRecord(newRecord);
     }
 
-    function handleSubmit(event: any) {
+    function handleSubmit() {
         dbUpdateRecord(record)
         .then(() => {
             navigate('/records');
@@ -76,7 +75,7 @@ function initializeRecord(fields: Interfaces.Field[]) {
 
     const record: any = {};
 
-    fields.forEach(field => {
+    fields.forEach((field: any) => {
         const type: Interfaces.FieldTypeString = field.type;
         const key: string = field.key;        
         
