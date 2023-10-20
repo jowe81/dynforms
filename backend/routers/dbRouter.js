@@ -1,6 +1,7 @@
 import { log } from '../helpers/jUtils.js';
 import { storeUpdateRecord } from '../db/mongodb.js';
 import { ObjectId } from 'mongodb';
+import { constructSearchFilter } from '../db/dbutils.js';
 import formTypes from '../formTypes.js';
 
 const initRouter = (express, db) => {
@@ -26,9 +27,13 @@ const initRouter = (express, db) => {
 
   dbRouter.get('/records/:collectionName', async (req, res) => {
     const { collectionName } = req.params;
+    const { search } = req.query;
+
+    const searchFilter = constructSearchFilter(search, formTypes[2].fields);
+
     const collection = db.collection(collectionName);
     try {
-        const records = await collection.find({}).toArray();        
+        const records = await collection.find(searchFilter).toArray();        
         res.json(records);    
     } catch (err) {
         logError(err);

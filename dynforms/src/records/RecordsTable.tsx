@@ -4,12 +4,13 @@ import { useEffect } from "react";
 import useAppData from '../hooks/useAppData.ts';
 import { Interfaces } from '../forms/Form.tsx';
 import './records.css';
-function RecordsTable(props: any) {
+function RecordsTable() {
 
     const { appData, getRecords, dbDeleteRecord } = useAppData();
     const { state } = useLocation();
     
     const fields = appData.formDefinition?.fields;
+    
     const records = getRecords();
 
     const action = state?.action;

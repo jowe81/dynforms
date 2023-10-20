@@ -18,7 +18,7 @@ export default function useAppData() {
         setFormDefinition(formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
         resetOrder();
         resetSearchValue();
-        loadRecords(collectionName);
+        loadRecords();
     }
 
     const setOrderColumn = (selectValue: string, priority: string) => {        
@@ -70,10 +70,15 @@ export default function useAppData() {
         console.log('Searching for: ', searchValue);
         appData.searchValue = searchValue;
         setAppData(appData);
+        
+        if (!appData.filterLocally) {
+            loadRecords();
+        }        
     }
 
-    const getRecords = () => {
-        if (!appData.searchValue) {
+    // Filter locally
+    const getRecords = () => {        
+        if (!appData.filterLocally || !appData.searchValue) {
             return appData.records;            
         }
 
@@ -108,13 +113,17 @@ export default function useAppData() {
         setAppData(appData);
     }
 
-    const loadRecords = async (collectionName: string) => {
-        console.log(`Loading records in ${collectionName}`);
+    const loadRecords = async () => {
+        if (!appData.collectionName) {
+            return;
+        }
+        
+        console.log(`Loading records in ${appData.collectionName}`);
         appData.records = [];
         setAppData(appData);
 
         axios
-            .get(`${constants.apiRoot}/records/${collectionName}`)
+            .get(`${constants.apiRoot}/records/${appData.collectionName}?search=${appData.searchValue}`)
             .then((data) => {
                 appData.records = data.data;
                 setAppData(appData);        
@@ -122,27 +131,21 @@ export default function useAppData() {
             .catch(axiosError);
     }
 
-    const dbDeleteRecord = async (recordId: string) => {
-        const collectionName = appData.collectionName;
-        console.log(`Deleting record ${recordId} from collection ${collectionName}`);
+    const dbDeleteRecord = async (recordId: string) => {        
+        console.log(`Deleting record ${recordId} from collection ${appData.collectionName}`);
 
         axios
-            .delete(`${constants.apiRoot}/records/${collectionName}/${recordId}`)
-            .then(result => {
-                loadRecords(collectionName);
-            })
+            .delete(`${constants.apiRoot}/records/${appData.collectionName}/${recordId}`)
+            .then(loadRecords)
             .catch(axiosError);
     }
     
     const dbUpdateRecord = async (record: any) => {        
-        const collectionName = appData.collectionName;
-        console.log(`Updating record in ${collectionName}`, record);
+        console.log(`Updating record in ${appData.collectionName}`, record);
 
         return axios
-            .post(`${constants.apiRoot}/post/${collectionName}`, record)
-            .then(data => {
-                loadRecords(collectionName);
-            })
+            .post(`${constants.apiRoot}/post/${appData.collectionName}`, record)
+            .then(loadRecords)
             .catch(axiosError);
     }
 
@@ -159,6 +162,11 @@ export default function useAppData() {
 
     // Initialize.
     if (!Array.isArray(appData.order)) {
+
+        // Decide whether to filter locally or on the server.
+        appData.filterLocally = false;
+        setAppData(appData);
+
         resetOrder();
         resetSearchValue();
 

@@ -1,5 +1,4 @@
 import { Interfaces } from "../forms/Form";
-import { formTypes } from '../formTypes.ts';
 import './collectionSelector.css';
 import useAppData from "../hooks/useAppData.ts";
 
