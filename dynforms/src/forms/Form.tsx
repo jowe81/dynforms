@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { formTypes } from '../formTypes.ts';
 import useAppData from '../hooks/useAppData.ts';
 import './form.css';
 
@@ -14,7 +13,7 @@ function Form() {
     const { appData, dbUpdateRecord } = useAppData();
     const { collectionName } = appData;
 
-    const formDefinition = formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
+    const formDefinition = appData.formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
 
     const { state } = useLocation();
     const recordId = state?.recordId;

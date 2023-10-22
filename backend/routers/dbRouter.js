@@ -1,7 +1,7 @@
 import { log } from '../helpers/jUtils.js';
 import { storeUpdateRecord } from '../db/mongodb.js';
 import { ObjectId } from 'mongodb';
-import { constructSearchFilter } from '../db/dbutils.js';
+import { constructSearchFilter, getEnhancedCollection } from '../db/dbutils.js';
 import formTypes from '../formTypes.js';
 
 const initRouter = (express, db) => {
@@ -31,7 +31,7 @@ const initRouter = (express, db) => {
 
     const searchFilter = constructSearchFilter(search, formTypes[2].fields);
 
-    const collection = db.collection(collectionName);
+    const collection = getEnhancedCollection(db,collectionName);
     try {
         const records = await collection.find(searchFilter).toArray();        
         res.json(records);    
@@ -47,7 +47,7 @@ const initRouter = (express, db) => {
     const { collectionName, _id } = req.params;
     log(`Delete: ${collectionName} ${_id}`)
 
-    const collection = db.collection(collectionName);
+    const collection = getEnhancedCollection(db,collectionName);
     try {
         const result = await collection.deleteOne({ _id });
         res.json(result);
@@ -60,15 +60,22 @@ const initRouter = (express, db) => {
 
   dbRouter.post('/post/:collectionName', async (req, res) => {    
     const { collectionName } = req.params;
-    const collection = db.collection(collectionName);
+    const collection = getEnhancedCollection(db,collectionName);
+
+    const formDefinition = formTypes.find(formDefinition => formDefinition.collectionName === collectionName);
+    const fields = formDefinition?.fields;
+
+    if (!fields) {
+        return res.status(500).send();
+    }
 
     const record = req.body;
     castId (record);
     
     try {
         const result = await record._id ? 
-            collection.replaceOne({ _id: record._id }, record) :
-            collection.insertOne(record);
+            collection.updateOne({ _id: record._id }, record, null, fields) :
+            collection.insertOne(record, null, null, fields);
         res.json(result);
     } catch (err) {
         logError(err);

@@ -1,5 +1,80 @@
 const formTypes = [
     {
+        collectionName: "default",
+        title: "Photos",
+        fields: [
+            {
+                key: "filename",
+                label: "Filename",
+                type: "text",
+                rank: 3,
+            },
+            {
+                key: "description",
+                label: "Description",
+                type: "textarea",
+                rows: 5,
+                rank: 0,
+            },
+            {
+                key: "fullname",
+                label: "Full Path",
+                type: "text",
+                rank: 1,
+            },
+            {
+                key: "extension",
+                label: "Extension",
+                type: "text",
+                rank: 2,
+            },
+            {
+                key: "dirname",
+                label: "Path",
+                type: "text",
+                rank: 4,
+            },
+            {
+                key: "size",
+                label: "Size",
+                type: "number",
+                readOnly: true,
+                rank: 5,
+            },
+            {
+                key: "uid",
+                label: "UserID",
+                type: "number",
+                readOnly: true,
+                rank: 6,
+            },
+            {
+                key: "gid",
+                label: "GroupID",
+                type: "number",
+                readOnly: true,
+                rank: 7,
+            },
+            {
+                key: "updated_at",
+                label: "Updated at",
+                type: "date",
+                readOnly: true,
+                rank: 9,
+            },
+            {
+                key: "created_at",
+                label: "Created at",
+                type: "date",
+                readOnly: true,
+                rank: 8,
+            },
+
+
+
+        ]
+    },
+    {
         collectionName: "recipes",
         title: "Recipes",
         fields: [

@@ -3,8 +3,6 @@ import axios from "axios";
 import useAppState from "./useAppState";
 import { Interfaces } from "../forms/Form";
 
-import { formTypes } from "../formTypes";
-
 export default function useAppData() {
 
     const [appData, setAppData] = <any>useAppState();
@@ -15,7 +13,7 @@ export default function useAppData() {
         console.log('Setting collection name to', collectionName);
         appData.collectionName = collectionName;        
         setAppData(appData);
-        setFormDefinition(formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
+        setFormDefinition(appData.formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
         resetOrder();
         resetSearchValue();
         loadRecords();
@@ -150,7 +148,7 @@ export default function useAppData() {
     }
 
     const loadFormTypes = async () => {
-        console.log(`Querying server for form definitions`);
+        console.log(`Querying server for form definitions...`);
         return axios
             .get(`${constants.apiRoot}/formtypes`)
             .then(data => {                
