@@ -10,6 +10,7 @@ function RecordsTable() {
     const { state } = useLocation();
     
     const fields = appData.formDefinition?.fields;
+    const settings = appData.formDefinition?.settings;
 
     const records = getRecords();
 
@@ -49,6 +50,7 @@ function RecordsTable() {
             const value = record[key];
 
             let displayValue = '';
+            let imgElem;
 
             switch(field.type) {
                 case 'subfieldArray':                        
@@ -67,17 +69,21 @@ function RecordsTable() {
 
                 default:
                     displayValue = value;
+                    if (settings?.images.showImages && field.isImagePath) {
+                        imgElem = <div className="thumbnail"><img src={settings.images.baseUrl + value}/></div>;
+                    }
+        
             }
 
-            return (<td key={index}>{displayValue}</td>)            
+
+            return (<td key={index}>{displayValue}{imgElem}</td>)            
         });
     
         return <tr key={record._id} className='row'>
                     <td key={-1}>
                         <div>
-                            <Link to="/records" state={{action: 'delete', recordId}}>Delete</Link>&nbsp;
+                            <Link to="/records" state={{action: 'delete', recordId}}>Delete</Link>&nbsp;|&nbsp;
                             <Link to="/form" state={{recordId}}>Edit</Link>
-                            {recordId}
                         </div>   
                     </td>
 

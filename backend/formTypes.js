@@ -2,6 +2,12 @@ const formTypes = [
     {
         collectionName: "default",
         title: "Photos",
+        settings: {
+            images: {
+                showImages: true,
+                baseUrl: 'http://johannes-mb.wnet.wn:3020/',
+            }
+        },
         fields: [
             {
                 key: "filename",
@@ -20,6 +26,7 @@ const formTypes = [
                 key: "fullname",
                 label: "Full Path",
                 type: "text",
+                isImagePath: true,
                 rank: 1,
             },
             {

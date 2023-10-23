@@ -21,3 +21,7 @@ th {
     border-bottom: 1px solid #ddd;    
 }
 
+.thumbnail img {
+    max-width: 320px;
+}
+
