@@ -3,6 +3,10 @@ const formTypes = [
         collectionName: "default",
         title: "Photos",
         settings: {
+            /**
+             * This allows displaying of images by combining a base URL with with a text field
+             * holding an image path.
+             */
             images: {
                 showImages: true,
                 baseUrl: 'http://johannes-mb.wnet.wn:3020/',
@@ -26,6 +30,7 @@ const formTypes = [
                 key: "fullname",
                 label: "Full Path",
                 type: "text",
+                // Triggers the display of the image in addition to the path.
                 isImagePath: true,
                 rank: 1,
             },

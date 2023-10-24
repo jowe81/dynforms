@@ -157,6 +157,7 @@ export namespace Interfaces {
     
     export interface TextField extends BaseField {
         maxLength?: number;
+        isImagePath?: boolean;
     }
 
     export interface TextareaField extends BaseField {

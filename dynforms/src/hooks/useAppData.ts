@@ -16,7 +16,13 @@ export default function useAppData() {
         setFormDefinition(appData.formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
         resetOrder();
         resetSearchValue();
-        loadRecords();
+        setPagination();
+        loadPageCount().then((pageCountInfo) => {
+            console.log(`Got page count info:`, pageCountInfo);
+            setPagination(pageCountInfo)
+            loadRecords();
+        });
+        
     }
 
     const setOrderColumn = (selectValue: string, priority: string) => {        
@@ -74,6 +80,11 @@ export default function useAppData() {
         }        
     }
 
+    const setPage = (page: number) => {
+        console.log(`Going to page ${page}`);
+        appData.table.page = page;
+    }
+
     // Filter locally
     const getRecords = () => {        
         if (!appData.filterLocally || !appData.searchValue) {
@@ -105,10 +116,42 @@ export default function useAppData() {
 
     const resetSearchValue = () => setSearchValue('');
 
+    const setPagination = (pageCountInfo: {}|undefined|null) => {
+
+        if (pageCountInfo) {
+            appData.table = {
+                itemsPerPage: constants.itemsPerPageInitial,
+                ...pageCountInfo,
+                currentPage: 1,      
+            }
+        } else {
+            appData.table = {
+                itemsPerPage: constants.itemsPerPageInitial,
+                pageCount: 0,                
+                currentPage: 0,      
+            }
+        }
+        console.log('Resetting pagination to', appData.table);
+        setAppData(appData);
+    }
+
     const setFormDefinition = (formDefinition: any) => {
         console.log('Setting formDefinition to ', formDefinition);
         appData.formDefinition = formDefinition;
         setAppData(appData);
+    }
+
+    const loadPageCount = () => {
+        if (appData.table.itemsPerPage) {
+            return axios
+                .get(`${constants.apiRoot}/pageCount/${appData.collectionName}?search=${appData.searchValue}&itemsPerPage=${appData.table.itemsPerPage}`)
+                .then((data) => {
+                    return data.data;
+                })
+                .catch(axiosError);
+        }
+        
+        return Promise.resolve(null);
     }
 
     const loadRecords = async () => {
@@ -120,8 +163,10 @@ export default function useAppData() {
         appData.records = [];
         setAppData(appData);
 
+        const { currentPage, itemsPerPage } = appData.table;
+
         axios
-            .get(`${constants.apiRoot}/records/${appData.collectionName}?search=${appData.searchValue}`)
+            .get(`${constants.apiRoot}/records/${appData.collectionName}?search=${appData.searchValue}&itemsPerPage=${itemsPerPage}&page=${currentPage}`)
             .then((data) => {
                 appData.records = data.data;
                 setAppData(appData);        
@@ -167,6 +212,7 @@ export default function useAppData() {
 
         resetOrder();
         resetSearchValue();
+        setPagination();
 
         loadFormTypes();
     }
@@ -190,5 +236,6 @@ export default function useAppData() {
 
 const constants = {
     apiRoot: 'http://localhost:3010/db',
+    itemsPerPageInitial: 5,
 }
 

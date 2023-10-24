@@ -25,15 +25,39 @@ const initRouter = (express, db) => {
     res.json(formTypes);
   });
 
+  dbRouter.get('/pageCount/:collectionName', async (req, res) => {
+    const { collectionName } = req.params;
+    const { search, itemsPerPage } = req.query;
+    const searchFilter = constructSearchFilter(search, formTypes[2].fields);
+
+    const collection = getEnhancedCollection(db,collectionName);
+    try {
+        const recordsCount = await collection.find(searchFilter).count();
+        
+        const pageCount = itemsPerPage ? Math.ceil(recordsCount / itemsPerPage) : 1;
+
+        res.json({ collectionName, pageCount, recordsCount });
+    } catch (err) {
+        logError(err);
+        res.status(500).send();
+    }
+  });
+
   dbRouter.get('/records/:collectionName', async (req, res) => {
     const { collectionName } = req.params;
-    const { search } = req.query;
+    let { search } = req.query;
+    const itemsPerPage = parseInt(req.query.itemsPerPage)
+    const page = parseInt(req.query.page);
+    const skip = Math.max((page - 1) * itemsPerPage, 0);
 
     const searchFilter = constructSearchFilter(search, formTypes[2].fields);
 
     const collection = getEnhancedCollection(db,collectionName);
     try {
-        const records = await collection.find(searchFilter).toArray();        
+        const records = await collection
+            .find(searchFilter)
+            .skip(skip)
+            .limit(itemsPerPage).toArray();        
         res.json(records);    
     } catch (err) {
         logError(err);
