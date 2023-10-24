@@ -1,7 +1,7 @@
 import { log } from '../helpers/jUtils.js';
 import { storeUpdateRecord } from '../db/mongodb.js';
 import { ObjectId } from 'mongodb';
-import { constructSearchFilter, getEnhancedCollection } from '../db/dbutils.js';
+import { constructSearchFilter, getSortObjectFromQueryData, getEnhancedCollection } from '../db/dbutils.js';
 import formTypes from '../formTypes.js';
 
 const initRouter = (express, db) => {
@@ -45,17 +45,20 @@ const initRouter = (express, db) => {
 
   dbRouter.get('/records/:collectionName', async (req, res) => {
     const { collectionName } = req.params;
-    let { search } = req.query;
+    let { search, sortCol1, sortCol2 } = req.query;
     const itemsPerPage = parseInt(req.query.itemsPerPage)
     const page = parseInt(req.query.page);
     const skip = Math.max((page - 1) * itemsPerPage, 0);
 
     const searchFilter = constructSearchFilter(search, formTypes[2].fields);
 
+    const sortObject = getSortObjectFromQueryData([sortCol1, sortCol2]);
+
     const collection = getEnhancedCollection(db,collectionName);
     try {
         const records = await collection
             .find(searchFilter)
+            .sort(sortObject)
             .skip(skip)
             .limit(itemsPerPage).toArray();        
         res.json(records);    

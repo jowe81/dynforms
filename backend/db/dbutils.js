@@ -19,6 +19,53 @@ function constructSearchFilter(search, fields) {
     return filter;
 }
 
+/**
+ * Convert an array of strings of the form fieldName|desc and 
+ * return an object that can be passed to the Mongo driver.
+ * @param array queryItems 
+ * @returns {}
+ */
+function getSortObjectFromQueryData(queryItems) {
+
+    const columnsInfo = [];
+
+    queryItems.forEach(queryItem => {
+        if (queryItem) {
+            const parts = queryItem.split('|');
+
+            const columnInfo = {
+                column: parts[0],
+                desc: parts.length ? !!parts[1] : false,
+            }
+
+            columnsInfo.push(columnInfo);
+        }
+    })
+
+    return constructSortObject(columnsInfo);
+}
+
+function constructSortObject(columns) {
+    if (!Array.isArray(columns)) {
+        return { _id: 1 };
+    }
+
+    const sortObject = {}
+
+    columns.forEach(columnInfo => {
+        const { column, desc } = columnInfo;
+
+        if (column) {
+            sortObject[column] = desc ? -1 : 1;
+        }        
+    });
+
+    // Required: https://www.mongodb.com/docs/manual/reference/method/cursor.skip/#using-skip---with-sort--
+    sortObject['_id'] = 1;
+
+    return sortObject;
+}
+
 function constructUpdate(doc) {
     delete doc._id;
     delete doc.created_at;
@@ -141,5 +188,7 @@ function applyFieldsFilter(doc, fields) {
 
 export {
     constructSearchFilter,
+    constructSortObject,
     getEnhancedCollection,
+    getSortObjectFromQueryData,
 }

@@ -2,6 +2,7 @@ import axios from "axios";
 
 import useAppState from "./useAppState";
 import { Interfaces } from "../forms/Form";
+import { keyBy } from "lodash";
 
 export default function useAppData() {
 
@@ -61,7 +62,8 @@ export default function useAppData() {
             }            
         });
         console.log('Sorting by:', appData.order[0].selectValue, appData.order[1].selectValue);
-        setAppData(appData);        
+        setAppData(appData);
+        loadRecords();
     };
 
     const resetOrder = () => {
@@ -159,14 +161,29 @@ export default function useAppData() {
             return;
         }
         
+        const getOrderString = (orderObj: any) => {
+            if (!(orderObj && orderObj.key)) {
+                return '';
+            }
+
+            const { key, desc } = orderObj;
+            return `${key}|${desc ? 'true' : ''}`;            
+        }
+
+        const sortCol1 = appData.order[0] && getOrderString(appData.order[0]);
+        const sortCol2 = appData.order[1] && getOrderString(appData.order[1]);
+
+
         console.log(`Loading records in ${appData.collectionName}`);
+        console.log(appData.order)
+        
         appData.records = [];
         setAppData(appData);
 
         const { currentPage, itemsPerPage } = appData.table;
 
         axios
-            .get(`${constants.apiRoot}/records/${appData.collectionName}?search=${appData.searchValue}&itemsPerPage=${itemsPerPage}&page=${currentPage}`)
+            .get(`${constants.apiRoot}/records/${appData.collectionName}?search=${appData.searchValue}&sortCol1=${sortCol1}&sortCol2=${sortCol2}&itemsPerPage=${itemsPerPage}&page=${currentPage}`)
             .then((data) => {
                 appData.records = data.data;
                 setAppData(appData);        
