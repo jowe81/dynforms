@@ -33,6 +33,10 @@ export default function Root() {
             setOrderColumn(value, priority);            
         }
     }
+
+    function onNewRecordClick(event: any) {
+        navigate('/form');
+    }
         
     return (
         <div id="ui-root">
@@ -49,7 +53,7 @@ export default function Root() {
                 </div>         
 
                 <div className="top-nav-item">
-                    { appData.collectionName && <Link to="/form">New Record</Link> }
+                    { appData.collectionName && <button className="button-small" onClick={onNewRecordClick}>New Record</button> }
                 </div>
             </div>
             <div id="main-content-area">

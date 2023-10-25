@@ -13,6 +13,7 @@
     margin: 0px;   
     display: flex; 
     border-bottom: 1px solid rgb(164, 164, 164);
+    background-color: rgb(189, 209, 249);
 }
 
 #sidebar ul {
@@ -29,7 +30,7 @@
 }
 
 .top-selector-container-wide {
-    width: 650px;
+    width: 670px;
     display: flex;
     padding-right: 10px;
 }
@@ -41,5 +42,6 @@
 
 #main-content-area {
     padding: 10px;
-    
+    max-height: 100%;
+    overflow: auto;
 }

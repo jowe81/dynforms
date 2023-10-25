@@ -1,3 +1,5 @@
+import './search.css';
+
 function SearchField(props: any) {
 
     let { searchValue, setSearchValue } = props;
@@ -7,15 +9,11 @@ function SearchField(props: any) {
     }
 
     return (
-        <>
+        <div className="search-container">
             <label>Search:</label>
-            <div>
-                <input                                         
-                    value={searchValue}
-                    onChange={onChange}
-                />
-            </div>
-        </>
+            <input value={searchValue} onChange={onChange}/>
+            <button className='button-small' onClick={onChange}>Clear</button>
+        </div>
     )
 }
 
