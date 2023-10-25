@@ -83,8 +83,18 @@ export default function useAppData() {
     }
 
     const setPage = (page: number) => {
-        console.log(`Going to page ${page}`);
-        appData.table.page = page;
+        const targetPage = Math.min(page, appData.table.pageCount);
+        console.log(`Going to page ${targetPage}`);
+        appData.table.currentPage = targetPage;
+        loadRecords();
+    }
+
+    const setItemsPerPage = (items: number) => {
+        const itemsPerPage = Math.min(items, 100);
+        console.log(`Items per page: ${itemsPerPage}`);
+        appData.table.itemsPerPage = itemsPerPage;
+        appData.table.pageCount = Math.ceil(appData.table.recordsCount / itemsPerPage);
+        loadRecords();
     }
 
     // Filter locally
@@ -118,16 +128,20 @@ export default function useAppData() {
 
     const resetSearchValue = () => setSearchValue('');
 
-    const setPagination = (pageCountInfo: {}|undefined|null) => {
+    const setPagination = (pageCountInfo?: {}|null) => {
+
+        const oldValue = { ...appData.table };
 
         if (pageCountInfo) {
             appData.table = {
+                ...oldValue,
                 itemsPerPage: constants.itemsPerPageInitial,
                 ...pageCountInfo,
                 currentPage: 1,      
             }
         } else {
             appData.table = {
+                ...oldValue,
                 itemsPerPage: constants.itemsPerPageInitial,
                 pageCount: 0,                
                 currentPage: 0,      
@@ -240,9 +254,11 @@ export default function useAppData() {
         setCollectionName,
         setOrderColumn,
         setSearchValue,
-        setFormDefinition,
+        setFormDefinition,        
         resetOrder,
 
+        setPage,
+        setItemsPerPage,
         getRecords,
 
         dbDeleteRecord,

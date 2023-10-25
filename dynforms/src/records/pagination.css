@@ -1,0 +1,29 @@
+.pagination-outer-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.pagination-pagination-links {
+    width: 500px;
+}
+
+.pagination-header-right {
+    width: 450px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pagination-record-count-container {
+    margin-right: 15px;
+}
+
+.pagination-link, .items-per-page-link {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.active-link {
+    font-weight: bold;
+    text-decoration: underline;
+}

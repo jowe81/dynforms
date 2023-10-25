@@ -4,6 +4,9 @@ import { useEffect } from "react";
 import useAppData from '../hooks/useAppData.ts';
 import { Interfaces } from '../forms/Form.tsx';
 import './records.css';
+
+import PaginationControls from "./PaginationControls.tsx";
+
 function RecordsTable() {
 
     const { appData, getRecords, dbDeleteRecord } = useAppData();
@@ -95,6 +98,7 @@ function RecordsTable() {
 
     return (
         <>
+            <PaginationControls />
             <table>
                 <tbody>
                     {getHeaderRow(fields)}
