@@ -50,7 +50,9 @@ const initRouter = (express, db) => {
     const page = parseInt(req.query.page);
     const skip = Math.max((page - 1) * itemsPerPage, 0);
 
-    const searchFilter = constructSearchFilter(search, formTypes[2].fields);
+    const formDefinition = formTypes.find(formDefinition => formDefinition.collectionName === collectionName);
+
+    const searchFilter = constructSearchFilter(search, formDefinition.fields);
 
     const sortObject = getSortObjectFromQueryData([sortCol1, sortCol2]);
 
