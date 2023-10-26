@@ -6,13 +6,14 @@ import { Interfaces } from '../forms/Form.tsx';
 import './records.css';
 
 import PaginationControls from "./PaginationControls.tsx";
+import DisplayValue from "./DisplayValue.tsx";
 
 function RecordsTable() {
 
     const { appData, getRecords, dbDeleteRecord } = useAppData();
     const { state } = useLocation();
     
-    const fields = appData.formDefinition?.fields;
+    const displayFields = appData.formDefinition?.fields.filter((field: Interfaces.Field) => field.display !== false);
     const settings = appData.formDefinition?.settings;
 
     const records = getRecords();
@@ -26,20 +27,20 @@ function RecordsTable() {
         }
     }, [action, recordId]);
 
-    if (!fields || !Array.isArray(records)) {
+    if (!displayFields || !Array.isArray(records)) {
         return
     }
 
-    // Put the fields in the order of rank.
-    fields.sort((a, b) => {             
+    // Put the displayFields in the order of rank.
+    displayFields.sort((a, b) => {             
         return a.rank > b.rank ? 1 : -1
     })
 
-    const getHeaderRow = (fields: Interfaces.Field[]) => {
+    const getHeaderRow = (displayFields: Interfaces.Field[]) => {
         
         return (
             <tr>
-                <th></th>{fields.map((field, index) => {
+                <th></th>{displayFields.map((field, index) => {
                     return <th key={index}>{field.label}</th>})}
             </tr>);
     }
@@ -48,38 +49,11 @@ function RecordsTable() {
 
         const recordId = record._id;
 
-        const cellsJsx = fields.map((field: Interfaces.Field, index: number) => {
+        const cellsJsx = displayFields.map((field: Interfaces.Field, index: number) => {
             const key = field.key;
             const value = record[key];
 
-            let displayValue = '';
-            let imgElem;
-
-            switch(field.type) {
-                case 'subfieldArray':                        
-                    if (!value.length) {
-                        displayValue = `none`;
-                    } else if (value.length === 1) {
-                        displayValue = value.length + ' item';
-                    } else {
-                        displayValue = value.length + ' items';
-                    }
-                    break;
-
-                case 'boolean':
-                    displayValue = value ? "yes" : "no";
-                    break;
-
-                default:
-                    displayValue = value;
-                    if (settings?.images.showImages && field.isImagePath) {
-                        imgElem = <div className="thumbnail"><img src={settings.images.baseUrl + value}/></div>;
-                    }
-        
-            }
-
-
-            return (<td key={index}>{displayValue}{imgElem}</td>)            
+            return (<td key={index}><DisplayValue field={field} value={value}/></td>)            
         });
     
         return <tr key={record._id} className='row'>
@@ -101,7 +75,7 @@ function RecordsTable() {
             <PaginationControls />
             <table>
                 <tbody>
-                    {getHeaderRow(fields)}
+                    {getHeaderRow(displayFields)}
                     {rowsJsx}
                 </tbody>
             </table>

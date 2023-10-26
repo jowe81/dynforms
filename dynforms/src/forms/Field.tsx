@@ -14,7 +14,7 @@ import SubfieldArray from './SubfieldArray.tsx';
 function Field(props: any) {
     const { record, itemIndex, updateRecord, field, keys } = props;
 
-    if (field.hidden) {
+    if (field.display === false) {
         // For now don't render hidden fields at all.
         return;
     }

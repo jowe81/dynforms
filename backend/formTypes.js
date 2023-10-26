@@ -18,6 +18,7 @@ const formTypes = [
                 label: "Filename",
                 type: "text",
                 rank: 3,
+                display: false,
             },
             {
                 key: "description",
@@ -39,17 +40,19 @@ const formTypes = [
                 label: "Extension",
                 type: "text",
                 rank: 2,
+                display: false,
             },
             {
                 key: "dirname",
                 label: "Path",
                 type: "text",
                 rank: 4,
+                display: false,
             },
             {
                 key: "size",
                 label: "Size",
-                type: "number",
+                type: "filesize",
                 readOnly: true,
                 rank: 5,
             },
@@ -59,6 +62,7 @@ const formTypes = [
                 type: "number",
                 readOnly: true,
                 rank: 6,
+                display: false,
             },
             {
                 key: "gid",
@@ -66,6 +70,7 @@ const formTypes = [
                 type: "number",
                 readOnly: true,
                 rank: 7,
+                display: false,
             },
             {
                 key: "updated_at",
@@ -80,6 +85,7 @@ const formTypes = [
                 type: "date",
                 readOnly: true,
                 rank: 8,
+                display: false,
             },
 
 
@@ -226,7 +232,7 @@ const formTypes = [
                         key: "updated_at",
                         type: "date",                        
                         rank: 2,
-                        hidden: true,
+                        display: false,
                     },
                 ],
             },
@@ -254,7 +260,7 @@ const formTypes = [
                         key: "updated_at",
                         type: "date",                        
                         rank: 2,
-                        hidden: true,
+                        display: false,
                     },
                 ],
             },

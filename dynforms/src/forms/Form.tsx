@@ -136,9 +136,9 @@ export namespace Interfaces {
 
     export type FieldTypeString = 
         'text' | 'phone' | 'email' |
-        'textarea'|'boolean'|'date'|'select'|'array'|'subfieldArray';
+        'textarea'|'boolean'|'date'|'select'|'array'|'subfieldArray'|'number'|'filesize';
     
-    export type Field = BaseField | BooleanField | TextField | TextareaField | SubfieldArray;
+    export type Field = BaseField | BooleanField | TextField | TextareaField | SubfieldArray | SelectField | ArrayField;
 
     export interface BaseField {
         key: string;
@@ -149,6 +149,8 @@ export namespace Interfaces {
         placeholder?: string;
         hidden?: boolean;
         fields?: Field[];
+        display?: boolean;
+        isImagePath?: boolean; // This can be on text, select
     }
 
     export interface BooleanField extends BaseField {
@@ -156,8 +158,7 @@ export namespace Interfaces {
     }
     
     export interface TextField extends BaseField {
-        maxLength?: number;
-        isImagePath?: boolean;
+        maxLength?: number;        
     }
 
     export interface TextareaField extends BaseField {
