@@ -1,6 +1,6 @@
 const formTypes = [
     {
-        collectionName: "default",
+        collectionName: "photos",
         title: "Photos",
         settings: {
             /**
@@ -14,20 +14,6 @@ const formTypes = [
         },
         fields: [
             {
-                key: "filename",
-                label: "Filename",
-                type: "text",
-                rank: 3,
-                display: false,
-            },
-            {
-                key: "description",
-                label: "Description",
-                type: "textarea",
-                rows: 5,
-                rank: 0,
-            },
-            {
                 key: "fullname",
                 label: "Full Path",
                 type: "text",
@@ -36,17 +22,68 @@ const formTypes = [
                 rank: 1,
             },
             {
+                key: "description",
+                label: "Description",
+                type: "textarea",
+                rows: 5,
+                rank: 2,
+            },
+            {
+                key: "width",
+                label: "Width",
+                type: "number",
+                rank: 3,
+                
+            },
+            {
+                key: "height",
+                label: "Height",
+                type: "number",
+                rank: 4,
+                
+            },
+            {
+                key: "evaluation",
+                label: "Stars",
+                type: "select",
+                rank: 5,
+                defaultValue: 2,
+                options: [
+                    {
+                        label: "1",
+                        value: 1,
+                    },
+                    {
+                        label: "2",
+                        value: 2,
+                    },
+                    {
+                        label: "3",
+                        value: 3,
+                    },
+                ]
+            },
+
+
+            {
                 key: "extension",
                 label: "Extension",
                 type: "text",
-                rank: 2,
+                rank: 6,
+                display: false,
+            },
+            {
+                key: "filename",
+                label: "Filename",
+                type: "text",
+                rank: 7,
                 display: false,
             },
             {
                 key: "dirname",
                 label: "Path",
                 type: "text",
-                rank: 4,
+                rank: 8,
                 display: false,
             },
             {
@@ -54,14 +91,14 @@ const formTypes = [
                 label: "Size",
                 type: "filesize",
                 readOnly: true,
-                rank: 5,
+                rank: 9,
             },
             {
                 key: "uid",
                 label: "UserID",
                 type: "number",
                 readOnly: true,
-                rank: 6,
+                rank: 10,
                 display: false,
             },
             {
@@ -69,7 +106,15 @@ const formTypes = [
                 label: "GroupID",
                 type: "number",
                 readOnly: true,
-                rank: 7,
+                rank: 11,
+                display: false,
+            },
+            {
+                key: "created_at",
+                label: "Created at",
+                type: "date",
+                readOnly: true,
+                rank: 12,
                 display: false,
             },
             {
@@ -77,15 +122,7 @@ const formTypes = [
                 label: "Updated at",
                 type: "date",
                 readOnly: true,
-                rank: 9,
-            },
-            {
-                key: "created_at",
-                label: "Created at",
-                type: "date",
-                readOnly: true,
-                rank: 8,
-                display: false,
+                rank: 13,
             },
 
 
