@@ -110,12 +110,12 @@ const formTypes = [
                 display: false,
             },
             {
-                key: "created_at",
-                label: "Created at",
+                key: "dateTime",
+                label: "Date Taken",
                 type: "date",
                 readOnly: true,
                 rank: 12,
-                display: false,
+                display: true,
             },
             {
                 key: "updated_at",
@@ -123,6 +123,7 @@ const formTypes = [
                 type: "date",
                 readOnly: true,
                 rank: 13,
+                display: false,
             },
 
 
