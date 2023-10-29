@@ -10,13 +10,15 @@ import ArrayField from './ArrayField.tsx';
 function Form() {    
     const navigate = useNavigate();
     const [ record, setRecord ] = useState({});
-    const { appData, dbUpdateRecord } = useAppData();
+    const [ edited, setEdited ] = useState(false);
+
+    const { appData, dbUpdateRecord, adjustCurrentRecord } = useAppData();
     const { collectionName } = appData;
 
-    const formDefinition = appData.formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
+    const formDefinition = appData.formTypes?.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
 
     const { state } = useLocation();
-    const recordId = state?.recordId;
+    const recordId = appData.currentRecord?._id;
 
     useEffect(() => {
         // Selected Collection and/or recordId changed.
@@ -32,10 +34,19 @@ function Form() {
         setRecord(newRecord);
     }
 
-    function handleSubmit() {
+    function handleSubmit(event: any) {
+        const next = event.currentTarget.dataset.next;
+
         dbUpdateRecord(record)
         .then(() => {
-            navigate('/records');
+            if (next) {
+                adjustCurrentRecord(next).then(() => {
+                    navigate('/form');
+                    setEdited(false);    
+                });
+            } else {
+                navigate('/records');                
+            }
         })
         .catch(err => {
             console.log('Axios error: ', err);
@@ -55,14 +66,19 @@ function Form() {
         keyPath: '',
         keys: [],
         record,
-        updateRecord,
+        setEdited,
+        updateRecord,        
     }
 
     return (
         <div className='form-container'>
             <label>Collection: {collectionName}</label>
             <ArrayField {...formProps}/>
+            <button onClick={handleSubmit} data-next={-1}>{edited ? 'Save & Previous' : 'Previous'}</button>
+            &nbsp;
             <button onClick={handleSubmit}>Save</button>
+            &nbsp;
+            <button onClick={handleSubmit} data-next={1}>{edited ? 'Save & Next' : 'Next'}</button>
             &nbsp;
             <button onClick={() => navigate('/records')}>Cancel</button>
         </div>
@@ -150,6 +166,7 @@ export namespace Interfaces {
         hidden?: boolean;
         fields?: Field[];
         display?: boolean;
+        readOnly?: boolean;
         isImagePath?: boolean; // This can be on text, select
     }
 

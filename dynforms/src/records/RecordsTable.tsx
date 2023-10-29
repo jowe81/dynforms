@@ -10,7 +10,7 @@ import DisplayValue from "./DisplayValue.tsx";
 
 function RecordsTable() {
 
-    const { appData, getRecords, dbDeleteRecord } = useAppData();
+    const { appData, getRecords, dbDeleteRecord, setCurrentRecordToIndex } = useAppData();
     const { state } = useLocation();
     
     const displayFields = appData.formDefinition?.fields.filter((field: Interfaces.Field) => field.display !== false);
@@ -20,6 +20,11 @@ function RecordsTable() {
 
     const action = state?.action;
     const recordId = state?.recordId;
+
+    const setCurrentRecord = (event) => {
+        const targetIndex = event.currentTarget.dataset.index;
+        setCurrentRecordToIndex(targetIndex)
+    }
 
     useEffect(() => {
         if (action === 'delete' && recordId) {            
@@ -60,7 +65,7 @@ function RecordsTable() {
                     <td key={-1}>
                         <div>
                             <Link to="/records" state={{action: 'delete', recordId}}>Delete</Link>&nbsp;|&nbsp;
-                            <Link to="/form" state={{recordId}}>Edit</Link>
+                            <Link to="/form" onClick={setCurrentRecord} data-index={record._index} data-id={recordId} state={{recordId}}>Edit</Link>
                         </div>   
                     </td>
 

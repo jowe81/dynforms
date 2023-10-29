@@ -5,8 +5,8 @@ function PaginationControls() {
 
     const { appData, setPage, setItemsPerPage } = useAppData();
 
-    const { pageCount, currentPage, itemsPerPage } = appData.table;
-    const currentRecordsCount = appData.records.length;
+    const { pageCount, recordsCount, currentPage, itemsPerPage } = appData.table;
+    
     //const pageCount = npageCount;
     const fastStepWidth = Math.floor(pageCount/10);
     
@@ -106,7 +106,8 @@ function PaginationControls() {
             <div className="pagination-pagination-links">Page: {getPaginationLinks()}</div>
         </div>
         <div className="pagination-header-right">
-            <div className="pagination-record-count-container">Items Total: {currentRecordsCount}</div>
+            <div className="pagination-record-count-container">Items Total: {recordsCount}</div>
+            <div className="pagination-record-count-container">Pages: {currentPage}/{pageCount}</div>
             <div className="pagination-items-per-page-links">Per Page: {getItemsPerPageLinks(itemsPerPageValues)}</div>
         </div>
     </div>

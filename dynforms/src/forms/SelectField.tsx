@@ -32,8 +32,7 @@ function SelectField(props: any) {
     )
 
     return (
-        <>
-            <label>{ field.label }</label>
+        <>            
             <div>
                 <select 
                     name={ field.key }                     
@@ -41,6 +40,7 @@ function SelectField(props: any) {
                     value={record[field.key] ?? ''}                    
                     onChange={onChange}
                     multiple={field.multiple}
+                    disabled={field.readOnly}
                 >
                     {optionsJsx}
                 </select>

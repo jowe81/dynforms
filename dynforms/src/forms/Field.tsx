@@ -8,11 +8,14 @@ import PhoneField from './PhoneField.tsx';
 import EmailField from './EmailField.tsx';
 import SelectField from './SelectField.tsx';
 import ArrayField from './ArrayField.tsx';
+import PlainArrayField from "./PlainArrayField.tsx";
 import SubfieldArray from './SubfieldArray.tsx';
+
+import FieldLabel from "./FieldLabel.tsx";
 
 
 function Field(props: any) {
-    const { record, itemIndex, updateRecord, field, keys } = props;
+    const { record, itemIndex, setEdited, updateRecord, field, keys } = props;
 
     if (field.display === false) {
         // For now don't render hidden fields at all.
@@ -33,43 +36,58 @@ function Field(props: any) {
         const fieldValue = event.target[keyToValue];
 
         updateRecord(fullKeySet, fieldValue);
+        
+        setEdited(true);
     }
 
     const fieldProps = {
         fullKey,
         keys,
         field,
-        record,
+        record,        
         onChange,
     }
 
     const subfieldKeys = [ ...keys, field.key ];
     const subRecord = record[field.key as keyof Object];
 
+    const annotationJsx = field.annotation ? <div className="form-annotation">{field.annotation}</div> : null;
+
+    let jsx;
+
     switch (field.type) {
         case 'text':
-            return (<div className="form-element-container"><TextField {...fieldProps}/></div>);
+        case 'number':
+        case 'filesize':
+            jsx =  (<div className="form-element-container"><TextField {...fieldProps}/></div>);
+            break;
         
         case 'textarea':
-            return (<div className="form-element-container"><TextareaField {...fieldProps}/></div>);
+            jsx =  (<div className="form-element-container">{annotationJsx}<TextareaField {...fieldProps}/></div>);
+            break;
             
         case 'date':
-            return (<div className="form-element-container"><DateField {...fieldProps}/></div>);
+            jsx =  (<div className="form-element-container"><DateField {...fieldProps}/></div>);
+            break;
 
         case 'boolean':
-            return (<div className="form-element-container"><BooleanField {...fieldProps}/></div>);
+            jsx =  (<div className="form-element-container"><BooleanField {...fieldProps}/></div>);
+            break;
 
         case 'phone':
-            return (<div className="form-element-container"><PhoneField {...fieldProps}/></div>);
+            jsx =  (<div className="form-element-container"><PhoneField {...fieldProps}/></div>);
+            break;
     
         case 'email':
-            return (<div className="form-element-container"><EmailField {...fieldProps}/></div>);    
+            jsx =  (<div className="form-element-container"><EmailField {...fieldProps}/></div>);    
+            break;
 
         case 'select':
-            return (<div className="form-element-container"><SelectField {...fieldProps}/></div>);                
+            jsx =  (<div className="form-element-container"><SelectField {...fieldProps}/></div>);                
+            break;
 
         case 'array':                                
-            return (
+            jsx =  (
                 <div className="form-array-container">
                     <ArrayField 
                         keys={subfieldKeys} 
@@ -79,9 +97,14 @@ function Field(props: any) {
                     />
                 </div>
             );
+            break;
+
+        case 'plainArray':
+            jsx =  (<div className="form-element-container"><PlainArrayField {...fieldProps}/></div>);
+            break;
         
         case 'subfieldArray':
-            return (
+            jsx =  (
                 <>
                     <div className="form-subfield-array-outer-header"><label>{ field.label }</label></div>
                     <div className="form-subfield-array-container">                    
@@ -94,9 +117,10 @@ function Field(props: any) {
                     </div>
                 </>
             );
-            
-
+            break;            
     }
+
+    return <><FieldLabel field={field}/>{jsx}</>;
         
 }
 

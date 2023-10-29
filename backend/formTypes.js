@@ -29,18 +29,20 @@ const formTypes = [
                 rank: 2,
             },
             {
-                key: "width",
-                label: "Width",
-                type: "number",
+                key: "people",
+                label: "People",
+                type: "textarea",
+                annotation: "Enter comma-separated names.",
+                rows: 3,
                 rank: 3,
-                
             },
             {
-                key: "height",
-                label: "Height",
-                type: "number",
+                key: "tags",
+                label: "Tags",
+                type: "textarea",
+                annotation: "Enter comma-separated tags.",
+                rows: 3,
                 rank: 4,
-                
             },
             {
                 key: "evaluation",
@@ -63,27 +65,32 @@ const formTypes = [
                     },
                 ]
             },
-
-
+            {
+                key: "dateTime",
+                label: "Date Taken",
+                type: "date",
+                rank: 6,
+                display: true,
+            },
             {
                 key: "extension",
                 label: "Extension",
                 type: "text",
-                rank: 6,
+                rank: 7,
                 display: false,
             },
             {
                 key: "filename",
                 label: "Filename",
                 type: "text",
-                rank: 7,
+                rank: 8,
                 display: false,
             },
             {
                 key: "dirname",
                 label: "Path",
                 type: "text",
-                rank: 8,
+                rank: 9,
                 display: false,
             },
             {
@@ -91,14 +98,30 @@ const formTypes = [
                 label: "Size",
                 type: "filesize",
                 readOnly: true,
-                rank: 9,
+                rank: 10,
+            },
+            {
+                key: "width",
+                label: "Width",
+                type: "number",
+                readOnly: true,
+                rank: 11,
+                
+            },
+            {
+                key: "height",
+                label: "Height",
+                type: "number",
+                readOnly: true,
+                rank: 12,
+                
             },
             {
                 key: "uid",
                 label: "UserID",
                 type: "number",
                 readOnly: true,
-                rank: 10,
+                rank: 13,
                 display: false,
             },
             {
@@ -106,28 +129,17 @@ const formTypes = [
                 label: "GroupID",
                 type: "number",
                 readOnly: true,
-                rank: 11,
+                rank: 14,
                 display: false,
-            },
-            {
-                key: "dateTime",
-                label: "Date Taken",
-                type: "date",
-                readOnly: true,
-                rank: 12,
-                display: true,
             },
             {
                 key: "updated_at",
                 label: "Updated at",
                 type: "date",
                 readOnly: true,
-                rank: 13,
+                rank: 15,
                 display: false,
             },
-
-
-
         ]
     },
     {

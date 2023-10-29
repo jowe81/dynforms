@@ -1,4 +1,4 @@
-function PhoneField(props: any) {
+function PlainArrayField(props: any) {
 
     let { keys, field, record, onChange } = props;
 
@@ -17,13 +17,16 @@ function PhoneField(props: any) {
                 <input 
                     name={field.key} 
                     data-key={field.key}
-                    value={record[field.key]}
-                    placeholder={field.placeholder}
+                    value={record[field.key] ?? ''}
                     onChange={onChange}
                 />
+                <button>Add</button>
+            </div>
+            <div>
+                <select></select>
             </div>
         </>
     )
 }
 
-export default PhoneField;
+export default PlainArrayField;

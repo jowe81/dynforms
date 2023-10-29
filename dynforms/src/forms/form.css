@@ -69,6 +69,19 @@ input[type="checkbox"] {
 .form-link {
 }
 
-label {
-    color: rgb(94, 94, 94);
+.field-label {
+    
+}
+
+.form-annotation {
+    font-size: 75%;
+}
+
+.field-text-field-thumbnail{    
+    margin-left: 5px;
+    padding: 5px;
+    padding-bottom:0px;
+    border: 1px solid gray;
+    background: black;
+    text-align: center;
 }

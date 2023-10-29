@@ -12,13 +12,15 @@ function DateField(props: any) {
         
     return (
         <>
-            <label>{ field.label }</label>
+            
             <div>
                 <input 
                     name={ field.key } 
                     value={record[field.key] ?? ''} 
                     data-key={field.key}
-                    onChange={onChange}/>
+                    onChange={onChange}
+                    disabled={field.readOnly}
+                />                                        
                 </div>            
         </>
     )

@@ -47,7 +47,7 @@ const initRouter = (express, db) => {
     const { collectionName } = req.params;
     let { search, sortCol1, sortCol2 } = req.query;
     const itemsPerPage = parseInt(req.query.itemsPerPage)
-    const page = parseInt(req.query.page);
+    const page = parseInt(req.query.page) || 1;
     const skip = Math.max((page - 1) * itemsPerPage, 0);
 
     const formDefinition = formTypes.find(formDefinition => formDefinition.collectionName === collectionName);
@@ -58,12 +58,29 @@ const initRouter = (express, db) => {
 
     const collection = getEnhancedCollection(db,collectionName);
     try {
+        const recordsCount = await collection.find().count();
+        const pageCount = itemsPerPage ? Math.ceil(recordsCount / itemsPerPage) : 1;                
         const records = await collection
             .find(searchFilter)
             .sort(sortObject)
             .skip(skip)
             .limit(itemsPerPage).toArray();        
-        res.json(records);    
+
+        // Add in the index
+        records.forEach((record, index) => record._index = skip + index);
+
+        const data = {
+            table: {
+                collectionName,
+                currentPage: page,
+                pageCount,
+                recordsCount,
+                itemsPerPage,
+            },
+            records,
+        }
+
+        res.json(data);    
     } catch (err) {
         logError(err);
         res.status(500).send();

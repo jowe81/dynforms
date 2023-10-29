@@ -17,13 +17,7 @@ export default function useAppData() {
         setFormDefinition(appData.formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
         resetOrder();
         resetSearchValue();
-        setPagination();
-        loadPageCount().then((pageCountInfo) => {
-            console.log(`Got page count info:`, pageCountInfo);
-            setPagination(pageCountInfo)
-            loadRecords();
-        });
-        
+        loadRecords();        
     }
 
     const setOrderColumn = (selectValue: string, priority: string) => {        
@@ -82,11 +76,11 @@ export default function useAppData() {
         }        
     }
 
-    const setPage = (page: number) => {
+    const setPage = async (page: number) => {
         const targetPage = Math.min(page, appData.table.pageCount);
         console.log(`Going to page ${targetPage}`);
         appData.table.currentPage = targetPage;
-        loadRecords();
+        return loadRecords();
     }
 
     const setItemsPerPage = (items: number) => {
@@ -95,6 +89,75 @@ export default function useAppData() {
         appData.table.itemsPerPage = itemsPerPage;
         appData.table.pageCount = Math.ceil(appData.table.recordsCount / itemsPerPage);
         loadRecords();
+    }
+
+    // Set current to the one with index, or just the first one otherwise.
+    const setCurrentRecordToIndex = (index: string) => {
+        const newCurrentRecord = appData.records.find((record: any) => record._index === index);
+        if (newCurrentRecord) {
+            appData.currentRecord = newCurrentRecord;
+        } else {
+            appData.currentRecord = appData.records.length ? appData.records[0] : undefined;
+        }
+        
+        setAppData(appData);
+    }
+
+    const setCurrentRecord = (record: any) => {
+        appData.currentRecord = { ...record };
+        setAppData(appData);
+    }
+    
+    const incrementCurrentRecord = async() => {
+        if (!appData.records) {
+            return;
+        }
+
+        const oldCurrentRecordIndex = appData.currentRecord._index;
+
+        if (oldCurrentRecordIndex === appData.records[appData.records.length - 1]._index) {
+            // At the last one on this page
+
+            const nextPage = (appData.table.currentPage < appData.table.pageCount ? appData.table.currentPage + 1 : 1);
+
+            return setPage(nextPage)
+                .then(() => {
+                    setCurrentRecord(appData.records.length ? appData.records[0] : {});
+                });
+        } else {
+            const newCurrentRecord = appData.records.find((record: any) => record._index === oldCurrentRecordIndex + 1);
+            setCurrentRecord(newCurrentRecord);                        
+        }
+    }
+
+    const  decrementCurrentRecord = async () => {
+        if (!appData.records) {
+            return;
+        }
+
+        const oldCurrentRecordIndex = appData.currentRecord._index;
+        const newCurrentRecordIndex = oldCurrentRecordIndex > 0 ? oldCurrentRecordIndex - 1 : appData.table.recordsCount;
+
+        if (oldCurrentRecordIndex === appData.records[0]._index) {
+            // At the first one on this page
+
+            const nextPage = (appData.table.currentPage > 1 ? appData.table.currentPage - 1 : appData.table.pageCount);
+
+            return setPage(nextPage)
+                .then(() => {
+                    setCurrentRecord(appData.records.length ? appData.records[appData.records.length - 1] : {});
+                });
+        } else {
+            setCurrentRecord(appData.records.find((record: any) => record._index === newCurrentRecordIndex));
+        }
+    }
+
+    const adjustCurrentRecord = async (offset: number) => {
+        if (offset > 0) {
+            return incrementCurrentRecord();
+        } else if (offset - 0) {
+            return decrementCurrentRecord();
+        }
     }
 
     // Filter locally
@@ -128,46 +191,10 @@ export default function useAppData() {
 
     const resetSearchValue = () => setSearchValue('');
 
-    const setPagination = (pageCountInfo?: {}|null) => {
-
-        const oldValue = { ...appData.table };
-
-        if (pageCountInfo) {
-            appData.table = {
-                ...oldValue,
-                itemsPerPage: constants.itemsPerPageInitial,
-                ...pageCountInfo,
-                currentPage: 1,      
-            }
-        } else {
-            appData.table = {
-                ...oldValue,
-                itemsPerPage: constants.itemsPerPageInitial,
-                pageCount: 0,                
-                currentPage: 0,      
-            }
-        }
-        console.log('Resetting pagination to', appData.table);
-        setAppData(appData);
-    }
-
     const setFormDefinition = (formDefinition: any) => {
         console.log('Setting formDefinition to ', formDefinition);
         appData.formDefinition = formDefinition;
         setAppData(appData);
-    }
-
-    const loadPageCount = () => {
-        if (appData.table.itemsPerPage) {
-            return axios
-                .get(`${constants.apiRoot}/pageCount/${appData.collectionName}?search=${appData.searchValue}&itemsPerPage=${appData.table.itemsPerPage}`)
-                .then((data) => {
-                    return data.data;
-                })
-                .catch(axiosError);
-        }
-        
-        return Promise.resolve(null);
     }
 
     const loadRecords = async () => {
@@ -188,19 +215,24 @@ export default function useAppData() {
         const sortCol2 = appData.order[1] && getOrderString(appData.order[1]);
 
 
-        console.log(`Loading records in ${appData.collectionName}`);
-        console.log(appData.order)
-        
+        console.log(`Loading records in "${appData.collectionName}". Current index: ${(appData.currentRecord?._index !== undefined) ? appData.currentRecord?._index : 'none'}.`);
+
+        const currentRecordIndex = appData.currentRecord?._index;
         appData.records = [];
         setAppData(appData);
 
         const { currentPage, itemsPerPage } = appData.table;
-
-        axios
+        
+        return axios
             .get(`${constants.apiRoot}/records/${appData.collectionName}?search=${appData.searchValue}&sortCol1=${sortCol1}&sortCol2=${sortCol2}&itemsPerPage=${itemsPerPage}&page=${currentPage}`)
-            .then((data) => {
-                appData.records = data.data;
-                setAppData(appData);        
+            .then(({data}) => {                
+                appData.records = data.records;
+                appData.table = { ...data.table };
+                if (appData.records?.length) {
+                    setCurrentRecordToIndex(currentRecordIndex);
+                }
+                setAppData(appData);     
+                console.log(`Loaded ${appData.records?.length} records from collection "${appData.collectionName}".`);
             })
             .catch(axiosError);
     }
@@ -220,6 +252,7 @@ export default function useAppData() {
         return axios
             .post(`${constants.apiRoot}/post/${appData.collectionName}`, record)
             .then(loadRecords)
+            .then(data => console.log("Update and load complete."))
             .catch(axiosError);
     }
 
@@ -229,6 +262,7 @@ export default function useAppData() {
             .get(`${constants.apiRoot}/formtypes`)
             .then(data => {                
                 appData.formTypes = data.data;
+                console.log(`Received ${appData.formTypes?.length}.`);
                 setAppData(appData);
             })
             .catch(axiosError);
@@ -243,7 +277,12 @@ export default function useAppData() {
 
         resetOrder();
         resetSearchValue();
-        setPagination();
+        appData.table = {
+            itemsPerPage: constants.itemsPerPageInitial,
+            pageCount: 0,                
+            currentPage: 0,      
+        }
+
 
         loadFormTypes();
     }
@@ -258,7 +297,9 @@ export default function useAppData() {
         resetOrder,
 
         setPage,
-        setItemsPerPage,
+        setItemsPerPage,        
+        adjustCurrentRecord,
+        setCurrentRecordToIndex,
         getRecords,
 
         dbDeleteRecord,

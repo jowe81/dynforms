@@ -2,7 +2,7 @@ import Field from './Field.tsx';
 
 
 function ArrayField(props: any) {
-    const { record, updateRecord, fields, keys } = props;
+    const { record, setEdited, updateRecord, fields, keys } = props;
     
 
     if (!(fields && fields.length)) {
@@ -14,8 +14,9 @@ function ArrayField(props: any) {
         const props = {
             keys,
             field,
-            record,            
-            updateRecord,
+            record,
+            setEdited,       
+            updateRecord,            
         }
 
         return <Field key={index} {...props}></Field>;
