@@ -1,21 +1,31 @@
 .pagination-outer-container {
+    
+    width: 100%;
     display: flex;
+    flex-flow: row wrap;
     justify-content: space-between;
+    
     margin-bottom: 10px;
+    border-bottom: 1px solid gray;
 }
 
-.pagination-pagination-links {
-    width: 500px;
+.pagination-outer-container div {
+    padding: 0px 5px;
+}
+.pagination-pagination-links-container {
+    width: 300px;
 }
 
+.pagination-links-container {
+}
 .pagination-header-right {
-    width: 450px;
+    width: 350px;
     display: flex;
     justify-content: flex-end;
 }
 
-.pagination-record-count-container {
-    margin-right: 15px;
+.pagination-record-count-container {    
+    min-width: 150px;
 }
 
 .pagination-link, .items-per-page-link {
@@ -26,4 +36,7 @@
 .active-link {
     font-weight: bold;
     text-decoration: underline;
+}
+
+.records-table-container {
 }

@@ -120,7 +120,12 @@ function Field(props: any) {
             break;            
     }
 
-    return <><FieldLabel field={field}/>{jsx}</>;
+    return <>
+        <div className="form-element-outer-container">
+            <FieldLabel field={field}/>
+            {jsx}
+        </div>
+    </>;
         
 }
 

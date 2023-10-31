@@ -78,12 +78,14 @@ function RecordsTable() {
     return (
         <>
             <PaginationControls />
-            <table>
-                <tbody>
-                    {getHeaderRow(displayFields)}
-                    {rowsJsx}
-                </tbody>
-            </table>
+            <div className="records-table-container">
+                <table>
+                    <tbody>
+                        {getHeaderRow(displayFields)}
+                        {rowsJsx}
+                    </tbody>
+                </table>
+            </div>
         </>
         
     )

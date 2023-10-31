@@ -7,18 +7,49 @@ input[type="checkbox"] {
     width: 20px;
 }
 
+.form-outer-container {
+    height: 100%;
+    overflow: auto;
+    display:flex;
+    flex-direction: column;
+}
+
 .form-container {    
     padding: 10px;
     display: block;
-    width: 500px;
-    background-color: rgb(228, 228, 228);
+    width: 100%;        
+    display: flex;
+    flex-flow: column wrap;
+    overflow: auto;    
+    flex: 1;
 }
 
-.form-element-container {
+.form-actions-outer-container {
+    height: 55px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-left: 10px;    
+}
+
+.form-actions-container {
+    display: flex;
+    width: 600px;
+    justify-content: flex-end;
+    margin-left: auto;    
+}
+
+.form-actions-container button {
+    width: 140px;
+    font-size: 90%;
+    margin-left: 10px;
+}
+
+.form-element-outer-container {
     padding-right: 10px;
     padding-left: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
+    width: 400px;    
 }
 
 .form-array-container {
@@ -83,5 +114,10 @@ input[type="checkbox"] {
     padding-bottom:0px;
     border: 1px solid gray;
     background: black;
-    text-align: center;
+    text-align: center;    
+    height: 213px;
+}
+
+.field-text-field-thumbnail img {
+    height: 200px;
 }

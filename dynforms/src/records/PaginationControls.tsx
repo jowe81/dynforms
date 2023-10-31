@@ -1,9 +1,11 @@
 import useAppData from "../hooks/useAppData";
+import SearchField from "../sidebar/SearchField";
+
 import './pagination.css';
 
 function PaginationControls() {
 
-    const { appData, setPage, setItemsPerPage } = useAppData();
+    const { appData, setPage, setItemsPerPage, setSearchValue } = useAppData();
 
     const { pageCount, recordsCount, currentPage, itemsPerPage } = appData.table;
     
@@ -102,15 +104,18 @@ function PaginationControls() {
     const itemsPerPageValues = [ 5, 25, 50, 100 ];
 
     return <div className="pagination-outer-container">
-        <div className="pagination-header-left">
-            <div className="pagination-pagination-links">Page: {getPaginationLinks()}</div>
-        </div>
-        <div className="pagination-header-right">
-            <div className="pagination-record-count-container">Items Total: {recordsCount}</div>
-            <div className="pagination-record-count-container">Pages: {currentPage}/{pageCount}</div>
-            <div className="pagination-items-per-page-links">Per Page: {getItemsPerPageLinks(itemsPerPageValues)}</div>
-        </div>
-    </div>
+            <div className="pagination-pagination-links">
+                <div className="pagination-pagination-links">Page: {getPaginationLinks()}</div>
+                <div className="pagination-items-per-page-links">Items Per Page: {getItemsPerPageLinks(itemsPerPageValues)}</div>                
+            </div>
+            <div className="pagination-record-count-container">
+                <div>Page: {currentPage}/{pageCount}</div>
+                <div>Items Total: {recordsCount}</div>
+            </div>
+            <div>
+                <SearchField searchValue={appData.searchValue} setSearchValue={setSearchValue}/>
+            </div>            
+        </div>;
 }
 
 export default PaginationControls;

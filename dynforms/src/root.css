@@ -2,16 +2,20 @@
     height: 100%;
     min-height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     
     background-color: rgb(216, 229, 255);
     width: 100%;
+    min-width: 1024px;
 }
 
 #sidebar {
-    width: 100%;    
+    width: 200px;    
     margin: 0px;   
     display: flex; 
+    flex-direction: row;
+    flex-wrap: wrap;    
+    align-content: flex-start;
     border-bottom: 1px solid rgb(164, 164, 164);
     background-color: rgb(189, 209, 249);
 }
@@ -24,14 +28,20 @@
 }
 
 .top-selector-container {
-    width: 250px;
+    width: 200px;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    
     padding-right: 10px;
 }
 
 .top-selector-container-wide {
-    width: 670px;
+    width: 200px;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
     padding-right: 10px;
 }
 
@@ -41,7 +51,7 @@
 }
 
 #main-content-area {
-    padding: 10px;
     max-height: 100%;
     overflow: auto;
+    width: 100%;
 }

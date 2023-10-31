@@ -49,7 +49,6 @@ export default function Root() {
                     { appData.collectionName && <label>Order by:</label> }
                     <OrderSelector orderColumn={primaryColumn ?? "none"} onOrderColumnSelect={onOrderColumnSelect} priority="0"/>
                     <OrderSelector orderColumn={secondaryColumn ?? "none"} onOrderColumnSelect={onOrderColumnSelect} priority="1"/>
-                    { appData.collectionName && <SearchField searchValue={appData.searchValue} setSearchValue={setSearchValue}/> }
                 </div>         
 
                 <div className="top-nav-item">

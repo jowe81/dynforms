@@ -70,19 +70,25 @@ function Form() {
         updateRecord,        
     }
 
-    return (
+    return (<div className="form-outer-container">
         <div className='form-container'>
-            <label>Collection: {collectionName}</label>
+            <div className="form-header-container">
+                <label>Collection: {collectionName}</label>
+            </div>
+
             <ArrayField {...formProps}/>
-            <button onClick={handleSubmit} data-next={-1}>{edited ? 'Save & Previous' : 'Previous'}</button>
-            &nbsp;
-            <button onClick={handleSubmit}>Save</button>
-            &nbsp;
-            <button onClick={handleSubmit} data-next={1}>{edited ? 'Save & Next' : 'Next'}</button>
-            &nbsp;
-            <button onClick={() => navigate('/records')}>Cancel</button>
+
         </div>
-    )
+        <div className="form-actions-outer-container">
+            <div className="form-actions-container">
+                { edited && <button onClick={() => navigate('/records')}>{edited ? 'Cancel & Back' : 'Back'}</button>}
+                <button onClick={handleSubmit} data-next={-1}>{edited ? 'Save & Previous' : 'Previous'}</button>
+                <button onClick={handleSubmit} data-next={1}>{edited ? 'Save & Next' : 'Next'}</button>
+                <button onClick={handleSubmit}>{edited ? 'Save & Back' : 'Back'}</button>
+            </div>
+        </div>
+
+    </div>)
 }
 
 
