@@ -14,10 +14,74 @@ export default function useAppData() {
         console.log('Setting collection name to', collectionName);
         appData.collectionName = collectionName;        
         setAppData(appData);
-        setFormDefinition(appData.formTypes.find(formDefinition => formDefinition.collectionName === collectionName));
+        setFormDefinition(appData.formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName));
+        updateTableColumns();
         resetOrder();
         resetSearchValue();
         loadRecords();        
+    }
+
+    const updateTableColumns = () => {
+        /**
+         * The idea is
+         * Each field:
+         * if not a group member, add to array
+         * if a group member, add the following to the array:
+         * [
+         *      group-id:
+         *      type: __group
+         *      fields: [
+         *          ...the groups fields in ascending rank
+         *      ]
+         * ]
+         **/        
+        const fields = appData.formDefinition.fields;
+        if (!fields) {
+            return;
+        }
+
+        const tableColumns: (Interfaces.Field | Interfaces.Group)[] = [];
+        const processedGroups:string[] = [];
+
+        fields.forEach((field: Interfaces.Field) => {
+            const groupId = field.groupId;
+
+            if (!groupId) {
+                tableColumns.push(field);
+                return;
+            }
+
+            if (processedGroups.includes(groupId)) {
+                return;
+            }
+
+            const group: Interfaces.Group = getGroup(groupId);
+            if (group) {
+                tableColumns.push(group);
+                processedGroups.push(groupId);
+            }
+        });
+
+        appData.table.columns = tableColumns;
+        console.log(`Computed table columns:`, appData.table.columns);
+        setAppData(appData);
+    }
+
+    const getGroup = (groupId: string) => {
+        if (!Array.isArray(appData.formDefinition.groups)) {
+            return null;
+        }
+
+        const group = appData.formDefinition.groups.find((group: Interfaces.Group) => group.id === groupId);
+
+        if (group) {
+            group.type = "group";
+            group.key = group.id;
+            group.fields = appData.formDefinition.fields.filter((field: Interfaces.Field) => field.groupId === groupId);
+            group.fields.sort((a: any, b: any) => a.rank > b.rank ? 1 : -1);
+        }
+
+        return group;
     }
 
     const setOrderColumn = (selectValue: string, priority: string) => {        
@@ -191,10 +255,13 @@ export default function useAppData() {
 
     const resetSearchValue = () => setSearchValue('');
 
-    const setFormDefinition = (formDefinition: any) => {
-        console.log('Setting formDefinition to ', formDefinition);
+    const setFormDefinition = (formDefinition: Interfaces.FormType) => {
+        // Put the fields in the order of rank.
+        formDefinition.fields?.sort((a: any, b: any) => a.rank > b.rank ? 1 : -1);
         appData.formDefinition = formDefinition;
+        console.log('Setting formDefinition to ', formDefinition);        
         setAppData(appData);
+
     }
 
     const loadRecords = async () => {
@@ -227,7 +294,7 @@ export default function useAppData() {
             .get(`${constants.apiRoot}/records/${appData.collectionName}?search=${appData.searchValue}&sortCol1=${sortCol1}&sortCol2=${sortCol2}&itemsPerPage=${itemsPerPage}&page=${currentPage}`)
             .then(({data}) => {                
                 appData.records = data.records;
-                appData.table = { ...data.table };
+                appData.table = { ...appData.table, ...data.table };
                 if (appData.records?.length) {
                     setCurrentRecordToIndex(currentRecordIndex);
                 }

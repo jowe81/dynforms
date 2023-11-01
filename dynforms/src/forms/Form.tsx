@@ -158,7 +158,8 @@ export namespace Interfaces {
 
     export type FieldTypeString = 
         'text' | 'phone' | 'email' |
-        'textarea'|'boolean'|'date'|'select'|'array'|'subfieldArray'|'number'|'filesize';
+        'textarea'|'boolean'|'date'|'select'|'array'|'subfieldArray'|'number'|'filesize' |
+        'group';
     
     export type Field = BaseField | BooleanField | TextField | TextareaField | SubfieldArray | SelectField | ArrayField;
 
@@ -171,9 +172,16 @@ export namespace Interfaces {
         placeholder?: string;
         hidden?: boolean;
         fields?: Field[];
+        groupId?: string;
         display?: boolean;
         readOnly?: boolean;
         isImagePath?: boolean; // This can be on text, select
+    }
+
+    export interface Group {
+        id: string;
+        name?: string;
+        fields?: Field[];
     }
 
     export interface BooleanField extends BaseField {

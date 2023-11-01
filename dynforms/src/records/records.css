@@ -8,9 +8,9 @@ table {
 
 td {
     padding-bottom: 7px;
-    
-    
-}
+    vertical-align: top; /* Align content to the top of the cell */
+    text-align: left;   /* Align content to the left of the cell */
+  }
 
 th {
     text-align: left;

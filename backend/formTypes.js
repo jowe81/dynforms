@@ -12,6 +12,16 @@ const formTypes = [
                 baseUrl: 'http://johannes-mb.wnet.wn:3020/',
             }
         },
+        groups: [
+            {
+                label: "About the Picture",
+                id: "about",
+            },
+            {
+                label: "File Info",
+                id: "filemeta",
+            }
+        ],
         fields: [
             {
                 key: "fullname",
@@ -27,6 +37,7 @@ const formTypes = [
                 type: "textarea",
                 rows: 5,
                 rank: 2,
+                groupId: "about",
             },
             {
                 key: "people",
@@ -35,6 +46,7 @@ const formTypes = [
                 annotation: "Enter comma-separated names.",
                 rows: 3,
                 rank: 3,
+                groupId: "about",
             },
             {
                 key: "tags",
@@ -43,6 +55,7 @@ const formTypes = [
                 annotation: "Enter comma-separated tags.",
                 rows: 3,
                 rank: 4,
+                groupId: "about",
             },
             {
                 key: "evaluation",
@@ -63,14 +76,16 @@ const formTypes = [
                         label: "3",
                         value: 3,
                     },
-                ]
-            },
+                ],
+                groupId: "about",
+            },            
             {
                 key: "dateTime",
                 label: "Date Taken",
                 type: "date",
                 rank: 6,
                 display: true,
+                groupId: "about",
             },
             {
                 key: "extension",
@@ -98,14 +113,16 @@ const formTypes = [
                 label: "Size",
                 type: "filesize",
                 readOnly: true,
-                rank: 10,
+                rank: 12,
+                groupId: "filemeta",
             },
             {
                 key: "width",
                 label: "Width",
                 type: "number",
                 readOnly: true,
-                rank: 11,
+                rank: 10,
+                groupId: "filemeta",
                 
             },
             {
@@ -113,8 +130,8 @@ const formTypes = [
                 label: "Height",
                 type: "number",
                 readOnly: true,
-                rank: 12,
-                
+                rank: 11,
+                groupId: "filemeta",                
             },
             {
                 key: "uid",

@@ -1,9 +1,11 @@
 import useAppData from "../hooks/useAppData";
 import { Interfaces } from "../forms/Form";
+import Group from "./Group";
 
 function DisplayValue(props: any) {
     const field: Interfaces.Field = props.field;
     const value: any = props.value;
+    const record: any = props.record;
 
     const { appData } = useAppData();
     
@@ -36,13 +38,15 @@ function DisplayValue(props: any) {
             }
             break;
 
-
+        case 'group':
+            displayValue = <Group field={field} record={record} />
+            break;
     }
 
     if (settings?.images.showImages && field.isImagePath) {        
         displayValue = (<>
-            <span>{displayValue}</span>
             <div className="thumbnail"><img src={settings.images.baseUrl + value}/></div>
+            <span>{displayValue}</span>
         </>)
     }
 

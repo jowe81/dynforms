@@ -7,13 +7,16 @@ import './records.css';
 
 import PaginationControls from "./PaginationControls.tsx";
 import DisplayValue from "./DisplayValue.tsx";
+import Group from "./Group.tsx";
 
 function RecordsTable() {
 
     const { appData, getRecords, dbDeleteRecord, setCurrentRecordToIndex } = useAppData();
     const { state } = useLocation();
     
-    const displayFields = appData.formDefinition?.fields.filter((field: Interfaces.Field) => field.display !== false);
+    //const displayFields = appData.formDefinition?.fields.filter((field: Interfaces.Field) => field.display !== false);
+    const displayFields = appData.table?.columns?.filter((field: Interfaces.Field) => field.display !== false);
+    console.log('displayFields at table', displayFields);
     const settings = appData.formDefinition?.settings;
 
     const records = getRecords();
@@ -21,7 +24,7 @@ function RecordsTable() {
     const action = state?.action;
     const recordId = state?.recordId;
 
-    const setCurrentRecord = (event) => {
+    const setCurrentRecord = (event: any) => {
         const targetIndex = event.currentTarget.dataset.index;
         setCurrentRecordToIndex(targetIndex)
     }
@@ -35,11 +38,6 @@ function RecordsTable() {
     if (!displayFields || !Array.isArray(records)) {
         return
     }
-
-    // Put the displayFields in the order of rank.
-    displayFields.sort((a, b) => {             
-        return a.rank > b.rank ? 1 : -1
-    })
 
     const getHeaderRow = (displayFields: Interfaces.Field[]) => {
         
@@ -58,7 +56,7 @@ function RecordsTable() {
             const key = field.key;
             const value = record[key];
 
-            return (<td key={index}><DisplayValue field={field} value={value}/></td>)            
+            return (<td key={index}><DisplayValue field={field} value={value} record={record}/></td>)            
         });
     
         return <tr key={record._id} className='row'>
