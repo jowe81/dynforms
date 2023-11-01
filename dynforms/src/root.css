@@ -50,6 +50,10 @@
     padding: 10px;
 }
 
+.top-nav-item a {
+    display: block;
+}
+
 #main-content-area {
     max-height: 100%;
     overflow: auto;

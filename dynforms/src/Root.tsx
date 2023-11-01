@@ -4,14 +4,13 @@ import useAppData from "./hooks/useAppData";
 
 import CollectionSelector from "./sidebar/CollectionSelector";
 import OrderSelector from "./sidebar/OrderSelector";
-import SearchField from "./sidebar/SearchField";
 
 import './root.css';
 
 export default function Root() {
     const navigate = useNavigate();
 
-    const { appData, setCollectionName, setOrderColumn, setSearchValue } = useAppData();
+    const { appData, setCollectionName, setOrderColumn } = useAppData();
     const collectionName = appData.collectionName;
     const primaryColumn = appData.order[0].selectValue;
     const secondaryColumn = appData.order[1].selectValue;    
@@ -35,7 +34,7 @@ export default function Root() {
     }
 
     function onNewRecordClick(event: any) {
-        navigate('/form');
+        navigate('/form', { state: {createNewRecord: true}});
     }
         
     return (
@@ -52,7 +51,8 @@ export default function Root() {
                 </div>         
 
                 <div className="top-nav-item">
-                    { appData.collectionName && <button className="button-small" onClick={onNewRecordClick}>New Record</button> }
+                    { appData.collectionName && <Link to="/records" state={{createNewRecord: true}}>Records Table</Link>}
+                    { appData.collectionName && <Link to="/form" state={{createNewRecord: true}}>New Record</Link>}
                 </div>
             </div>
             <div id="main-content-area">

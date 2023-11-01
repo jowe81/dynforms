@@ -157,7 +157,7 @@ export default function useAppData() {
 
     // Set current to the one with index, or just the first one otherwise.
     const setCurrentRecordToIndex = (index: string) => {
-        const newCurrentRecord = appData.records.find((record: any) => record._index === index);
+        const newCurrentRecord = appData.records.find((record: any) => record._index === parseInt(index));
         if (newCurrentRecord) {
             appData.currentRecord = newCurrentRecord;
         } else {

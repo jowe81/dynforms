@@ -18,7 +18,8 @@ function Form() {
     const formDefinition = appData.formTypes?.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
 
     const { state } = useLocation();
-    const recordId = appData.currentRecord?._id;
+    console.log('state', state)
+    const recordId = state?.createNewRecord ? null : appData.currentRecord?._id;
 
     useEffect(() => {
         // Selected Collection and/or recordId changed.
@@ -40,6 +41,7 @@ function Form() {
         dbUpdateRecord(record)
         .then(() => {
             if (next) {
+                // This handles both the next and the previous button.
                 adjustCurrentRecord(next).then(() => {
                     navigate('/form');
                     setEdited(false);    

@@ -14,22 +14,23 @@ function TextField(props: any) {
         record = {};
     }
     
+    const key = field.key;
+
     let preview;
 
-    if (field.isImagePath) {
+    if (field.isImagePath && record[key]) {
         preview = <div>
-            <div className="field-text-field-thumbnail thumbnail"><img src={settings.images.baseUrl + record[field.key]}/></div>
+            <div className="field-text-field-thumbnail thumbnail"><img src={settings.images.baseUrl + record[key]}/></div>
         </div>
     }
     
-
     return (
         <>            
             <div className="field-text-field">
                 <input 
-                    name={field.key} 
-                    data-key={field.key}
-                    value={record[field.key] ?? ''}
+                    name={key} 
+                    data-key={key}
+                    value={record[key] ?? ''}
                     onChange={onChange}
                     disabled={field.readOnly}
                 />
