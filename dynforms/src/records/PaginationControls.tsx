@@ -9,8 +9,10 @@ function PaginationControls() {
 
     const { pageCount, recordsCount, currentPage, itemsPerPage } = appData.table;
     
-    //const pageCount = npageCount;
-    const fastStepWidth = Math.floor(pageCount/10);
+    // How many steps should the fast rewind/fast forward link take?
+    const fastStepWidth = 1 + Math.floor(pageCount/5);
+    // How many direct links to pages should be displayed at the most? (you'll get one more than you type here).
+    const maxDirectLinks = 4;
     
     const onPaginationLinkClick = (event) => {
         const { targetPage } = event.target.dataset;
@@ -49,44 +51,49 @@ function PaginationControls() {
         const paginationLinks = [];
 
         const getLinkToPage = getLinktoPageFunction();
-
-        if (currentPage > 1) {
-            paginationLinks.push(getLinkToPage(1));
-        }
         
+        const doublePrevPageNo = currentPage > fastStepWidth ? currentPage - fastStepWidth : 1;
+        const doubleNextPageNo = currentPage + fastStepWidth < pageCount ? currentPage + fastStepWidth : pageCount;
+        //console.log('Current', currentPage, 'Left', pagesToTheLeft, 'Right', pagesToTheRight, 'Start', startPage);
+        console.log('Current', currentPage, 'FSW', fastStepWidth, 'Left', doublePrevPageNo, 'Right', doubleNextPageNo);
+        paginationLinks.push(<a key="prevFast" className="pagination-link" data-target-page={doublePrevPageNo} onClick={onPaginationLinkClick}>&lt;&lt;</a>);
+        paginationLinks.push(<a key="prev" className="pagination-link" data-target-page={currentPage > 1 ? currentPage - 1 : pageCount} onClick={onPaginationLinkClick}>&lt;</a>);
 
-        if (pageCount <= 5) {
-            for (let i = 2; i <= pageCount - 1; i++) {
-                paginationLinks.push(getLinkToPage(1));
+        if (pageCount <= maxDirectLinks) {
+            for (let i = 1; i <= pageCount; i++) {
+                paginationLinks.push(getLinkToPage(i));
             }    
-        }
+        } else {
+            // Display still maxDirectLinks links.
+            const spotsEachSide = Math.floor(maxDirectLinks/2);
+            console.log('Each side', spotsEachSide)
+            const pagesToTheRight = pageCount - currentPage;
+            const pagesToTheLeft = currentPage - 1;
+            
+            let startPage = 1;
 
-        if (pageCount > 5) {
-            if (currentPage > fastStepWidth + 1) {  
-                paginationLinks.push(getLinkToPage(currentPage - fastStepWidth, '. . ', ' . .'));
+            if (pagesToTheLeft >= spotsEachSide && pagesToTheRight >= spotsEachSide) {
+                // Render the current page in the middle
+                startPage = currentPage - spotsEachSide;
+            } else {
+                // Render the current page at an offset
+                if (pagesToTheRight <= spotsEachSide) {
+                    // Extra space on the left, tight on the right
+                    const tightBy = spotsEachSide - pagesToTheRight
+                    startPage = currentPage - spotsEachSide - tightBy;
+                } else {
+                    startPage = currentPage - pagesToTheLeft;
+                }                
             }
 
-            if (currentPage > 2) {
-                paginationLinks.push(getLinkToPage(currentPage - 1));
-            }
+            for (let i = startPage; i <= startPage + maxDirectLinks; i++) {
+                paginationLinks.push(getLinkToPage(i));
+            }                            
         }
 
-        paginationLinks.push(getLinkToPage(currentPage, '', ''));
+        paginationLinks.push(<a key="next" className="pagination-link" data-target-page={currentPage < pageCount ? currentPage + 1 : 1} onClick={onPaginationLinkClick}>&gt;</a>);
+        paginationLinks.push(<a key="nextFast" className="pagination-link" data-target-page={doubleNextPageNo} onClick={onPaginationLinkClick}>&gt;&gt;</a>);
 
-        if (pageCount > 5) {            
-            if (currentPage < pageCount - 1) {
-                paginationLinks.push(getLinkToPage(currentPage + 1));
-            }
-
-            if (currentPage < pageCount - fastStepWidth) {  
-                paginationLinks.push(getLinkToPage(currentPage + fastStepWidth, '. . ', ' . .'));
-            }
-        }
-
-        if (pageCount > 1 && pageCount > currentPage) {
-            paginationLinks.push(getLinkToPage(pageCount));
-        }
-        
         return paginationLinks;
     }
 
