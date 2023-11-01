@@ -54,8 +54,7 @@ function PaginationControls() {
         
         const doublePrevPageNo = currentPage > fastStepWidth ? currentPage - fastStepWidth : 1;
         const doubleNextPageNo = currentPage + fastStepWidth < pageCount ? currentPage + fastStepWidth : pageCount;
-        //console.log('Current', currentPage, 'Left', pagesToTheLeft, 'Right', pagesToTheRight, 'Start', startPage);
-        console.log('Current', currentPage, 'FSW', fastStepWidth, 'Left', doublePrevPageNo, 'Right', doubleNextPageNo);
+
         paginationLinks.push(<a key="prevFast" className="pagination-link" data-target-page={doublePrevPageNo} onClick={onPaginationLinkClick}>&lt;&lt;</a>);
         paginationLinks.push(<a key="prev" className="pagination-link" data-target-page={currentPage > 1 ? currentPage - 1 : pageCount} onClick={onPaginationLinkClick}>&lt;</a>);
 
@@ -66,7 +65,6 @@ function PaginationControls() {
         } else {
             // Display still maxDirectLinks links.
             const spotsEachSide = Math.floor(maxDirectLinks/2);
-            console.log('Each side', spotsEachSide)
             const pagesToTheRight = pageCount - currentPage;
             const pagesToTheLeft = currentPage - 1;
             

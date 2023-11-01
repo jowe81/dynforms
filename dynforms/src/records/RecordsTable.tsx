@@ -16,7 +16,6 @@ function RecordsTable() {
     
     //const displayFields = appData.formDefinition?.fields.filter((field: Interfaces.Field) => field.display !== false);
     const displayFields = appData.table?.columns?.filter((field: Interfaces.Field) => field.display !== false);
-    console.log('displayFields at table', displayFields);
     const settings = appData.formDefinition?.settings;
 
     const records = getRecords();
