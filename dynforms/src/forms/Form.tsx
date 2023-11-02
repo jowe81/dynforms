@@ -18,7 +18,7 @@ function Form() {
     const formDefinition = appData.formTypes?.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName);
 
     const { state } = useLocation();
-    console.log('state', state)
+
     const recordId = state?.createNewRecord ? null : appData.currentRecord?._id;
 
     useEffect(() => {

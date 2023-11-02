@@ -335,23 +335,26 @@ export default function useAppData() {
             .catch(axiosError);
     }
 
-    // Initialize.
-    if (!Array.isArray(appData.order)) {
+    const initApp = async () => {
+        // Initialize.
+        if (!Array.isArray(appData.order)) {
+            console.log('Initializing App...');
 
-        // Decide whether to filter locally or on the server.
-        appData.filterLocally = false;
-        setAppData(appData);
+            // Decide whether to filter locally or on the server.
+            appData.filterLocally = false;
+            setAppData(appData);
 
-        resetOrder();
-        resetSearchValue();
-        appData.table = {
-            itemsPerPage: constants.itemsPerPageInitial,
-            pageCount: 0,                
-            currentPage: 0,      
+            resetOrder();
+            resetSearchValue();
+            appData.table = {
+                itemsPerPage: constants.itemsPerPageInitial,
+                pageCount: 0,                
+                currentPage: 0,      
+            }
+
+
+            loadFormTypes();
         }
-
-
-        loadFormTypes();
     }
 
     return {
@@ -371,6 +374,8 @@ export default function useAppData() {
 
         dbDeleteRecord,
         dbUpdateRecord,
+
+        initApp,
     }
 
 };

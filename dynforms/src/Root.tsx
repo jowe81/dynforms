@@ -1,5 +1,5 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
 import useAppData from "./hooks/useAppData";
 
 import CollectionSelector from "./sidebar/CollectionSelector";
@@ -10,10 +10,15 @@ import './root.css';
 export default function Root() {
     const navigate = useNavigate();
 
-    const { appData, setCollectionName, setOrderColumn } = useAppData();
+    const { appData, setCollectionName, setOrderColumn, initApp } = useAppData();
+
+    useEffect(() => {
+        initApp()
+    }, []);
+
     const collectionName = appData.collectionName;
-    const primaryColumn = appData.order[0].selectValue;
-    const secondaryColumn = appData.order[1].selectValue;    
+    const primaryColumn = appData.order && appData.order[0].selectValue;
+    const secondaryColumn = appData.order && appData.order[1].selectValue;    
 
     function onCollectionSelect(event: any) {
         const value = event.target.value;
@@ -31,10 +36,6 @@ export default function Root() {
         if (value) {
             setOrderColumn(value, priority);            
         }
-    }
-
-    function onNewRecordClick(event: any) {
-        navigate('/form', { state: {createNewRecord: true}});
     }
         
     return (

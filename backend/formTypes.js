@@ -113,7 +113,7 @@ const formTypes = [
                 label: "Size",
                 type: "filesize",
                 readOnly: true,
-                rank: 12,
+                rank: 13,
                 groupId: "filemeta",
             },
             {
@@ -134,11 +134,19 @@ const formTypes = [
                 groupId: "filemeta",                
             },
             {
+                key: "aspect",
+                label: "Aspect Ratio",
+                type: "number",
+                readOnly: true,
+                rank: 12,
+                groupId: "filemeta",                
+            },
+            {
                 key: "uid",
                 label: "UserID",
                 type: "number",
                 readOnly: true,
-                rank: 13,
+                rank: 14,
                 display: false,
             },
             {
@@ -146,7 +154,7 @@ const formTypes = [
                 label: "GroupID",
                 type: "number",
                 readOnly: true,
-                rank: 14,
+                rank: 15,
                 display: false,
             },
             {
@@ -154,7 +162,7 @@ const formTypes = [
                 label: "Updated at",
                 type: "date",
                 readOnly: true,
-                rank: 15,
+                rank: 16,
                 display: false,
             },
         ]
