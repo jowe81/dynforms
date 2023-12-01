@@ -19,7 +19,7 @@ function M2m(db) {
             collectionName,
             sessionId,
             filter,
-            sort,
+            orderBy,
             settings,
         } = request;
 
@@ -36,8 +36,8 @@ function M2m(db) {
             filter = {};
         }
 
-        if (!sort) {
-            sort = {};
+        if (!orderBy) {
+            orderBy = {};
         }
 
         const collection = getEnhancedCollection(db, collectionName);
@@ -45,7 +45,7 @@ function M2m(db) {
         try {
             const records = await collection
                 .find(filter)
-                .sort(sort)
+                .sort(orderBy)
                 .skip(settings?.skip ?? 0)
                 .limit(settings?.limit ?? maxRecords)
                 .toArray();

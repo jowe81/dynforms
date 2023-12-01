@@ -180,10 +180,108 @@ function applyFieldsFilter(doc, fields) {
             case 'number':
                 doc[field.key] = parseInt(value);
                 break;
+
+            case 'date':
+                const date = new Date(value);
+                doc[field.key] = date;
+                break;
+            
+            case 'birthday':                
+                const {year, month, day} = getDateComponents(value);
+                if (year && month && day) {
+                    // Have a full valid date; store additionally as an actual date
+                    const yyyymmdd = `${year.toString().padStart(4, "0")}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+                    const mmdd = `${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+                    doc[field.key + "_date"] = new Date(value);
+                    doc[field.key + "_MMDD"] = mmdd;
+                    doc[field.key] = yyyymmdd;  
+                } else if (month && day) {
+                    // Have partial date, store as MM-DD
+                    const mmdd = `${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+                    doc[field.key + "_date"] = null;
+                    doc[field.key + "_MMDD"] = mmdd;
+                    doc[field.key] = '????-' + mmdd;                    
+                } else {
+                    // Invalid data given. Reset fields.
+                    doc[field.key] = null;
+                    doc[field.key + "_date"] = null;
+                    doc[field.key + "_MMDD"] = null;
+                }
+
+                break;
+
         }
 
         console.log(`${field.key} -> ${field.type}: ${value} -> ${doc[field.key]}`)
     })
+}
+
+// Expecting something like Y-M-D
+function isFullDateString(value) {
+    const { year, month, day } = getDateComponents(value);
+
+    if (!(year && month && day)) {
+        return false;
+    }
+
+    return true;
+}
+
+// Expecting something like M-D
+function isPartialDateString(value) {
+    const { month, day } = getDateComponents(value);
+
+    if (!(month && day)) {
+        return false;
+    }
+
+    return true;
+}
+
+function getDateComponents(value, assumedCentury = 20) {    
+    const components = {};
+
+    if (typeof value !== 'string') {
+        return components
+    }
+
+    // Split by non-alphanumeric characters to see if we get 3 parts.
+    const parts = value.split(/[^a-zA-Z0-9?]+/);
+
+    let year = null;
+    let month = null;
+    let day = null;;
+
+    if (parts.length === 3) {
+        // Assume Y-M-D
+        year = parseInt(parts[0]);
+        month = parseInt(parts[1]);
+        day = parseInt(parts[2]);
+    }
+
+    if (parts.length === 2) {
+        // Assume M-D
+        month = parseInt(parts[0]);
+        day = parseInt(parts[1]);
+    }
+
+    if (year !== null && year > 0 && year < 9999) {
+
+        if (year < 100) {
+            year += (assumedCentury - 1) * 100;
+        }
+        components.year = year;
+    }
+
+    if (month !== null && month > 0 && month < 13) {
+        components.month = month;
+    }
+
+    if (day !== null && day > 0 && day < 32) {
+        components.day = day;
+    }
+    console.log('Components: ', components)
+    return components;
 }
 
 export {

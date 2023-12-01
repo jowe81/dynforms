@@ -59,6 +59,7 @@ function Field(props: any) {
         case 'text':
         case 'number':
         case 'filesize':
+        case 'birthday':
             jsx =  (<div className="form-element-container"><TextField {...fieldProps}/></div>);
             break;
         

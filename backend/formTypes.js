@@ -253,7 +253,7 @@ const formTypes = [
             {
                 label: "Date of birth",
                 key: "date_of_birth",
-                type: "date",
+                type: "birthday",                
                 rank: 2,
             },
             {

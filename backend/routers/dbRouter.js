@@ -157,18 +157,21 @@ const initRouter = (express, db) => {
     /**
      * This endpoint is for machine use, e.g. the jj-auto backend.
      */
-    dbRouter.post("/m2m/pull/:collectionName", async (req, res) => {
-        const { collectionName } = req.params;
+    dbRouter.post("/m2m/pull", async (req, res) => {
         const {
-            sessionId,  // Optional session identifier
-            filter,     // Optional Mongo query filter
-            settings,   // Optional settings (.e.g 'random')
+            connectionName, // Optional target database (use default if undefined)
+            collectionName, // Target collection
+            sessionId,      // Optional session identifier
+            filter,         // Optional Mongo query filter
+            orderBy,        // Optional sort filter
+            settings,       // Optional settings (.e.g 'random')
         } = req.body;
 
         const processingResult = await m2m.processRequest({
             collectionName,
             sessionId,
             filter,
+            orderBy,
             settings,
         });
 
@@ -179,10 +182,13 @@ const initRouter = (express, db) => {
             collectionName,
             sessionId,
             filter,
+            orderBy,
             settings,
             success,
             data,
         };
+
+        log(`Processing request for ${collectionName}, filter: ${JSON.stringify(filter)} (returning ${result.data.records?.length} records)`);
 
         res.json(result);
     });
