@@ -1,135 +1,193 @@
-import { log } from '../helpers/jUtils.js';
-import { storeUpdateRecord } from '../db/mongodb.js';
-import { ObjectId } from 'mongodb';
-import { constructSearchFilter, getSortObjectFromQueryData, getEnhancedCollection } from '../db/dbutils.js';
-import formTypes from '../formTypes.js';
+import { log } from "../helpers/jUtils.js";
+import { storeUpdateRecord } from "../db/mongodb.js";
+import { ObjectId } from "mongodb";
+import {
+    constructSearchFilter,
+    getSortObjectFromQueryData,
+    getEnhancedCollection,
+} from "../db/dbutils.js";
+import formTypes from "../formTypes.js";
+import M2m from "../modules/m2m.js";
 
 const initRouter = (express, db) => {
-  const castId = obj => obj._id = obj._id ? new ObjectId(obj._id) : null;
-  const logError = err => log(`Error: ${err.message}`);
 
-  const dbRouter = express.Router();
+    // Initialize data processor for API-2-API requests.
+    const m2m = M2m(db);
 
-  dbRouter.use((err, req, res, next) => {
-    logError(err);
-    res.status(500).send(err);
-    next(err);
-  });
+    const castId = (obj) => (obj._id = obj._id ? new ObjectId(obj._id) : null);
+    const logError = (err) => log(`Error: ${err.message}`);
 
-  dbRouter.use((req, res, next) => {    
-    log(`/post/dbRouter${req.url}`);
-    next();
-  })
-  
-  dbRouter.get('/formtypes', async (rec, res) => {
-    res.json(formTypes);
-  });
+    const dbRouter = express.Router();
 
-  dbRouter.get('/pageCount/:collectionName', async (req, res) => {
-    const { collectionName } = req.params;
-    const { search, itemsPerPage } = req.query;
-    const searchFilter = constructSearchFilter(search, formTypes[2].fields);
-
-    const collection = getEnhancedCollection(db,collectionName);
-    try {
-        const recordsCount = await collection.find(searchFilter).count();
-        
-        const pageCount = itemsPerPage ? Math.ceil(recordsCount / itemsPerPage) : 1;
-
-        res.json({ collectionName, pageCount, recordsCount });
-    } catch (err) {
+    dbRouter.use((err, req, res, next) => {
         logError(err);
-        res.status(500).send();
-    }
-  });
+        res.status(500).send(err);
+        next(err);
+    });
 
-  dbRouter.get('/records/:collectionName', async (req, res) => {
-    const { collectionName } = req.params;
-    let { search, sortCol1, sortCol2 } = req.query;
-    const itemsPerPage = parseInt(req.query.itemsPerPage)
-    const page = parseInt(req.query.page) || 1;
-    const skip = Math.max((page - 1) * itemsPerPage, 0);
+    dbRouter.use((req, res, next) => {
+        log(`/post/dbRouter${req.url}`);
+        next();
+    });
 
-    const formDefinition = formTypes.find(formDefinition => formDefinition.collectionName === collectionName);
+    dbRouter.get("/formtypes", async (rec, res) => {
+        res.json(formTypes);
+    });
 
-    const searchFilter = constructSearchFilter(search, formDefinition.fields);
+    dbRouter.get("/pageCount/:collectionName", async (req, res) => {
+        const { collectionName } = req.params;
+        const { search, itemsPerPage } = req.query;
+        const searchFilter = constructSearchFilter(search, formTypes[2].fields);
 
-    const sortObject = getSortObjectFromQueryData([sortCol1, sortCol2]);
+        const collection = getEnhancedCollection(db, collectionName);
+        try {
+            const recordsCount = await collection.find(searchFilter).count();
 
-    const collection = getEnhancedCollection(db,collectionName);
-    try {
-        const recordsCount = await collection.find().count();
-        const pageCount = itemsPerPage ? Math.ceil(recordsCount / itemsPerPage) : 1;                
-        const records = await collection
-            .find(searchFilter)
-            .sort(sortObject)
-            .skip(skip)
-            .limit(itemsPerPage).toArray();        
+            const pageCount = itemsPerPage
+                ? Math.ceil(recordsCount / itemsPerPage)
+                : 1;
 
-        // Add in the index
-        records.forEach((record, index) => record._index = skip + index);
+            res.json({ collectionName, pageCount, recordsCount });
+        } catch (err) {
+            logError(err);
+            res.status(500).send();
+        }
+    });
 
-        const data = {
-            table: {
-                collectionName,
-                currentPage: page,
-                pageCount,
-                recordsCount,
-                itemsPerPage,
-            },
-            records,
+    dbRouter.get("/records/:collectionName", async (req, res) => {
+        const { collectionName } = req.params;
+        let { search, sortCol1, sortCol2 } = req.query;
+        const itemsPerPage = parseInt(req.query.itemsPerPage);
+        const page = parseInt(req.query.page) || 1;
+        const skip = Math.max((page - 1) * itemsPerPage, 0);
+
+        const formDefinition = formTypes.find(
+            (formDefinition) => formDefinition.collectionName === collectionName
+        );
+
+        const searchFilter = constructSearchFilter(
+            search,
+            formDefinition.fields
+        );
+
+        const sortObject = getSortObjectFromQueryData([sortCol1, sortCol2]);
+
+        const collection = getEnhancedCollection(db, collectionName);
+        try {
+            const recordsCount = await collection.find().count();
+            const pageCount = itemsPerPage
+                ? Math.ceil(recordsCount / itemsPerPage)
+                : 1;
+            const records = await collection
+                .find(searchFilter)
+                .sort(sortObject)
+                .skip(skip)
+                .limit(itemsPerPage)
+                .toArray();
+
+            // Add in the index
+            records.forEach((record, index) => (record._index = skip + index));
+
+            const data = {
+                table: {
+                    collectionName,
+                    currentPage: page,
+                    pageCount,
+                    recordsCount,
+                    itemsPerPage,
+                },
+                records,
+            };
+
+            res.json(data);
+        } catch (err) {
+            logError(err);
+            res.status(500).send();
+        }
+    });
+
+    dbRouter.delete("/records/:collectionName/:_id", async (req, res) => {
+        castId(req.params);
+
+        const { collectionName, _id } = req.params;
+        log(`Delete: ${collectionName} ${_id}`);
+
+        const collection = getEnhancedCollection(db, collectionName);
+        try {
+            const result = await collection.deleteOne({ _id });
+            res.json(result);
+        } catch (err) {
+            logError(err);
+            res.status(500).send();
+        }
+    });
+
+    dbRouter.post("/post/:collectionName", async (req, res) => {
+        const { collectionName } = req.params;
+        const collection = getEnhancedCollection(db, collectionName);
+
+        const formDefinition = formTypes.find(
+            (formDefinition) => formDefinition.collectionName === collectionName
+        );
+        const fields = formDefinition?.fields;
+
+        if (!fields) {
+            return res.status(500).send();
         }
 
-        res.json(data);    
-    } catch (err) {
-        logError(err);
-        res.status(500).send();
-    }
-  });
+        const record = req.body;
+        castId(record);
 
-  dbRouter.delete('/records/:collectionName/:_id', async (req, res) => {
-    castId(req.params);
+        try {
+            const result = (await record._id)
+                ? collection.updateOne(
+                      { _id: record._id },
+                      record,
+                      null,
+                      fields
+                  )
+                : collection.insertOne(record, null, null, fields);
+            res.json(result);
+        } catch (err) {
+            logError(err);
+            res.status(500).send();
+        }
+    });
 
-    const { collectionName, _id } = req.params;
-    log(`Delete: ${collectionName} ${_id}`)
+    /**
+     * This endpoint is for machine use, e.g. the jj-auto backend.
+     */
+    dbRouter.post("/m2m/pull/:collectionName", async (req, res) => {
+        const { collectionName } = req.params;
+        const {
+            sessionId,  // Optional session identifier
+            filter,     // Optional Mongo query filter
+            settings,   // Optional settings (.e.g 'random')
+        } = req.body;
 
-    const collection = getEnhancedCollection(db,collectionName);
-    try {
-        const result = await collection.deleteOne({ _id });
+        const processingResult = await m2m.processRequest({
+            collectionName,
+            sessionId,
+            filter,
+            settings,
+        });
+
+        const success = !processingResult.error;
+        const data = processingResult.data;
+
+        const result = {
+            collectionName,
+            sessionId,
+            filter,
+            settings,
+            success,
+            data,
+        };
+
         res.json(result);
-    } catch (err) {
-        logError(err);      
-        res.status(500).send();
-    }
+    });
 
-  });
-
-  dbRouter.post('/post/:collectionName', async (req, res) => {    
-    const { collectionName } = req.params;
-    const collection = getEnhancedCollection(db,collectionName);
-
-    const formDefinition = formTypes.find(formDefinition => formDefinition.collectionName === collectionName);
-    const fields = formDefinition?.fields;
-
-    if (!fields) {
-        return res.status(500).send();
-    }
-
-    const record = req.body;
-    castId (record);
-    
-    try {
-        const result = await record._id ? 
-            collection.updateOne({ _id: record._id }, record, null, fields) :
-            collection.insertOne(record, null, null, fields);
-        res.json(result);
-    } catch (err) {
-        logError(err);
-        res.status(500).send();
-    }
-  });
-  
-  return dbRouter;
-}
+    return dbRouter;
+};
 
 export default initRouter;

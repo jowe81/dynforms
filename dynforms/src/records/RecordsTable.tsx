@@ -7,7 +7,6 @@ import './records.css';
 
 import PaginationControls from "./PaginationControls.tsx";
 import DisplayValue from "./DisplayValue.tsx";
-import Group from "./Group.tsx";
 
 function RecordsTable() {
 
