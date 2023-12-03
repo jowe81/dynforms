@@ -9,8 +9,8 @@ const formTypes = [
              */
             images: {
                 showImages: true,
-                baseUrl: 'http://johannes-mb.wnet.wn:3020/',
-            }
+                baseUrl: "http://johannes-mb.wnet.wn:3020/",
+            },
         },
         groups: [
             {
@@ -20,7 +20,7 @@ const formTypes = [
             {
                 label: "File Info",
                 id: "filemeta",
-            }
+            },
         ],
         fields: [
             {
@@ -78,7 +78,7 @@ const formTypes = [
                     },
                 ],
                 groupId: "about",
-            },            
+            },
             {
                 key: "dateTime",
                 label: "Date Taken",
@@ -123,7 +123,6 @@ const formTypes = [
                 readOnly: true,
                 rank: 10,
                 groupId: "filemeta",
-                
             },
             {
                 key: "height",
@@ -131,7 +130,7 @@ const formTypes = [
                 type: "number",
                 readOnly: true,
                 rank: 11,
-                groupId: "filemeta",                
+                groupId: "filemeta",
             },
             {
                 key: "aspect",
@@ -139,7 +138,7 @@ const formTypes = [
                 type: "number",
                 readOnly: true,
                 rank: 12,
-                groupId: "filemeta",                
+                groupId: "filemeta",
             },
             {
                 key: "uid",
@@ -165,7 +164,7 @@ const formTypes = [
                 rank: 16,
                 display: false,
             },
-        ]
+        ],
     },
     {
         collectionName: "recipes",
@@ -221,7 +220,7 @@ const formTypes = [
                         key: "update",
                         label: "Update",
                         type: "textarea",
-                        defaultValue: 'hello',
+                        defaultValue: "hello",
                         rank: 0,
                     },
                     {
@@ -229,11 +228,53 @@ const formTypes = [
                         label: "Date",
                         type: "date",
                         rank: 1,
-                    },                    
+                    },
                 ],
             },
         ],
     },
+    {
+        collectionName: "scriptures",
+        title: "Scriptures",
+        fields: [
+            {
+                key: "reference",
+                label: "Reference",
+                type: "text",
+                annotation: "John 3:16; Psalm 23:1-3,4,6",
+                maxLength: 150,
+                rank: 1,
+            },
+            {
+                key: "translation",
+                label: "Translation",
+                type: "select",
+                rank: 2,
+                options: [
+                    {
+                        label: "NIV",
+                        value: "niv",
+                    },
+                    {
+                        label: "RSV",
+                        value: "rsv",
+                    },
+                    {
+                        label: "NASB",
+                        value: "nasb",
+                    },
+                ],
+            },
+            {
+                key: "text",
+                label: "Text",
+                type: "textarea",
+                rows: 5,
+                rank: 3,
+            },
+        ],
+    },
+
     {
         collectionName: "address_book",
         title: "Address Book",
@@ -253,7 +294,7 @@ const formTypes = [
             {
                 label: "Date of birth",
                 key: "date_of_birth",
-                type: "birthday",                
+                type: "birthday",
                 rank: 2,
             },
             {
@@ -287,13 +328,13 @@ const formTypes = [
                                 label: "Mobile",
                                 value: "mobile",
                             },
-                        ]
+                        ],
                     },
                     {
                         label: "Number",
                         key: "phone",
                         type: "phone",
-                        placeholder:"123 456-7890",
+                        placeholder: "123 456-7890",
                         rank: 0,
                     },
                     {
@@ -305,7 +346,7 @@ const formTypes = [
                     },
                     {
                         key: "updated_at",
-                        type: "date",                        
+                        type: "date",
                         rank: 2,
                         display: false,
                     },
@@ -321,7 +362,7 @@ const formTypes = [
                         label: "Email",
                         key: "email",
                         type: "email",
-                        placeholder: "email@example.com", 
+                        placeholder: "email@example.com",
                         rank: 0,
                     },
                     {
@@ -333,7 +374,7 @@ const formTypes = [
                     },
                     {
                         key: "updated_at",
-                        type: "date",                        
+                        type: "date",
                         rank: 2,
                         display: false,
                     },

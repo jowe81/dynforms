@@ -41,7 +41,7 @@ const initRouter = (express, db) => {
 
         const collection = getEnhancedCollection(db, collectionName);
         try {
-            const recordsCount = await collection.find(searchFilter).count();
+            const recordsCount = await collection.countDocuments(searchFilter);
 
             const pageCount = itemsPerPage
                 ? Math.ceil(recordsCount / itemsPerPage)
@@ -74,7 +74,7 @@ const initRouter = (express, db) => {
 
         const collection = getEnhancedCollection(db, collectionName);
         try {
-            const recordsCount = await collection.find().count();
+            const recordsCount = await collection.countDocuments();
             const pageCount = itemsPerPage
                 ? Math.ceil(recordsCount / itemsPerPage)
                 : 1;
@@ -158,7 +158,7 @@ const initRouter = (express, db) => {
      * This endpoint is for machine use, e.g. the jj-auto backend.
      */
     dbRouter.post("/m2m/pull", async (req, res) => {
-        const {
+        let {
             connectionName, // Optional target database (use default if undefined)
             collectionName, // Target collection
             sessionId,      // Optional session identifier
@@ -167,7 +167,18 @@ const initRouter = (express, db) => {
             settings,       // Optional settings (.e.g 'random')
         } = req.body;
 
+        if (!filter) {
+            filter = {};
+        }
+
+        if (!orderBy) {
+            orderBy = {};
+        }
+
+        log(`Processing request for ${collectionName}, settings: ${JSON.stringify(settings)}, filter: ${JSON.stringify(filter)}, orderBy: ${JSON.stringify(orderBy)}.`);
+
         const processingResult = await m2m.processRequest({
+            connectionName,
             collectionName,
             sessionId,
             filter,
@@ -179,6 +190,7 @@ const initRouter = (express, db) => {
         const data = processingResult.data;
 
         const result = {
+            connectionName,
             collectionName,
             sessionId,
             filter,
@@ -188,7 +200,12 @@ const initRouter = (express, db) => {
             data,
         };
 
-        log(`Processing request for ${collectionName}, filter: ${JSON.stringify(filter)} (returning ${result.data.records?.length} records)`);
+        if (result.data?.records) {
+            const recordCount = result.data.records.length;
+            log(`Returning ${recordCount} record${recordCount !== 1 ? 's' : ''}.`);
+        } else {
+            log(`Returning error: ${result.error}`);
+        }            
 
         res.json(result);
     });
