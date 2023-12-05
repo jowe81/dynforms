@@ -136,6 +136,12 @@ const initRouter = (express, db) => {
         }
 
         const record = req.body;
+
+        // Discard any old indexes that may have come back from the frontend.
+        if (record.hasOwnProperty('_index')) {
+            delete record._index;
+        }
+
         castId(record);
 
         try {

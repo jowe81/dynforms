@@ -2,7 +2,6 @@ import axios from "axios";
 
 import useAppState from "./useAppState";
 import { Interfaces } from "../forms/Form";
-import { keyBy } from "lodash";
 
 export default function useAppData() {
 
@@ -264,6 +263,37 @@ export default function useAppData() {
 
     }
 
+    const setUser = (userToSet: any) => {
+        // Determine the current user
+        let storedUser;
+        try {
+            storedUser = JSON.parse(localStorage.getItem('user') ?? "");
+        } catch (e) {
+            console.log('No valid user object currently stored.')
+        }
+
+        const defaultUser = { name: 'Johannes' };
+        const user = userToSet ?? storedUser ?? defaultUser;
+        localStorage.setItem('user', JSON.stringify(user));
+
+        console.log(`Set current user to`, user);
+
+        // Determine the list of users to choose from.
+        const storedUserlist = localStorage.getItem("userlist");
+        const defaultUserlist = [
+            defaultUser,
+            { name: 'Jess'},
+            { name: 'Guest'},
+        ];
+
+        const userlist = storedUserlist ?? defaultUserlist;
+        
+        appData.user = {...user};
+        appData.userlist = [...userlist];
+
+        setAppData(appData);
+    }
+
     const loadRecords = async () => {
         if (!appData.collectionName) {
             return;
@@ -315,11 +345,15 @@ export default function useAppData() {
     
     const dbUpdateRecord = async (record: any) => {        
         console.log(`Updating record in ${appData.collectionName}`, record);
-
+        const recordWithUser = { ...record };
+        recordWithUser.__user = appData.user;
         return axios
-            .post(`${constants.apiRoot}/post/${appData.collectionName}`, record)
+            .post(
+                `${constants.apiRoot}/post/${appData.collectionName}`,
+                recordWithUser
+            )
             .then(loadRecords)
-            .then(data => console.log("Update and load complete."))
+            .then((data) => console.log("Update and load complete."))
             .catch(axiosError);
     }
 
@@ -352,6 +386,7 @@ export default function useAppData() {
                 currentPage: 0,      
             }
 
+            setUser(null);
 
             loadFormTypes();
         }
@@ -363,7 +398,8 @@ export default function useAppData() {
         setCollectionName,
         setOrderColumn,
         setSearchValue,
-        setFormDefinition,        
+        setFormDefinition, 
+        setUser,       
         resetOrder,
 
         setPage,

@@ -2,6 +2,7 @@ import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import useAppData from "./hooks/useAppData";
 
+import UserSelector from "./sidebar/UserSelector";
 import CollectionSelector from "./sidebar/CollectionSelector";
 import OrderSelector from "./sidebar/OrderSelector";
 
@@ -41,6 +42,10 @@ export default function Root() {
     return (
         <div id="ui-root">
             <div id="sidebar">
+                <div className="top-selector-container top-nav-item">
+                    <label>User:</label>
+                    <UserSelector />
+                </div>                
                 <div className="top-selector-container top-nav-item">
                     <label>Collection:</label>
                     <CollectionSelector value={collectionName} onChange={onCollectionSelect}/>
