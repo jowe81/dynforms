@@ -256,6 +256,10 @@ const formTypes = [
                         value: "niv",
                     },
                     {
+                        label: "NIV (1984)",
+                        value: "niv1984",
+                    },
+                    {
                         label: "RSV",
                         value: "rsv",
                     },
@@ -379,6 +383,104 @@ const formTypes = [
                         display: false,
                     },
                 ],
+            },
+        ],
+    },
+    {
+        collectionName: "johannes_medical",
+        title: "Johannes Medical",
+        fields: [
+            {
+                key: "created_at",
+                label: "Measured at",
+                type: "date",
+                readOnly: true,
+                rank: 1,
+                display: true,
+            },
+            {
+                key: "blood_pressure",
+                label: "Sys/Dia",
+                type: "text",
+                annotation: "Systolic/Diastolic",
+                maxLength: 150,
+                rank: 2,
+            },
+            {
+                key: "pulse",
+                label: "Pulse (bpm)",
+                type: "number",
+                annotation: "bpm",
+                rank: 3,
+            },
+            {
+                key: "urine_output",
+                label: "Urine output (ml)",
+                type: "number",
+                annotation: "ml",
+                rank: 4,
+            },
+
+            {
+                key: "medication_intake",
+                label: "Medication intake",
+                type: "select",
+                rank: 5,
+                options: [
+                    {
+                        label: "Candesartan 4mg",
+                        value: "Candesartan 4mg",
+                    },
+                    {
+                        label: "Candesartan 8mg",
+                        value: "Candesartan 8mg",
+                    },
+                ],
+                display: false,
+            },
+
+            {
+                key: "candesartan",
+                label: "Candesartan (mg)",
+                type: "select",
+                rank: 6,
+                options: [
+                    {
+                        label: 4,
+                        value: 4,
+                    },
+                    {
+                        label: 6,
+                        value: 6,
+                    },
+                    {
+                        label: 8,
+                        value: 8,
+                    },
+                ],
+            },
+            {
+                key: "notes",
+                label: "Notes",
+                type: "textarea",
+                rows: 5,
+                rank: 7,
+            },
+            {
+                key: "updated_at",
+                label: "Updated at",
+                type: "date",
+                readOnly: true,
+                rank: 8,
+                display: false,
+            },
+            {
+                key: "_id",
+                label: "ID",
+                type: "text",
+                readOnly: true,
+                rank: 9,
+                display: false,
             },
         ],
     },

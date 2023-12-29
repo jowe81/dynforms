@@ -2,6 +2,7 @@ import axios from "axios";
 
 import useAppState from "./useAppState";
 import { Interfaces } from "../forms/Form";
+import constants from "../constants";
 
 export default function useAppData() {
 
@@ -415,9 +416,4 @@ export default function useAppData() {
     }
 
 };
-
-const constants = {
-    apiRoot: 'http://localhost:3010/db',
-    itemsPerPageInitial: 5,
-}
 
