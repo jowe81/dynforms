@@ -296,23 +296,29 @@ const formTypes = [
                 rank: 1,
             },
             {
+                label: "Middle Name(s)",
+                key: "middle_names",
+                type: "text",
+                rank: 2,
+            },
+            {
                 label: "Date of birth",
                 key: "date_of_birth",
                 type: "birthday",
-                rank: 2,
+                rank: 3,
             },
             {
                 label: "Show Birthday",
                 key: "show_birthday",
                 type: "boolean",
                 defaultValue: true,
-                rank: 2,
+                rank: 4,
             },
             {
                 label: "Addresses",
                 key: "addresses",
                 type: "subfieldArray",
-                rank: 4,
+                rank: 5,
                 fields: [
                     {
                         label: "Street address",
@@ -349,7 +355,7 @@ const formTypes = [
                         key: "phone",
                         type: "text",
                         rank: 5,
-                        display: false, 
+                        display: false,
                     },
                     {
                         key: "updated_at",
@@ -363,7 +369,7 @@ const formTypes = [
                 label: "Phone Numbers",
                 key: "phone_numbers",
                 type: "subfieldArray",
-                rank: 3,
+                rank: 6,
                 fields: [
                     {
                         label: "Type",
@@ -415,7 +421,7 @@ const formTypes = [
                 label: "Email Addresses",
                 key: "email_addresses",
                 type: "subfieldArray",
-                rank: 4,
+                rank: 7,
                 fields: [
                     {
                         label: "Email",
@@ -438,6 +444,36 @@ const formTypes = [
                         display: false,
                     },
                 ],
+            },
+            {
+                label: "Website",
+                key: "website",
+                type: "text",
+                rank: 8,
+            },
+            {
+                key: "notes",
+                label: "Notes",
+                type: "textarea",
+                rows: 5,
+                rank: 9,
+                display: false,
+            },
+            {
+                key: "created_at",
+                label: "Created at",
+                type: "date",
+                readOnly: true,
+                rank: 10,
+                display: true,
+            },
+            {
+                key: "updated_at",
+                label: "Updated at",
+                type: "date",
+                readOnly: true,
+                rank: 11,
+                display: true,
             },
         ],
     },

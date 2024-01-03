@@ -1,3 +1,9 @@
+/**
+ * This migrates data from sql lifelog/ll2_people to mongo dynforms/address_book.
+ *
+ * When editing: MAKE SURE TO ALWAYS UPDATE COPY IN dynforms/src/scripts!
+ */
+
 const mysql = require("mysql2");
 const { MongoClient } = require("mongodb");
 
@@ -65,7 +71,6 @@ async function migrateData() {
 }
 
 function getConvertedRecords(mysqlRecords) {
-    console.log(mysqlRecords[0]);
     const converted = [];
 
     mysqlRecords.forEach((record) => {
@@ -84,6 +89,12 @@ function getConvertedRecords(mysqlRecords) {
             email_addresses: getEmailAddresses(record),
             addresses: getAddresses(record),
             phone_numbers: getPhoneNumbers(record),
+
+            website: record.website,
+            notes: record.notes,
+
+            __legacyRecord: { ...record },
+
             created_at,
             updated_at: created_at,
         };
@@ -112,7 +123,7 @@ function getBirthdayFields(record) {
      **/
 
     let date_of_birth, date_of_birth_date, date_of_birth_MMDD;
-    console.log(`Day: ${record.birthday_day}, Month: ${record.birthday_month}`);
+
     if (record.birthday_day && record.birthday_month) {
         date_of_birth_MMDD =
             String(record.birthday_month).padStart(2, "0") +
@@ -229,7 +240,6 @@ function getAddresses(record) {
         }
     });
 
-    console.log(`Got ${addresses.length} address fields. `);
     return addresses;
 }
 
@@ -245,11 +255,6 @@ function haveAddressInfo(prefix, record) {
         return false;
     });
 
-    console.log(
-        `Have ${prefix} address info for ${record.firstname}: ${
-            result ? "yes" : "no"
-        }`
-    );
     return result;
 }
 
