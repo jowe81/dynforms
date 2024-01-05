@@ -15,7 +15,7 @@ import FieldLabel from "./FieldLabel.tsx";
 
 
 function Field(props: any) {
-    const { record, itemIndex, setEdited, updateRecord, field, keys } = props;
+    const { record, itemIndex, updateRecord, field, keys } = props;
 
     if (field.display === false) {
         // For now don't render hidden fields at all.
@@ -35,9 +35,7 @@ function Field(props: any) {
 
         const fieldValue = event.target[keyToValue];
 
-        updateRecord(fullKeySet, fieldValue);
-        
-        setEdited(true);
+        updateRecord(fullKeySet, fieldValue);        
     }
 
     const fieldProps = {
@@ -107,7 +105,6 @@ function Field(props: any) {
         case 'subfieldArray':
             jsx =  (
                 <>
-                    <div className="form-subfield-array-outer-header"><label>{ field.label }</label></div>
                     <div className="form-subfield-array-container">                    
                         <SubfieldArray 
                             keys={subfieldKeys} 

@@ -29,10 +29,14 @@ function Form() {
         }        
     }, [collectionName, recordId]);
 
-    function updateRecord(fullKeySet: String[], data: any) {
+    function updateRecord(fullKeySet: String[], data: any, supressSetEdited = false) {
         const newRecord = {...record};        
         arrSet(newRecord, fullKeySet, data);
         setRecord(newRecord);
+
+        if (!supressSetEdited) {
+            setEdited(true);
+        } 
     }
 
     function handleSubmit(event: any) {
@@ -68,7 +72,6 @@ function Form() {
         keyPath: '',
         keys: [],
         record,
-        setEdited,
         updateRecord,        
     }
 

@@ -20,7 +20,7 @@ function SubfieldArray(props: any) {
     }
 
     function addEntry() {
-        updateRecord(keys, [...record, getBlankItem(fields)]);
+        updateRecord(keys, [...record, getBlankItem(fields)], true);
     }
 
     function removeEntry(event) {
@@ -42,7 +42,7 @@ function SubfieldArray(props: any) {
     return (
         <>  
             <div className="form-subfield-array-header form-header">                
-                <a className='form-link' onClick={addEntry}>
+                <a href="#" className='form-link' onClick={addEntry}>
                     + Add Entry
                 </a>
             </div>
@@ -50,7 +50,7 @@ function SubfieldArray(props: any) {
                 return (
                     <div className="form-subfield-array-item-container" key={itemIndex}>
                         <div className="form-subfield-array-item-header form-header">
-                            <a className='form-link' data-item-index={itemIndex} onClick={removeEntry}>Delete</a>
+                            <a href="#" className='form-link' data-item-index={itemIndex} onClick={removeEntry}>Delete</a>
                         </div>
                         {
                                     

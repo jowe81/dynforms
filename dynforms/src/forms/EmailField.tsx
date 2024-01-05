@@ -12,7 +12,6 @@ function EmailField(props: any) {
     
     return (
         <>
-            <label>{ field.label }</label>
             <div>
                 <input 
                     name={field.key} 
