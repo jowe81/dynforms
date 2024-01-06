@@ -2,8 +2,9 @@
     font-size: 100%;    
 }
 
-.fieldGroupTable tr {
+td.td-group-field-label {
 }
 
-.fieldGroupTable td {    
+td.td-group-field-value {
+    min-width: 100px;
 }

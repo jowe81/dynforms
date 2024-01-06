@@ -125,3 +125,10 @@ input[type="checkbox"] {
 .field-text-field-thumbnail img {
     height: 200px;
 }
+
+.form-header-label {
+    display: block;
+    font-weight: bold;
+    padding-top: 1px;
+    padding-bottom: 5px;
+}

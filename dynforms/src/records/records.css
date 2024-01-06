@@ -9,14 +9,16 @@ table {
     vertical-align: middle;
 }
 
-th {
-    padding: 0px 5px;
-    
-}
-td {    
+td.td-main {    
     padding: 7px 5px;
     vertical-align: top; /* Align content to the top of the cell */
     text-align: left;   /* Align content to the left of the cell */
+}
+
+th.th-main {
+    padding: 0px 5px;
+    vertical-align: top;
+    text-align: left;   
 }
 
 

@@ -16,7 +16,7 @@ function RecordsTable() {
     const { state } = useLocation();
     
     //const displayFields = appData.formDefinition?.fields.filter((field: Interfaces.Field) => field.display !== false);
-    const displayFields = appData.table?.columns?.filter((field: Interfaces.Field) => field.display !== false);
+    const displayFields = appData.table?.columns?.filter((field: Interfaces.Field) => field.display !== false && field.displayInTable !== false);
     const settings = appData.formDefinition?.settings;
 
     const records = getRecords();
@@ -44,11 +44,14 @@ function RecordsTable() {
     const getHeaderRow = (displayFields: Interfaces.Field[]) => {
         
         return (
-            <tr>
-                <th></th>
-                {showAddedBy && <th className="added-by">Added by</th>}
-                {displayFields.map((field, index) => <th key={index}>{field.label}</th>)}
-            </tr>);
+            <tr className="tr-main">
+                <th key={-2} className="th-main"></th>
+                {showAddedBy && <th key={-1} className="th-main added-by">Added by</th>}
+                {displayFields.map((field, index) => (
+                    <th key={index} className="th-main">{field.label}</th>
+                ))}
+            </tr>
+        );
     }
 
     const getRowJsx = (record: any) => {
@@ -59,12 +62,12 @@ function RecordsTable() {
             const key = field.key;
             const value = record[key];
 
-            return (<td key={index}><DisplayValue field={field} value={value} record={record}/></td>)            
+            return (<td key={index} className="td-main"><DisplayValue field={field} value={value} record={record}/></td>)            
         });
     
         return (
-            <tr key={record._id} className="row">
-                <td key={-1}>
+            <tr key={record._id} className="tr-main">
+                <td key={-2} className="td-main">
                     <div className="actions">
                         <Link
                             to="/records"
@@ -84,7 +87,7 @@ function RecordsTable() {
                     </div>
                 </td>
                 {showAddedBy && (
-                    <td className="added-by">{record.__user?.name ?? "N/A"}</td>
+                    <td key={-1} className="td-main added-by">{record.__user?.name ?? "N/A"}</td>
                 )}
 
                 {cellsJsx}

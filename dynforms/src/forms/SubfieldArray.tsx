@@ -19,11 +19,12 @@ function SubfieldArray(props: any) {
         return <>Subfield Array contains no fields.</>
     }
 
-    function addEntry() {
+    function addEntry(event: any) {
+        event.preventDefault();
         updateRecord(keys, [...record, getBlankItem(fields)], true);
     }
 
-    function removeEntry(event) {
+    function removeEntry(event: any) {
         const itemIndex = event.target.dataset.itemIndex;
         console.log('Delete index', itemIndex);
 

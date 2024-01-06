@@ -220,7 +220,7 @@ const formTypes = [
                         key: "update",
                         label: "Update",
                         type: "textarea",
-                        defaultValue: "hello",
+                        defaultValue: "",
                         rank: 0,
                     },
                     {
@@ -310,6 +310,7 @@ const formTypes = [
                 key: "middle_names",
                 type: "text",
                 rank: 2,
+                displayInTable: false,
             },
             {
                 label: "Date of birth",
@@ -463,6 +464,8 @@ const formTypes = [
                 key: "website",
                 type: "text",
                 rank: 8,
+                groupId: "__contact",
+                displayInTable: false,
             },
             {
                 key: "notes",
@@ -471,10 +474,11 @@ const formTypes = [
                 rows: 5,
                 rank: 9,
                 display: true,
+                displayInTable: false,
             },
             {
                 key: "created_at",
-                label: "Created at",
+                label: "Created",
                 type: "date",
                 readOnly: true,
                 rank: 10,
@@ -483,7 +487,7 @@ const formTypes = [
             },
             {
                 key: "updated_at",
-                label: "Updated at",
+                label: "Updated",
                 type: "date",
                 readOnly: true,
                 rank: 11,

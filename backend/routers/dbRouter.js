@@ -1,6 +1,8 @@
 import { log } from "../helpers/jUtils.js";
 import { storeUpdateRecord } from "../db/mongodb.js";
 import { ObjectId } from "mongodb";
+import dns from 'dns';
+
 import {
     constructSearchFilter,
     getSortObjectFromQueryData,
@@ -30,9 +32,26 @@ const initRouter = (express, db) => {
         next();
     });
 
-    dbRouter.get("/formtypes", async (rec, res) => {
-        res.json(formTypes);
+    dbRouter.get("/formtypes", async (req, res) => {
+        const remoteIp = req.ip.includes("::ffff:")
+            ? req.ip.split(":").pop()
+            : req.ip;
+
+        const formTypesFiltered = filterFormTypes(remoteIp, formTypes);
+        log(`Returning the following form definitions to ${remoteIp} (${formTypesFiltered.length}/${formTypes.length}): ${JSON.stringify(formTypesFiltered.map(item => item.collectionName))}`);
+        res.json(formTypesFiltered);
     });
+
+    function filterFormTypes(remoteIp, formTypes) {
+        const { PUBLIC_COLLECTIONS, ADMIN_CLIENT } = process.env;
+        const publicCollectionNames = PUBLIC_COLLECTIONS ? PUBLIC_COLLECTIONS.split(',') : [];
+
+        if (remoteIp && ADMIN_CLIENT && remoteIp === ADMIN_CLIENT) {
+            return formTypes;
+        }
+
+        return formTypes.filter(formDefinition => publicCollectionNames.includes(formDefinition.collectionName));
+    }
 
     dbRouter.get("/pageCount/:collectionName", async (req, res) => {
         const { collectionName } = req.params;

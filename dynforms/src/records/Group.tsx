@@ -26,19 +26,21 @@ function Group(props: any) {
 
     const fields = group.fields;
 
-    const groupFieldsJsx = fields.map((field: Interfaces.Field, index: number) => {
-        const key = field.key;
-        const value = record[key];
+    const groupFieldsJsx = fields
+        .filter((field: Interfaces.Field) => field.display !== false && field.displayInTable !== false)
+        .map((field: Interfaces.Field, index: number) => {
+            const key = field.key;
+            const value = record[key];
 
-        return <tr key={index}>
-            <td>
-                {field.label}:
-            </td>
-            <td>
-                <DisplayValue field={field} value={value}/>
-            </td>            
-        </tr>
-    });
+            return <tr key={index}>
+                <td className="td-group-field-label">
+                    {field.label}:
+                </td>
+                <td className="td-group-field-value">
+                    <DisplayValue field={field} value={value}/>
+                </td>            
+            </tr>
+        });
 
     return <>
         <table className="fieldGroupTable">

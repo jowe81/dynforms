@@ -120,7 +120,7 @@ function Form() {
         <div className="form-outer-container">
             <div className="form-container">
                 <div className="form-header-container">
-                    <label>Collection: {collectionName}</label>
+                    <label className="form-header-label">{formDefinition.title}</label>
                 </div>
 
                 <ArrayField {...formProps} />
@@ -213,6 +213,7 @@ export namespace Interfaces {
         fields?: Field[];
         groupId?: string;
         display?: boolean;
+        displayInTable?: boolean;
         readOnly?: boolean;
         isImagePath?: boolean; // This can be on text, select
     }
