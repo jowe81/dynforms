@@ -8,15 +8,30 @@ export default function useAppData() {
 
     const [appData, setAppData] = <any>useAppState();
 
+    function updateAppData() {
+        setAppData(appData);
+    }
+
     const axiosError = (err: any) => console.log('Axios error: ', err);
 
     const setCollectionName = (collectionName: string) => {
         console.log('Setting collection name to', collectionName);
         appData.collectionName = collectionName;        
-        setAppData(appData);
+        updateAppData()
         setFormDefinition(appData.formTypes.find((formDefinition: Interfaces.FormType) => formDefinition.collectionName === collectionName));
         updateTableColumns();
-        resetOrder();
+
+        // Load and apply ordering preferences
+        appData.order = [
+            { key: null, desc: false },
+            { key: null, desc: false },
+        ];
+        const order = storageGet(`order.${appData.collectionName}`);
+        if (order && order.length > 1) {
+            setOrderColumn(order[0].selectValue, "0");
+            setOrderColumn(order[1].selectValue, "1");
+        }
+
         resetSearchValue();
         loadRecords();        
     }
@@ -64,7 +79,7 @@ export default function useAppData() {
 
         appData.table.columns = tableColumns;
         console.log(`Computed table columns:`, appData.table.columns);
-        setAppData(appData);
+        updateAppData()
     }
 
     const getGroup = (groupId: string) => {
@@ -84,56 +99,62 @@ export default function useAppData() {
         return group;
     }
 
-    const setOrderColumn = (selectValue: string, priority: string) => {        
-        const parts = selectValue.split('|');
-        const newKey: string = parts[0];
-        const desc: boolean = parts.length ? !!parts[1] : false;
+    const setOrderColumn = (selectValue: string, priority: string) => {
         const pri = parseInt(priority);
 
-        if (pri === 0) {
-            appData.order[0] = { key: newKey, desc, selectValue };
-        }
+        if (!selectValue || selectValue === '__none') {
+            appData.order[pri] = { key: null, desc: false };
+        } else {
+            const parts = selectValue.split("|");
+            const newKey: string = parts[0];
+            const desc: boolean = parts.length ? !!parts[1] : false;
 
-        if (pri === 1) {
-            if (appData.order.length < 2) {
-                appData.order.push([]);
+            if (pri === 0) {
+                appData.order[0] = { key: newKey, desc, selectValue };
             }
 
-            appData.order[1] = { key: newKey, desc, selectValue};
-        }
-        
-        const primary = appData.order[0];
-        const secondary = appData.order[1];
-
-        appData.records.sort((a: any, b: any) => {
-            if (a[primary.key] < b[primary.key]) {
-                return primary.desc ? 1 : -1;
-            } else if (a[primary.key] > b[primary.key]) {
-                return primary.desc ? -1 : 1;
-            } else {
-                // Primary values are equal
-                if (a[secondary.key] < b[secondary.key]) {
-                    return secondary.desc ? 1 : -1;
-                } else {
-                    return secondary.desc ? -1 : 1;
+            if (pri === 1) {
+                if (appData.order.length < 2) {
+                    appData.order.push([]);
                 }
-            }            
-        });
-        console.log('Sorting by:', appData.order[0].selectValue, appData.order[1].selectValue);
-        setAppData(appData);
+
+                appData.order[1] = { key: newKey, desc, selectValue };
+            }
+
+            const primary = appData.order[0];
+            const secondary = appData.order[1];
+
+            appData.records?.sort((a: any, b: any) => {
+                if (a[primary.key] < b[primary.key]) {
+                    return primary.desc ? 1 : -1;
+                } else if (a[primary.key] > b[primary.key]) {
+                    return primary.desc ? -1 : 1;
+                } else {
+                    // Primary values are equal
+                    if (a[secondary.key] < b[secondary.key]) {
+                        return secondary.desc ? 1 : -1;
+                    } else {
+                        return secondary.desc ? -1 : 1;
+                    }
+                }
+            });
+            console.log(
+                "Sorting by:",
+                appData.order[0].selectValue,
+                appData.order[1].selectValue
+            );
+        }
+
+        storageSet(`order.${appData.collectionName}`, [...appData.order]);
+
+        updateAppData()
         loadRecords();
     };
-
-    const resetOrder = () => {
-        console.log('Resetting order');
-        appData.order = [{ key: null, desc: false }, { key: null, desc: false }];
-        setAppData(appData);
-    }
 
     const setSearchValue = (searchValue: string) => {
         console.log('Searching for: ', searchValue);
         appData.searchValue = searchValue;
-        setAppData(appData);
+        updateAppData()
         
         if (!appData.filterLocally) {
             loadRecords();
@@ -150,6 +171,7 @@ export default function useAppData() {
     const setItemsPerPage = (items: number) => {
         const itemsPerPage = Math.min(items, 100);
         console.log(`Items per page: ${itemsPerPage}`);
+        storageSet('itemsPerPage', itemsPerPage);
         appData.table.itemsPerPage = itemsPerPage;
         appData.table.pageCount = Math.ceil(appData.table.recordsCount / itemsPerPage);
         loadRecords();
@@ -164,12 +186,12 @@ export default function useAppData() {
             appData.currentRecord = appData.records.length ? appData.records[0] : undefined;
         }
         
-        setAppData(appData);
+        updateAppData()
     }
 
     const setCurrentRecord = (record: any) => {
         appData.currentRecord = { ...record };
-        setAppData(appData);
+        updateAppData()
     }
     
     const incrementCurrentRecord = async() => {
@@ -260,9 +282,11 @@ export default function useAppData() {
         formDefinition.fields?.sort((a: any, b: any) => a.rank > b.rank ? 1 : -1);
         appData.formDefinition = formDefinition;
         console.log('Setting formDefinition to ', formDefinition);        
-        setAppData(appData);
+        updateAppData()
 
     }
+
+    const getUser = () => appData.user;
 
     const setUser = (userToSet: any) => {
         // Determine the current user
@@ -292,7 +316,7 @@ export default function useAppData() {
         appData.user = {...user};
         appData.userlist = [...userlist];
 
-        setAppData(appData);
+        updateAppData()
     }
 
     const loadRecords = async () => {
@@ -317,7 +341,7 @@ export default function useAppData() {
 
         const currentRecordIndex = appData.currentRecord?._index;
         appData.records = [];
-        setAppData(appData);
+        updateAppData()
 
         const { currentPage, itemsPerPage } = appData.table;
         
@@ -329,7 +353,7 @@ export default function useAppData() {
                 if (appData.records?.length) {
                     setCurrentRecordToIndex(currentRecordIndex);
                 }
-                setAppData(appData);     
+                updateAppData()     
                 console.log(`Loaded ${appData.records?.length} records from collection "${appData.collectionName}".`);
             })
             .catch(axiosError);
@@ -365,7 +389,7 @@ export default function useAppData() {
             .then(data => {                
                 appData.formTypes = data.data;
                 console.log(`Received ${appData.formTypes?.length}.`);
-                setAppData(appData);
+                updateAppData()
             })
             .catch(axiosError);
     }
@@ -377,21 +401,53 @@ export default function useAppData() {
 
             // Decide whether to filter locally or on the server.
             appData.filterLocally = false;
-            setAppData(appData);
+            updateAppData()
 
-            resetOrder();
+            setUser(null);
             resetSearchValue();
+
+            appData.order = [
+                { key: null, desc: false },
+                { key: null, desc: false },
+            ];            
+
             appData.table = {
-                itemsPerPage: constants.itemsPerPageInitial,
+                itemsPerPage: storageGet('itemsPerPage') ?? constants.itemsPerPageInitial,
                 pageCount: 0,                
                 currentPage: 0,      
             }
 
-            setUser(null);
-
             loadFormTypes();
         }
     }
+
+    // Read or write to local storage; associate with current user by default (use global flag otherwise)
+    const store = (key: string, item?: any, global: boolean = false) => {
+        const user = getUser();
+        let fullKey =
+            !global && user?.name
+                ? `appData.byUser.${getUser()?.name}.${key}`
+                : `appData.global.${key}`;
+
+        if (item) {
+            const data = JSON.stringify(item);            
+            localStorage.setItem(fullKey, data);
+            console.log(`Stored to ${fullKey}`, data);
+        } else {
+            const item = localStorage.getItem(fullKey);
+            const data = JSON.parse(item);
+            console.log(`Read from ${fullKey}`, data);
+            return data;
+        }        
+    }
+
+    const storageSet = (key: string, item?: any, global: boolean = false) => {
+        store(key, item, global);
+    };
+
+    const storageGet: any = (key: string, global: boolean = false) => {
+        return store(key, null, global);
+    };
 
     return {
         constants,
@@ -401,7 +457,6 @@ export default function useAppData() {
         setSearchValue,
         setFormDefinition, 
         setUser,       
-        resetOrder,
 
         setPage,
         setItemsPerPage,        

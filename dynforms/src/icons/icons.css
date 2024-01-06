@@ -1,0 +1,17 @@
+.icon {
+    background-size: contain;
+    background-repeat: no-repeat;    
+    width: 25px;
+    height: 25px;
+    /* border: 1px solid black; */
+    filter: hue-rotate(-20deg) saturate(80%);
+    opacity: 0.7;   
+}
+
+.icon-edit {
+    background-image: url('./icons/edit.png');
+}
+
+.icon-delete {
+    background-image: url('./icons/delete.png');
+}

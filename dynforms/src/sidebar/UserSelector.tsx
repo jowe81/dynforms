@@ -9,6 +9,7 @@ function UserSelector() {
         const selectedName = event.target.value;
         const selectedUser = appData.userlist.find((user: any) => user.name === selectedName);
         setUser(selectedUser);
+        window.location.reload();
     }
 
     let options: any[] = [];

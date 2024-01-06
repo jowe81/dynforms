@@ -8,6 +8,8 @@ import './records.css';
 import PaginationControls from "./PaginationControls.tsx";
 import DisplayValue from "./DisplayValue.tsx";
 
+import Icon from "../icons/Icon.tsx";
+
 function RecordsTable() {
 
     const { appData, getRecords, dbDeleteRecord, setCurrentRecordToIndex } = useAppData();
@@ -37,12 +39,15 @@ function RecordsTable() {
         return
     }
 
+    const showAddedBy = true;
+
     const getHeaderRow = (displayFields: Interfaces.Field[]) => {
         
         return (
             <tr>
-                <th></th>{displayFields.map((field, index) => {
-                    return <th key={index}>{field.label}</th>})}
+                <th></th>
+                {showAddedBy && <th className="added-by">Added by</th>}
+                {displayFields.map((field, index) => <th key={index}>{field.label}</th>)}
             </tr>);
     }
 
@@ -57,16 +62,34 @@ function RecordsTable() {
             return (<td key={index}><DisplayValue field={field} value={value} record={record}/></td>)            
         });
     
-        return <tr key={record._id} className='row'>
-                    <td key={-1}>
-                        <div>
-                            <Link to="/records" state={{action: 'delete', recordId}}>Delete</Link>&nbsp;|&nbsp;
-                            <Link to="/form" onClick={setCurrentRecord} data-index={record._index} data-id={recordId} state={{recordId}}>Edit</Link>
-                        </div>   
-                    </td>
+        return (
+            <tr key={record._id} className="row">
+                <td key={-1}>
+                    <div className="actions">
+                        <Link
+                            to="/records"
+                            state={{ action: "delete", recordId }}
+                        >
+                            <Icon name="delete" />
+                        </Link>
+                        <Link
+                            to="/form"
+                            onClick={setCurrentRecord}
+                            data-index={record._index}
+                            data-id={recordId}
+                            state={{ recordId }}
+                        >
+                            <Icon name="edit" />
+                        </Link>
+                    </div>
+                </td>
+                {showAddedBy && (
+                    <td className="added-by">{record.__user?.name ?? "N/A"}</td>
+                )}
 
-            {cellsJsx}
-        </tr>;
+                {cellsJsx}
+            </tr>
+        );
     }
 
     const rowsJsx = records.map((record: any) => getRowJsx(record));
@@ -75,7 +98,7 @@ function RecordsTable() {
         <>
             <PaginationControls />
             <div className="records-table-container">
-                <table>
+                <table className="records-table">
                     <tbody>
                         {getHeaderRow(displayFields)}
                         {rowsJsx}

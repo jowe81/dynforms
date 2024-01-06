@@ -44,13 +44,16 @@ function Form() {
 
         dbUpdateRecord(record)
         .then(() => {
+            console.log('Record Updated');
             if (next) {
                 // This handles both the next and the previous button.
                 adjustCurrentRecord(next).then(() => {
+                    console.log("Adjusted index, now navigating");
                     navigate('/form');
                     setEdited(false);    
                 });
             } else {
+                console.log("Now navigating");
                 navigate('/records');                
             }
         })
@@ -75,25 +78,56 @@ function Form() {
         updateRecord,        
     }
 
-    return (<div className="form-outer-container">
-        <div className='form-container'>
-            <div className="form-header-container">
-                <label>Collection: {collectionName}</label>
-            </div>
+    let actionsJSX;
 
-            <ArrayField {...formProps}/>
-
-        </div>
-        <div className="form-actions-outer-container">
+    if (recordId) {
+        actionsJSX = (
+            <>
+                <div className="form-actions-container">
+                    {edited && (
+                        <button onClick={() => navigate("/records")}>
+                            {edited ? "Cancel & Back" : "Back"}
+                        </button>
+                    )}
+                    <button onClick={handleSubmit} data-next={-1}>
+                        {edited ? "Save & Previous" : "Previous"}
+                    </button>
+                    <button onClick={handleSubmit} data-next={1}>
+                        {edited ? "Save & Next" : "Next"}
+                    </button>
+                    <button onClick={handleSubmit}>
+                        {edited ? "Save & Back" : "Back"}
+                    </button>
+                </div>
+            </>
+        );
+    } else {
+        actionsJSX = (
             <div className="form-actions-container">
-                { edited && <button onClick={() => navigate('/records')}>{edited ? 'Cancel & Back' : 'Back'}</button>}
-                <button onClick={handleSubmit} data-next={-1}>{edited ? 'Save & Previous' : 'Previous'}</button>
-                <button onClick={handleSubmit} data-next={1}>{edited ? 'Save & Next' : 'Next'}</button>
-                <button onClick={handleSubmit}>{edited ? 'Save & Back' : 'Back'}</button>
+                {edited && (
+                    <button onClick={handleSubmit}>
+                        Save
+                    </button>
+                )}
+                <button onClick={() => navigate("/records")}>
+                    Cancel
+                </button>
             </div>
-        </div>
+        );
+    }
 
-    </div>)
+    return (
+        <div className="form-outer-container">
+            <div className="form-container">
+                <div className="form-header-container">
+                    <label>Collection: {collectionName}</label>
+                </div>
+
+                <ArrayField {...formProps} />
+            </div>
+            <div className="form-actions-outer-container">{actionsJSX}</div>
+        </div>
+    );
 }
 
 

@@ -12,7 +12,9 @@ function OrderSelector(props: any) {
 
     const { orderColumn, onOrderColumnSelect, priority } = props;
 
-    const allOptions: Interfaces.SelectFieldOption[] = [];
+    const allOptions: Interfaces.SelectFieldOption[] = [
+        { label: "<none>", value: "__none" },
+    ];
 
     const options: Interfaces.SelectFieldOption[] = fields.map((field: Interfaces.Field) => { return { label: field.label, value: field.key }});
 

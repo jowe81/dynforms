@@ -181,7 +181,7 @@ const formTypes = [
                 key: "ingredients",
                 label: "Ingredients",
                 type: "textarea",
-                rows: 5,
+                rows: 15,
                 rank: 1,
             },
             {
@@ -282,6 +282,16 @@ const formTypes = [
     {
         collectionName: "address_book",
         title: "Address Book",
+        groups: [
+            {
+                label: "Record info",
+                id: "__info",
+            },
+            {
+                label: "Contact Info",
+                id: "__contact",
+            },
+        ],
         fields: [
             {
                 label: "Last Name",
@@ -364,6 +374,7 @@ const formTypes = [
                         display: false,
                     },
                 ],
+                groupId: "__contact",
             },
             {
                 label: "Phone Numbers",
@@ -416,6 +427,7 @@ const formTypes = [
                         display: false,
                     },
                 ],
+                groupId: "__contact",
             },
             {
                 label: "Email Addresses",
@@ -444,6 +456,7 @@ const formTypes = [
                         display: false,
                     },
                 ],
+                groupId: "__contact",
             },
             {
                 label: "Website",
@@ -457,7 +470,7 @@ const formTypes = [
                 type: "textarea",
                 rows: 5,
                 rank: 9,
-                display: false,
+                display: true,
             },
             {
                 key: "created_at",
@@ -466,6 +479,7 @@ const formTypes = [
                 readOnly: true,
                 rank: 10,
                 display: true,
+                groupId: "__info",
             },
             {
                 key: "updated_at",
@@ -474,6 +488,7 @@ const formTypes = [
                 readOnly: true,
                 rank: 11,
                 display: true,
+                groupId: "__info",
             },
         ],
     },
