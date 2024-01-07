@@ -3,11 +3,8 @@
  * This module processes requests from other APIs.
  */
 import { log } from "../helpers/jUtils.js";
-
-import { ObjectId } from "mongodb";
+import { getItemFromDb } from "../helpers/helpers.js";
 import {
-    constructSearchFilter,
-    getSortObjectFromQueryData,
     getEnhancedCollection,
 } from "../db/dbutils.js";
 
@@ -106,31 +103,44 @@ function M2m(db) {
         try {
             const collection = getEnhancedCollection(db, collectionName);
 
-            let index = parseInt(settings.singleRecord.index);
+            let algorithm;
+            let records = [];
 
-            // Get a count to check if the index is valid.
-            const recordsCount = await collection.countDocuments(filter);            
+            if (settings.singleRecord?.semiRandom) {
+                algorithm = '__SEMI_RANDOM';
+                const item = await getItemFromDb(filter, collection);
+                
+                if (item) {
+                    records = [item];
+                }
+            } else {
+                algorithm = '__INDEX';
+                let index = parseInt(settings.singleRecord.index);
 
-            // Roll over if needed.
-            if (index > recordsCount - 1 || index < 0) {
-                index = 0;
+                // Get a count to check if the index is valid.
+                const recordsCount = await collection.countDocuments(filter);
+
+                // Roll over if needed.
+                if (index > recordsCount - 1 || index < 0) {
+                    index = 0;
+                }
+
+                // Retrieve the target record.
+                records = await collection
+                    .find(filter)
+                    .sort(orderBy)
+                    .skip(index)
+                    .limit(1)
+                    .toArray();
+
+                result.data.index = index;
             }
-            
-            // Retrieve the target record.
-            const records = await collection
-                .find(filter)
-                .sort(orderBy)
-                .skip(index)
-                .limit(1)
-                .toArray();
 
-            result.data = {
-                count: records.length,
-                index,
-                records,
-            };
+            result.data.algorithm = algorithm;
+            result.data.records = records;
+            result.data.count = records.count;
 
-            log(`Retrieved single record (index: ${index}): ${JSON.stringify(records[0])}`);
+            log(`Retrieved single record (algorithm: ${algorithm}): ${JSON.stringify(records[0])}`);
 
         } catch (err) {
             console.log(err);
