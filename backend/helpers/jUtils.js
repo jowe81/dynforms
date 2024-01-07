@@ -51,6 +51,45 @@ const getFormattedDate = (date, color = 'gray') => {
 }
 
 /**
+ * Serialize the object such that equivalent objects return the same string.
+ * The empty object gives 'none'.
+ * @param {*} obj 
+ */
+function getIdFromObject(obj) {
+    if (!["object", "array", "string", "number", "boolean"].includes(typeof obj)) {
+        return `__unsupported_type`;
+    }
+
+    if (typeof obj === 'boolean') {
+        return `__boolean_${obj ? "true" : "false"}`;
+    }
+
+    if (typeof obj === 'string') {
+        return `__string_${obj}`;
+    }
+    
+    if (typeof obj === "number") {
+        return `__number_${obj}`;
+    }
+
+    if (typeof obj === "object" && Object.keys(obj).length === 0) {
+        return "__empty_object";
+    }
+
+    if (typeof obj === "array" && obj.length === 0) {
+        return "__empty_array";
+    }
+
+    // Use ordered array of keys to ensure equivalent objects get the identical representation
+    // though the order of their properties may differ.
+    const sortedKeys = Object.keys(obj).sort();
+    const stringified = `_${JSON.stringify(obj, sortedKeys)}`;
+    const sanitized = stringified.replace(/[^A-Za-z0-9_]/g, "");
+
+    return sanitized;
+}
+
+/**
  * Return the constants for the urlPath passed in
  * 
  * @param string urlPath 
@@ -151,6 +190,7 @@ export {
     findById,
     getFileNames,
     getFormattedDate,
+    getIdFromObject,
     getSystemConstants,
     pad,
     log,

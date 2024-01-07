@@ -1,4 +1,5 @@
 import { log } from "../helpers/jUtils.js";
+import { getBlankCtrlField, getItemFromDb } from "../helpers/helpers.js";
 import { storeUpdateRecord } from "../db/mongodb.js";
 import { ObjectId } from "mongodb";
 import dns from 'dns';
@@ -41,6 +42,26 @@ const initRouter = (express, db) => {
         log(`Returning the following form definitions to ${remoteIp} (${formTypesFiltered.length}/${formTypes.length}): ${JSON.stringify(formTypesFiltered.map(item => item.collectionName))}`);
         res.json(formTypesFiltered);
     });
+
+    dbRouter.post(`/getItem`, async (req, res) => {
+        const filter = req.body.filter ?? {};
+        const collectionName = req.query.collectionName;
+
+        if (!collectionName) {
+            res.json({success: false, error: "syntax: ?collectionName="});
+        }
+
+        const collection = getEnhancedCollection(db, collectionName);
+
+        if (!collection) {
+            res.json({success: false, error: `Could not get collection ${collectionName}.`});
+        }
+
+        const item = await getItemFromDb(filter, collection);
+        const success = !!item;
+
+        res.json({ success, item });
+    })
 
     function filterFormTypes(remoteIp, formTypes) {
         const { PUBLIC_COLLECTIONS, ADMIN_CLIENT } = process.env;
@@ -160,6 +181,9 @@ const initRouter = (express, db) => {
         if (record.hasOwnProperty('_index')) {
             delete record._index;
         }
+
+        // Add meta
+        record.__ctrl = getBlankCtrlField();
 
         castId(record);
 
