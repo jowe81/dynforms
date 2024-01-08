@@ -25,6 +25,7 @@ function SubfieldArray(props: any) {
     }
 
     function removeEntry(event: any) {
+        event.preventDefault();
         const itemIndex = event.target.dataset.itemIndex;
         console.log('Delete index', itemIndex);
 

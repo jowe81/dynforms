@@ -276,6 +276,13 @@ const formTypes = [
                 rows: 5,
                 rank: 3,
             },
+            {
+                key: "notes",
+                label: "Notes",
+                type: "textarea",
+                rows: 3,
+                rank: 4,
+            },
         ],
     },
 
