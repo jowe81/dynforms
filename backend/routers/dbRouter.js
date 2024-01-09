@@ -259,6 +259,10 @@ const initRouter = (express, db) => {
         res.json(result);
     });
 
+    dbRouter.get("/_ctrlField", (req, res) => {
+        res.json({ __ctrl: getBlankCtrlField()});
+    })
+
     return dbRouter;
 };
 
