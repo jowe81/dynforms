@@ -107,7 +107,7 @@ function M2m(db) {
             let records = [];
 
             if (settings.singleRecord?.semiRandom) {
-                algorithm = '__SEMI_RANDOM';
+                algorithm = '__RANDOMIZED_PREORDERED';
                 const item = await getItemFromDb(filter, collection);
                 
                 if (item) {
