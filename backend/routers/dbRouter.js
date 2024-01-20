@@ -203,6 +203,35 @@ const initRouter = (express, db) => {
         }
     });
 
+    dbRouter.post('/m2m/push', async (req, res) => {
+        const { collectionName, record } = req.body;
+        const collection = getEnhancedCollection(db, collectionName);
+        const update = record._id ? true : false;
+
+        castId(record);
+        
+        let result;
+        console.log(record);
+        
+        try {
+            if (update) {
+                record.updated_at = new Date();
+                result = await collection._updateOne({ _id: record._id }, { $set: { ...record }});
+            } else {
+                // Add meta
+                record.__ctrl = getBlankCtrlField();
+                result = await collection._insertOne(record);
+            }
+            res.json({
+                collectionName,
+                data: { records: [record] },
+            });
+        } catch (err) {
+            logError(err);
+            res.status(500).send();
+        }
+    });
+
     /**
      * This endpoint is for machine use, e.g. the jj-auto backend.
      */
