@@ -253,7 +253,7 @@ const initRouter = (express, db) => {
             orderBy = {};
         }
 
-        log(`Processing request for ${collectionName}, settings: ${JSON.stringify(settings)}, filter: ${JSON.stringify(filter)}, orderBy: ${JSON.stringify(orderBy)}.`);
+        log(`Processing request for ${collectionName}, query: ${JSON.stringify(req.query)}, settings: ${JSON.stringify(settings)}, filter: ${JSON.stringify(filter)}, orderBy: ${JSON.stringify(orderBy)}.`);
 
         const processingResult = await m2m.processRequest({
             connectionName,

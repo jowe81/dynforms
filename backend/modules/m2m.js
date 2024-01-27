@@ -11,29 +11,23 @@ import {
 const maxRecords = 1000;
 
 function M2m(db) {
-
     async function processRequest(request) {
-        let {
-            connectionName,
-            collectionName,
-            sessionId,
-            filter,
-            orderBy,
-            settings,
-        } = request;
+        let { connectionName, collectionName, sessionId, filter, orderBy, settings } = request;
 
         const result = {
-            data: {},            
-        }
+            data: {},
+        };
 
         if (!collectionName) {
-            result.error = 'Collection Name is required.'
+            result.error = "Collection Name is required.";
             return result;
         }
 
         if (!filter) {
             filter = {};
         }
+
+        processFilterObject(filter, processFilterValue);
 
         if (!orderBy) {
             orderBy = {};
@@ -48,7 +42,7 @@ function M2m(db) {
         }
 
         if (!recordsInfo) {
-            result.error = 'Unable to fulfill request.';
+            result.error = "Unable to fulfill request.";
             return result;
         }
 
@@ -58,10 +52,40 @@ function M2m(db) {
         return result;
     }
 
+    // Go through the filter and replace any encoded values, such as dates.
+    function processFilterObject(filter, callback) {
+        for (let key in filter) {
+            if (typeof filter[key] === "object" && filter[key] !== null) {
+                // Recursively search nested objects
+                processFilterObject(filter[key], callback);
+            } else if (typeof filter[key] === "string" && filter[key].startsWith("__")) {
+                filter[key] = callback(filter[key]);
+            }
+        }
+    }
+
+    function processFilterValue(value) {
+        let result = value;
+
+        const separatorIndex = value.indexOf("-");
+        const keyword = value.substring(2, separatorIndex);
+        const payload = parseInt(value.substring(separatorIndex + 1));
+
+        switch (keyword) {
+            case "DATE":
+                // The payload is time in milliseconds.
+                // Example: '__DATE-1703785527694'
+                result = new Date(payload);
+                break;
+        }
+
+        return result;
+    }
+
     async function retrieveMultiple(connectionName, collectionName, filter, orderBy, settings) {
         const result = {
-            data: {},            
-        }
+            data: {},
+        };
 
         const collection = getEnhancedCollection(db, collectionName);
 
@@ -88,18 +112,11 @@ function M2m(db) {
         return result;
     }
 
-    async function retrieveSingle(
-        connectionName,
-        collectionName,
-        filter,
-        orderBy,
-        settings
-    ) {
+    async function retrieveSingle(connectionName, collectionName, filter, orderBy, settings) {
         const result = {
             data: {},
         };
 
-        
         try {
             const collection = getEnhancedCollection(db, collectionName);
 
@@ -107,14 +124,14 @@ function M2m(db) {
             let records = [];
 
             if (settings.singleRecord?.semiRandom) {
-                algorithm = '__RANDOMIZED_PREORDERED';
+                algorithm = "__RANDOMIZED_PREORDERED";
                 const item = await getItemFromDb(filter, collection);
-                
+
                 if (item) {
                     records = [item];
                 }
             } else {
-                algorithm = '__INDEX';
+                algorithm = "__INDEX";
                 let index = parseInt(settings.singleRecord.index);
 
                 // Get a count to check if the index is valid.
@@ -126,12 +143,7 @@ function M2m(db) {
                 }
 
                 // Retrieve the target record.
-                records = await collection
-                    .find(filter)
-                    .sort(orderBy)
-                    .skip(index)
-                    .limit(1)
-                    .toArray();
+                records = await collection.find(filter).sort(orderBy).skip(index).limit(1).toArray();
 
                 result.data.index = index;
             }
@@ -141,7 +153,6 @@ function M2m(db) {
             result.data.count = records.count;
 
             log(`Retrieved single record (algorithm: ${algorithm}): ${JSON.stringify(records[0])}`);
-
         } catch (err) {
             console.log(err);
             result.error = err.message;
@@ -151,8 +162,8 @@ function M2m(db) {
     }
 
     return {
-        processRequest
-    }
+        processRequest,
+    };
 }
 
 export default M2m;

@@ -516,33 +516,37 @@ const formTypes = [
                 display: true,
             },
             {
-                key: "blood_pressure",
-                label: "Sys/Dia",
-                type: "text",
-                annotation: "Systolic/Diastolic",
-                maxLength: 150,
+                key: "sys",
+                label: "Systolic",
+                type: "number",
                 rank: 2,
+            },
+            {
+                key: "dia",
+                label: "Diastolic",
+                type: "number",
+                rank: 3,
             },
             {
                 key: "pulse",
                 label: "Pulse (bpm)",
                 type: "number",
                 annotation: "bpm",
-                rank: 3,
+                rank: 4,
             },
             {
                 key: "urine_output",
                 label: "Urine output (ml)",
                 type: "number",
                 annotation: "ml",
-                rank: 4,
+                rank: 5,
             },
 
             {
                 key: "medication_intake",
                 label: "Medication intake",
                 type: "select",
-                rank: 5,
+                rank: 6,
                 options: [
                     {
                         label: "Candesartan 4mg",
