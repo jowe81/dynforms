@@ -62,6 +62,7 @@ function M2m(db) {
                 filter[key] = callback(filter[key]);
             }
         }
+        console.log('Resolved Filter: ', filter);
     }
 
     function processFilterValue(value) {
@@ -69,13 +70,35 @@ function M2m(db) {
 
         const separatorIndex = value.indexOf("-");
         const keyword = value.substring(2, separatorIndex);
-        const payload = parseInt(value.substring(separatorIndex + 1));
+        const payload = value.substring(separatorIndex + 1);
+        let parsedPayload;
 
         switch (keyword) {
             case "DATE":
                 // The payload is time in milliseconds.
                 // Example: '__DATE-1703785527694'
-                result = new Date(payload);
+                result = new Date(parseInt(payload));
+                break;
+
+            case "ARRAY_INCLUDES_ITEM":
+                // The payload is a json stringified string.
+                // Example: '__ARRAY_INCLUDES_ITEM-"favorites"'
+                parsedPayload = JSON.parse(payload);
+                result = { $elemMatch: { $eq: parsedPayload } };
+                break;
+
+            case "ARRAY_INCLUDES_ARRAY_AND":
+                // The payload is a json stringified array.
+                // Example: '__ARRAY_INCLUDES_ARRAY_AND-
+                parsedPayload = JSON.parse(payload);
+                result = { $elemMatch: { $all: parsedPayload } };
+                break;
+
+            case "ARRAY_INCLUDES_ARRAY_OR":
+                // The payload is a json stringified array.
+                // Example: '__ARRAY_INCLUDES_ARRAY_AND-
+                parsedPayload = JSON.parse(payload);
+                result = { $elemMatch: { $in: parsedPayload } };
                 break;
         }
 
