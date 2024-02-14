@@ -13,7 +13,7 @@ const maxRecords = 1000;
 function M2m(db) {
     async function processRequest(request) {
         let { connectionName, collectionName, sessionId, filter, orderBy, settings } = request;
-
+        console.log('Incoming filter', filter)
         const result = {
             data: {},
         };
@@ -48,6 +48,8 @@ function M2m(db) {
 
         result.data = recordsInfo.data;
         result.error = recordsInfo.error;
+        // Return the (resolved) filter as well.
+        result.filter = { ...filter }; 
 
         return result;
     }

@@ -20,6 +20,10 @@ const initRouter = (express, db) => {
     const castId = (obj) => (obj._id = obj._id ? new ObjectId(obj._id) : null);
     const logError = (err) => log(`Error: ${err.message}`);
 
+    const cache = {
+        lastUsedFilter: {},
+    };
+
     const dbRouter = express.Router();
 
     dbRouter.use((err, req, res, next) => {
@@ -204,28 +208,39 @@ const initRouter = (express, db) => {
     });
 
     dbRouter.post('/m2m/push', async (req, res) => {
-        const { collectionName, record } = req.body;
+        const { connectionName, collectionName, record } = req.body;
+        
+        console.log("Collection", collectionName);
+        log(`Push request for: ${collectionName} `);
         const collection = getEnhancedCollection(db, collectionName);
         const update = record._id ? true : false;
-
+        
         castId(record);
         
         let result;
-        console.log(record);
         
         try {
+            const now = new Date();
+            
             if (update) {
                 record.updated_at = new Date();
                 result = await collection._updateOne({ _id: record._id }, { $set: { ...record }});
             } else {
                 // Add meta
                 record.__ctrl = getBlankCtrlField();
+                record.created_at = now;
+                record.updated_at = now;
                 result = await collection._insertOne(record);
             }
-            res.json({
+
+            const response = {
+                success: true,
                 collectionName,
                 data: { records: [record] },
-            });
+                filter: cache.lastUsedFilter,
+            };
+            log(`Returning: ${JSON.stringify(response)}`);
+            res.json(response);
         } catch (err) {
             logError(err);
             res.status(500).send();
@@ -267,6 +282,9 @@ const initRouter = (express, db) => {
         const success = !processingResult.error;
         const data = processingResult.data;
 
+        const resolvedFilter = processingResult.filter;
+        cache.lastUsedFilter = resolvedFilter;
+        
         const result = {
             connectionName,
             collectionName,
@@ -276,6 +294,7 @@ const initRouter = (express, db) => {
             settings,
             success,
             data,
+            filter: resolvedFilter,
         };
 
         if (result.data?.records) {

@@ -9,7 +9,10 @@ function CollectionSelector(props: any) {
     let options: Interfaces.SelectFieldOption[] = [];
 
     if (Array.isArray(appData.formTypes)) {
-        options = appData.formTypes.map((formDefinition: Interfaces.FormType) => { return { label: formDefinition.title, value: formDefinition.collectionName }});
+        options = appData
+            .formTypes
+            .map((formDefinition: Interfaces.FormType) => { return { label: formDefinition.title, value: formDefinition.collectionName }})
+            .sort((a, b) => a.label > b.label ? 1 : -1);
     }    
     
     options.unshift({

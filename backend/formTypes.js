@@ -504,6 +504,168 @@ const formTypes = [
         ],
     },
     {
+        collectionName: "weight_tracking",
+        title: "Weight Tracking",
+        fields: [
+            {
+                key: "created_at",
+                label: "Measured at",
+                type: "date",
+                readOnly: true,
+                rank: 1,
+                display: true,
+            },
+            {
+                key: "lbs",
+                label: "Weight (lbs)",
+                type: "number",
+                annotation: "pounds",
+                rank: 5,
+            },
+            {
+                key: "kg",
+                label: "Weight (kg)",
+                type: "number",
+                annotation: "kilograms",
+                rank: 5,
+            },
+        ],
+    },
+    {
+        collectionName: "outburst_tracking",
+        title: "Outburst Tracking",
+        fields: [
+            {
+                key: "created_at",
+                label: "Observed at",
+                type: "date",
+                readOnly: true,
+                rank: 1,
+                display: true,
+            },
+            {
+                label: "Trigger",
+                key: "trigger",
+                type: "select",
+                rank: 2,
+                defaultValue: "relational",
+                options: [
+                    {
+                        label: "Personal",
+                        value: "personal",
+                    },
+                    {
+                        label: "Relational",
+                        value: "relational",
+                    },
+                    {
+                        label: "Other",
+                        value: "other",
+                    },
+                    {
+                        label: "Unknown",
+                        value: "unknown",
+                    },
+                ],
+            },
+            {
+                label: "Trigger Validity",
+                key: "trigger_validity",
+                type: "select",
+                rank: 3,
+                defaultValue: "none",
+                options: [
+                    {
+                        label: "None",
+                        value: "none",
+                    },
+                    {
+                        label: "Minor",
+                        value: "minor",
+                    },
+                    {
+                        label: "Major",
+                        value: "major",
+                    },
+                ],
+            },
+            {
+                label: "Initial Response",
+                key: "response",
+                type: "select",
+                rank: 4,
+                options: [
+                    {
+                        label: "Contained",
+                        value: "contained",
+                    },
+                    {
+                        label: "Uncontained",
+                        value: "uncontained",
+                    },
+                ],
+            },
+            {
+                label: "Contained After",
+                key: "contained_after",
+                type: "select",
+                defaultValue: "none",
+                rank: 5,
+                options: [
+                    {
+                        label: "Seconds",
+                        value: "seconds",
+                    },
+                    {
+                        label: "Minutes",
+                        value: "minutes",
+                    },
+                    {
+                        label: "Hours",
+                        value: "hours",
+                    },
+                    {
+                        label: "A Day",
+                        value: "a day",
+                    },
+                    {
+                        label: "Days",
+                        value: "days",
+                    },
+                    {
+                        label: "Cumulative (not before next)",
+                        value: "cumulative",
+                    },
+                ],
+            },
+            {
+                label: "Contained By Initiative Of",
+                key: "contained_by_initiative_of",
+                type: "select",
+                defaultValue: "none",
+                rank: 5,
+                options: [
+                    {
+                        label: "Self",
+                        value: "self",
+                    },
+                    {
+                        label: "Other",
+                        value: "other",
+                    },
+                ],
+            },
+            {
+                label: "Notes",
+                key: "notes",
+                type: "textarea",
+                rows: 5,
+                rank: 6,
+                display: true,
+            },
+        ],
+    },
+    {
         collectionName: "johannes_medical",
         title: "Johannes Medical",
         fields: [
