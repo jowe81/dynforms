@@ -504,6 +504,32 @@ const formTypes = [
         ],
     },
     {
+        collectionName: "notes_scanned",
+        title: "Scanned Notes",
+        fields: [
+            {
+                key: "created_at",
+                label: "Created at",
+                type: "date",
+                readOnly: true,
+                rank: 1,
+                display: true,
+            },
+            {
+                key: "message",
+                label: "Message Text",
+                type: "text",
+                rank: 2,
+            },
+            {
+                key: "urlpath",
+                label: "URL Path",
+                type: "text",
+                rank: 2,
+            },
+        ],
+    },
+    {
         collectionName: "weight_tracking",
         title: "Weight Tracking",
         fields: [
