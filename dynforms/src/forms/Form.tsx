@@ -150,11 +150,11 @@ function initializeRecord(fields: Interfaces.Field[]) {
                 break;
 
             default:
-                record[key] = '';
+                console.log(`setting ${key} to ${field.defaultValue}`)
+                record[key] = field.defaultValue ?? '';
                 break;
         }
     });
-    console.log('Initialized record to', record);
     return record;
 }
 

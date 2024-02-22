@@ -516,16 +516,23 @@ const formTypes = [
                 display: true,
             },
             {
-                key: "message",
-                label: "Message Text",
-                type: "text",
-                rank: 2,
-            },
-            {
                 key: "urlpath",
                 label: "URL Path",
                 type: "text",
                 rank: 2,
+            },
+            {
+                key: "message",
+                label: "Message Text",
+                type: "text",
+                rank: 3,
+            },
+            {
+                label: "Display this note",
+                key: "display",
+                type: "boolean",
+                defaultValue: true,
+                rank: 4,
             },
         ],
     },
@@ -533,14 +540,14 @@ const formTypes = [
         collectionName: "weight_tracking",
         title: "Weight Tracking",
         fields: [
-            {
-                key: "created_at",
-                label: "Measured at",
-                type: "date",
-                readOnly: true,
-                rank: 1,
-                display: true,
-            },
+            // {
+            //     key: "created_at",
+            //     label: "Measured at",
+            //     type: "date",
+            //     readOnly: true,
+            //     rank: 1,
+            //     display: true,
+            // },
             {
                 key: "lbs",
                 label: "Weight (lbs)",
@@ -548,13 +555,13 @@ const formTypes = [
                 annotation: "pounds",
                 rank: 5,
             },
-            {
-                key: "kg",
-                label: "Weight (kg)",
-                type: "number",
-                annotation: "kilograms",
-                rank: 5,
-            },
+            // {
+            //     key: "kg",
+            //     label: "Weight (kg)",
+            //     type: "number",
+            //     annotation: "kilograms",
+            //     rank: 6,
+            // },
         ],
     },
     {
