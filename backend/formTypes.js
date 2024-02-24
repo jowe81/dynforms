@@ -534,6 +534,47 @@ const formTypes = [
                 defaultValue: true,
                 rank: 4,
             },
+            {
+                key: "color",
+                label: "Color",
+                type: "select",
+                rank: 5,
+                defaultValue: "",
+                options: [
+                    {
+                        label: "(Auto)",
+                        value: "",
+                    },
+                    {
+                        label: "Blue",
+                        value: "blue",
+                    },
+                    {
+                        label: "Gray",
+                        value: "gray",
+                    },
+                    {
+                        label: "Green",
+                        value: "green",
+                    },
+                    {
+                        label: "Pink",
+                        value: "pink",
+                    },
+                    {
+                        label: "Purple",
+                        value: "purple",
+                    },
+                    {
+                        label: "Red",
+                        value: "red",
+                    },
+                    {
+                        label: "Yellow",
+                        value: "yellow",
+                    },
+                ],
+            },
         ],
     },
     {

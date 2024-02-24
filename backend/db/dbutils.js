@@ -169,6 +169,10 @@ function constructUniqueTestFilter(uniqueKeys, doc) {
 }
 
 function applyFieldsFilter(doc, fields) {
+    if (!fields) {
+        fields = [];
+    }
+    
     fields.forEach(field => {
         const value = doc[field.key];
         

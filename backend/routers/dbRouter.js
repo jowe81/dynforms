@@ -236,7 +236,10 @@ const initRouter = (express, db) => {
             const response = {
                 success: true,
                 collectionName,
-                data: { records: [record] },
+                data: { 
+                    records: [record],
+                    libraryInfo: await m2m.getLibraryInfo(collectionName, cache.lastUsedFilter),
+                },
                 filter: cache.lastUsedFilter,
             };
             log(`Returning: ${JSON.stringify(response)}`);
@@ -252,6 +255,7 @@ const initRouter = (express, db) => {
      */
     dbRouter.post("/m2m/pull", async (req, res) => {
         let {
+            clientId,       // Identifier identifying the app/client who is issueing the request
             connectionName, // Optional target database (use default if undefined)
             collectionName, // Target collection
             sessionId,      // Optional session identifier
@@ -268,9 +272,14 @@ const initRouter = (express, db) => {
             orderBy = {};
         }
 
-        log(`Processing request for ${collectionName}, query: ${JSON.stringify(req.query)}, settings: ${JSON.stringify(settings)}, filter: ${JSON.stringify(filter)}, orderBy: ${JSON.stringify(orderBy)}.`);
+        if (!connectionName) {
+            connectionName = 'dynforms';
+        }
+
+        log(`Processing request for client ${clientId}, collection ${collectionName}, query: ${JSON.stringify(req.query)}, settings: ${JSON.stringify(settings)}, filter: ${JSON.stringify(filter)}, orderBy: ${JSON.stringify(orderBy)}.`);        
 
         const processingResult = await m2m.processRequest({
+            clientId,
             connectionName,
             collectionName,
             sessionId,
@@ -279,11 +288,11 @@ const initRouter = (express, db) => {
             settings,
         });
 
-        const success = !processingResult.error;
-        const data = processingResult.data;
-
         const resolvedFilter = processingResult.filter;
         cache.lastUsedFilter = resolvedFilter;
+        const success = !processingResult.error;
+        const data = processingResult.data;
+        data.libraryInfo = await m2m.getLibraryInfo(collectionName, resolvedFilter);
         
         const result = {
             connectionName,
