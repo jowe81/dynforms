@@ -4,7 +4,7 @@ const constants: any = {
         debug: false,
     },
 
-    apiRoot: "http://johannes-mb.wnet.wn:3010/db",
+    apiRoot: "http://dynforms.wnet.wn:3010/db",
     itemsPerPageInitial: 5,
 };
 

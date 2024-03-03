@@ -9,7 +9,7 @@ const formTypes = [
              */
             images: {
                 showImages: true,
-                baseUrl: "http://johannes-mb.wnet.wn:3020/",
+                baseUrl: "http://dynforms.wnet.wn:3020/",
             },
         },
         groups: [
@@ -190,6 +190,63 @@ const formTypes = [
                 type: "textarea",
                 rows: 10,
                 rank: 2,
+            },
+        ],
+    },
+    {
+        collectionName: "system_notes",
+        title: "System Notes",
+        fields: [
+            {
+                key: "category",
+                label: "Category",
+                type: "select",
+                rank: 1,
+                options: [
+                    {
+                        label: "Ubuntu Server",
+                        value: "ubuntu_server",
+                    },
+                    {
+                        label: "Docker",
+                        value: "docker",
+                    },
+                    {
+                        label: "Raspberry PI",
+                        value: "raspberry_pi",
+                    },
+                    {
+                        label: "Other",
+                        value: "other",
+                    },
+                ],
+            },
+            {
+                key: "title",
+                label: "Title",
+                type: "text",
+                rank: 2,
+            },
+            {
+                key: "text",
+                label: "Text",
+                type: "textarea",
+                rank: 3,
+            },
+            {
+                key: "notes",
+                label: "Notes",
+                type: "subfieldArray",
+                rank: 2,
+                fields: [
+                    {
+                        key: "note",
+                        label: "Note",
+                        type: "textarea",
+                        defaultValue: "",
+                        rank: 0,
+                    },
+                ],
             },
         ],
     },
