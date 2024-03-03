@@ -320,6 +320,10 @@ const initRouter = (express, db) => {
         res.json({ __ctrl: getBlankCtrlField()});
     })
 
+    dbRouter.get("/echo", (req, res) => {
+        res.json(req.body);
+    })
+
     return dbRouter;
 };
 
