@@ -5,7 +5,8 @@
     "description": "dynforms backend",
     "main": "index.js",
     "scripts": {
-        "dev": "nodemon -r dotenv/config ./index.js",
+        "start": "node ./dynforms.js",
+        "dev": "nodemon -r dotenv/config ./dynforms.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
