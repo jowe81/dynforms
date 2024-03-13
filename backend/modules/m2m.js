@@ -176,6 +176,13 @@ function M2m(db) {
                 // Roll over if needed.
                 if (index > recordsCount - 1 || index < 0) {
                     index = 0;
+
+                    const resetSuccessful = await resetRequestCursor(requestRecord);
+                    if (!resetSuccessful) {
+                        log(`Failed to reset the cusor index for request: ${JSON.stringify(requestRecord)}`, "bgRed", true);
+                    } else {
+                        log(`Successfully reset request cursor for request: ${JSON.stringify(requestRecord)}`);
+                    }
                 }
 
                 // Retrieve the target record.
@@ -261,6 +268,19 @@ function M2m(db) {
         return record;
     }
 
+    async function resetRequestCursor(requestRecord) {
+        if (!requestRecord) {
+            return null;
+        }
+
+        record.cursorIndex = 0;
+        record.updated_at = new Date();
+
+        const collection = getEnhancedCollection(db, "dynforms");
+        await collection.updateOne({ _id: record._id }, record, null, []);
+        return record;
+    }
+
 
     function isToday(date) {
         if (!date) {
@@ -284,6 +304,7 @@ function M2m(db) {
     return {
         processRequest,
         getLibraryInfo,
+        resetRequestCursor,
     };
 }
 
