@@ -851,6 +851,7 @@ const formTypes = [
                     },
                 ],
                 display: false,
+                export: false,
             },
 
             {
@@ -872,6 +873,7 @@ const formTypes = [
                         value: 8,
                     },
                 ],
+                export: false,
             },
             {
                 key: "notes",
@@ -887,6 +889,7 @@ const formTypes = [
                 readOnly: true,
                 rank: 8,
                 display: false,
+                export: false,
             },
             {
                 key: "_id",
@@ -895,6 +898,7 @@ const formTypes = [
                 readOnly: true,
                 rank: 9,
                 display: false,
+                export: false,
             },
         ],
     },

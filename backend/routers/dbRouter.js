@@ -1,8 +1,7 @@
 import { log } from "../helpers/jUtils.js";
 import { getBlankCtrlField, getItemFromDb } from "../helpers/helpers.js";
-import { storeUpdateRecord } from "../db/mongodb.js";
+import { getCsvDataFromCollection } from "../modules/csvExport.js";
 import { ObjectId } from "mongodb";
-import dns from 'dns';
 
 import {
     constructSearchFilter,
@@ -319,6 +318,27 @@ const initRouter = (express, db) => {
     dbRouter.get("/_ctrlField", (req, res) => {
         res.json({ __ctrl: getBlankCtrlField()});
     })
+
+    dbRouter.get("/export/:collectionName", async (req, res) => {
+        const { collectionName } = req.params;
+        const { orderBy } = req.query;
+        try {
+            const csvData = await getCsvDataFromCollection(db, collectionName, orderBy);
+            if (!csvData) {
+                return res.status(404).send("No documents found in collection or no data available.");
+            }
+
+            // Set the headers to signal a file download to the browser
+            res.setHeader("Content-Type", "text/csv");
+            res.setHeader("Content-Disposition", `attachment; filename="${collectionName}.csv"`);
+
+            // Send the CSV file data as the response
+            res.send(csvData);
+        } catch (error) {
+            console.error("Failed to export collection to CSV", error);
+            res.status(500).send("Failed to export collection to CSV");
+        }
+    });
 
     dbRouter.get("/echo", (req, res) => {
         res.json(req.body);
