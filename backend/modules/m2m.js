@@ -273,12 +273,12 @@ function M2m(db) {
             return null;
         }
 
-        record.cursorIndex = 0;
-        record.updated_at = new Date();
+        requestRecord.cursorIndex = 0;
+        requestRecord.updated_at = new Date();
 
         const collection = getEnhancedCollection(db, "dynforms");
-        await collection.updateOne({ _id: record._id }, record, null, []);
-        return record;
+        await collection.updateOne({ _id: requestRecord._id }, requestRecord, null, []);
+        return requestRecord;
     }
 
 
