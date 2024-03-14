@@ -1,4 +1,4 @@
-import { log } from "../helpers/jUtils.js";
+import { getFormattedDate, log } from "../helpers/jUtils.js";
 import { getBlankCtrlField, getItemFromDb } from "../helpers/helpers.js";
 import { getCsvDataFromCollection } from "../modules/csvExport.js";
 import { ObjectId } from "mongodb";
@@ -328,9 +328,11 @@ const initRouter = (express, db) => {
                 return res.status(404).send("No documents found in collection or no data available.");
             }
 
+            const filename = `export-${collectionName}-${getFormattedDate(new Date(), null, true)}.csv`;
+
             // Set the headers to signal a file download to the browser
             res.setHeader("Content-Type", "text/csv");
-            res.setHeader("Content-Disposition", `attachment; filename="${collectionName}.csv"`);
+            res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
 
             // Send the CSV file data as the response
             res.send(csvData);

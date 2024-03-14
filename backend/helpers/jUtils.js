@@ -30,7 +30,7 @@ const getFileNames = (targetPath, callingScriptPath) => {
   return fs.readdirSync(directoryPath);
 }
 
-const getFormattedDate = (date, color = 'gray') => {
+const getFormattedDate = (date, color = 'gray', forFilename = false) => {
     if (!date) {
         date = new Date();
     }
@@ -43,8 +43,12 @@ const getFormattedDate = (date, color = 'gray') => {
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
 
-    const formattedDate = `${year}/${pad(month, 2, '0')}/${pad(day, 2, '0')}`;
-    const formattedTime = `${pad(hours, 2, '0')}:${pad(minutes, 2, '0')}:${pad(seconds, 2, '0')}`;
+    if (forFilename) {
+        return `${year}-${pad(month, 2, "0")}-${pad(day, 2, "0")} ${pad(hours, 2, '0')}_${pad(minutes, 2, '0')}`;
+    }
+
+    const formattedDate = `${year}/${pad(month, 2, "0")}/${pad(day, 2, "0")}`;
+    const formattedTime = `${pad(hours, 2, "0")}:${pad(minutes, 2, "0")}:${pad(seconds, 2, "0")}`;
 
     const text = `${formattedDate} ${formattedTime}`
     return color ? chalk[color](text) : text;
