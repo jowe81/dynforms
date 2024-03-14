@@ -799,6 +799,7 @@ const formTypes = [
     {
         collectionName: "johannes_medical",
         title: "Johannes Medical",
+        allowExport: true,
         fields: [
             {
                 key: "created_at",

@@ -2,6 +2,7 @@ import { getFormattedDate, log } from "../helpers/jUtils.js";
 import { getBlankCtrlField, getItemFromDb } from "../helpers/helpers.js";
 import { getCsvDataFromCollection } from "../modules/csvExport.js";
 import { ObjectId } from "mongodb";
+import ip from "ip";
 
 import {
     constructSearchFilter,
@@ -36,7 +37,7 @@ const initRouter = (express, db) => {
         next();
     });
 
-    dbRouter.get("/formtypes", async (req, res) => {
+    dbRouter.get("/formtypes", checkLocalNetwork, async (req, res) => {
         const remoteIp = req.ip.includes("::ffff:")
             ? req.ip.split(":").pop()
             : req.ip;
@@ -46,7 +47,7 @@ const initRouter = (express, db) => {
         res.json(formTypesFiltered);
     });
 
-    dbRouter.post(`/getItem`, async (req, res) => {
+    dbRouter.post(`/getItem`, checkLocalNetwork, async (req, res) => {
         const filter = req.body.filter ?? {};
         const collectionName = req.query.collectionName;
 
@@ -77,7 +78,7 @@ const initRouter = (express, db) => {
         return formTypes.filter(formDefinition => publicCollectionNames.includes(formDefinition.collectionName));
     }
 
-    dbRouter.get("/pageCount/:collectionName", async (req, res) => {
+    dbRouter.get("/pageCount/:collectionName", checkLocalNetwork, async (req, res) => {
         const { collectionName } = req.params;
         const { search, itemsPerPage } = req.query;
         const searchFilter = constructSearchFilter(search, formTypes[2].fields);
@@ -97,7 +98,7 @@ const initRouter = (express, db) => {
         }
     });
 
-    dbRouter.get("/records/:collectionName", async (req, res) => {
+    dbRouter.get("/records/:collectionName", checkLocalNetwork, async (req, res) => {
         const { collectionName } = req.params;
         let { search, sortCol1, sortCol2 } = req.query;
         const itemsPerPage = parseInt(req.query.itemsPerPage);
@@ -149,7 +150,7 @@ const initRouter = (express, db) => {
         }
     });
 
-    dbRouter.delete("/records/:collectionName/:_id", async (req, res) => {
+    dbRouter.delete("/records/:collectionName/:_id", checkLocalNetwork, async (req, res) => {
         castId(req.params);
 
         const { collectionName, _id } = req.params;
@@ -165,7 +166,7 @@ const initRouter = (express, db) => {
         }
     });
 
-    dbRouter.post("/post/:collectionName", async (req, res) => {
+    dbRouter.post("/post/:collectionName", checkLocalNetwork, async (req, res) => {
         const { collectionName } = req.params;
         const collection = getEnhancedCollection(db, collectionName);
 
@@ -206,7 +207,7 @@ const initRouter = (express, db) => {
         }
     });
 
-    dbRouter.post('/m2m/push', async (req, res) => {
+    dbRouter.post('/m2m/push', checkLocalNetwork, async (req, res) => {
         const { connectionName, collectionName, record } = req.body;
         
         console.log("Collection", collectionName);
@@ -252,7 +253,7 @@ const initRouter = (express, db) => {
     /**
      * This endpoint is for machine use, e.g. the jj-auto backend.
      */
-    dbRouter.post("/m2m/pull", async (req, res) => {
+    dbRouter.post("/m2m/pull", checkLocalNetwork, async (req, res) => {
         let {
             clientId,       // Identifier identifying the app/client who is issueing the request
             connectionName, // Optional target database (use default if undefined)
@@ -315,10 +316,12 @@ const initRouter = (express, db) => {
         res.json(result);
     });
 
-    dbRouter.get("/_ctrlField", (req, res) => {
+    dbRouter.get("/_ctrlField", checkLocalNetwork, (req, res) => {
         res.json({ __ctrl: getBlankCtrlField()});
     })
 
+
+    // Public endpoints (right now)
     dbRouter.get("/export/:collectionName", async (req, res) => {
         const { collectionName } = req.params;
         const { orderBy } = req.query;
@@ -347,6 +350,20 @@ const initRouter = (express, db) => {
     })
 
     return dbRouter;
+};
+
+const checkLocalNetwork = (req, res, next) => {
+    const ipParts = req.ip.split(':');    
+    const clientIp = ipParts[ipParts.length - 1];
+
+    if (clientIp.includes('192.168.1.')) {
+        // Client IP is within the local network, proceed to the next middleware
+        next();
+    } else {
+        // Client IP is not within the local network, send forbidden response
+        log(`checkLocalNetwork: denied request from ${clientIp}, original url: ${req.originalUrl}`);
+        res.status(403).send("Forbidden");
+    }
 };
 
 export default initRouter;

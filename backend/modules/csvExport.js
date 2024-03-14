@@ -10,6 +10,10 @@ async function getCsvDataFromCollection(db, collectionName, orderBy) {
     }
 
     const formDefinition = formTypes.find((item) => item.collectionName === collectionName);
+    if (!formDefinition?.allowExport) {
+        return null;
+    }
+
     formDefinition.fields?.sort((a, b) => (a.rank > b.rank ? 1 : -1));
 
     const displayFields = getCsvDisplayFields(formDefinition.fields);
