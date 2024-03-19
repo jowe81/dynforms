@@ -13,7 +13,6 @@ const maxRecords = 1000;
 function M2m(db) {
     async function processRequest(request) {
         let { clientId, connectionName, collectionName, sessionId, filter, orderBy, settings } = request;
-        const requestRecord = await handleRequestMeta(request);
 
         const result = {
             data: {},
@@ -23,6 +22,8 @@ function M2m(db) {
             result.error = "Collection Name is required.";
             return result;
         }
+
+        const requestRecord = await handleRequestMeta(request);
 
         if (!filter) {
             filter = {};
@@ -36,7 +37,7 @@ function M2m(db) {
 
         let recordsInfo;
 
-        if (!settings.singleRecord) {
+        if (!settings?.singleRecord) {
             recordsInfo = await retrieveMultiple(connectionName, collectionName, filter, orderBy, settings);
         } else {
             recordsInfo = await retrieveSingle(connectionName, collectionName, filter, orderBy, settings, requestRecord);
@@ -56,6 +57,10 @@ function M2m(db) {
     }
 
     async function getLibraryInfo(collectionName, filter) {
+        if (!collectionName) {
+            return {};
+        }
+
         const collection = getEnhancedCollection(db, collectionName);
         const totalDocumentCount = await collection.countDocuments({});
 
@@ -223,7 +228,7 @@ function M2m(db) {
 
     async function handleRequestMeta(request) {
         const { clientId, connectionName, collectionName, sessionId, filter, orderBy, settings } = request;
-        if (!settings.singleRecord) {
+        if (!settings?.singleRecord) {
             // Only need this for single record requests.
             return;
         }
@@ -263,9 +268,11 @@ function M2m(db) {
         }
         
         record.updated_at = new Date();
-        
+        const returnRecord = { ...record };
+
         await collection.updateOne({_id: record._id}, record, null, []);
-        return record;
+
+        return returnRecord;
     }
 
     async function resetRequestCursor(requestRecord) {
@@ -278,6 +285,7 @@ function M2m(db) {
 
         const collection = getEnhancedCollection(db, "dynforms");
         await collection.updateOne({ _id: requestRecord._id }, requestRecord, null, []);
+
         return requestRecord;
     }
 
@@ -288,7 +296,6 @@ function M2m(db) {
         }
 
         const today = new Date();
-
         return (
             date.getDate() === today.getDate() &&
             date.getMonth() === today.getMonth() &&

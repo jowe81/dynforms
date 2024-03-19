@@ -356,8 +356,8 @@ const checkLocalNetwork = (req, res, next) => {
     const ipParts = req.ip.split(':');    
     const clientIp = ipParts[ipParts.length - 1];
 
-    if (clientIp.includes('192.168.1.')) {
-        // Client IP is within the local network, proceed to the next middleware
+    if (clientIp.includes('192.168.1.') || clientIp == 1) {
+        // Client IP is within the local network, or request is coming from the postman agent - proceed to the next middleware
         next();
     } else {
         // Client IP is not within the local network, send forbidden response
