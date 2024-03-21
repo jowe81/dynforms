@@ -207,10 +207,20 @@ const initRouter = (express, db) => {
         }
     });
 
+
+    dbRouter.post('/m2m/deleteById', checkLocalNetwork, async(req, res) => {
+        const { connectionName, collectionName, recordId } = req.body;
+        log(`Delete by id request for: ${collectionName}, ${recordId}`);
+        
+        const collection = getEnhancedCollection(db, collectionName);
+        const result = await collection.deleteOne({_id: new ObjectId(recordId)});
+
+        res.json(result);
+    });
+
     dbRouter.post('/m2m/push', checkLocalNetwork, async (req, res) => {
         const { connectionName, collectionName, record } = req.body;
         
-        console.log("Collection", collectionName);
         log(`Push request for: ${collectionName} `);
         const collection = getEnhancedCollection(db, collectionName);
         const update = record._id ? true : false;
