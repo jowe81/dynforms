@@ -59,3 +59,7 @@
     overflow: auto;
     width: 100%;
 }
+
+.spacer {
+    height: 10px;
+}

@@ -82,28 +82,35 @@ function getCsvDataFromRecords(records, fields, orderBy) {
     
     const csv = records.map((record) => {
         const values = displayFields.map((field) => {
-            let value = record[field.key];
-
+            let value = record[field.key] ?? '';
+            
             switch (field.type) {
-                case "date":
-                    value = getFormattedDate(new Date(value), null);
-                    break;
-
-                case "number":
-                    if (isNaN(value)) {
+                case "subfieldArray":
+                    if (!Array.isArray(field.fields)) {
                         value = ``;
+                        break;
+                    }
+                    if (Array.isArray(value) && value.length) {
+                        const itemValues = value.map((item) => {
+                            const trimmedItem = removeEmptyKeys(item);
+                            let str = "";
+                            for (let key in trimmedItem) {
+                                const subfield = field.fields.find((field) => field.key === key);                                
+                                str += `\n${subfield.label}: ${renderFlatValue(subfield.type, trimmedItem[key], true)}`;
+                            }
+                            return str;
+                        });
+
+                        value = '"' + itemValues.join("\n") + '"';
                     }
                     break;
 
-
+                case "date":
+                case "number":
+                case "boolean":
                 default:
-                    if (![null, undefined].includes(typeof value)) {
-                        
-                        value = `"${value}"`;
-                    } else {
-                        value = `NA`;
-                    }
-                    
+                    value = renderFlatValue(field.type, value);
+                    break;
             }
 
             return value;
@@ -118,6 +125,45 @@ function getCsvDataFromRecords(records, fields, orderBy) {
 
 function getCsvHeaderRow(fields) {
     return fields.map((field) => field.label).join(",") + "\r\n";
+}
+
+function renderFlatValue(type, inputValue, omitQuotes) {    
+    switch (type) {
+        case "date":
+            return getFormattedDate(new Date(inputValue), null);
+
+        case "number":
+            return isNaN(inputValue) ? `` : inputValue;
+
+        case "boolean":
+            return inputValue ? "true" : "false";
+
+        default:            
+            if (![null, undefined].includes(typeof inputValue)) {
+                if (!inputValue) {
+                    return '';
+                }
+                const escapedInputValue = typeof inputValue === "string" ? escapeDoubleQuotes(inputValue) : "";
+                return omitQuotes ? escapedInputValue : `"${escapedInputValue}"`;
+            } else {
+                return `NA`;
+            }
+    }
+}
+
+function escapeDoubleQuotes(str) {
+    return str.replace(/"/g, '""');
+}
+
+function removeEmptyKeys(obj) {
+    const copy = {...obj};
+    for (let key in copy) {
+        if (!copy[key]) {
+            delete copy[key];
+        }
+    }
+
+    return copy;
 }
 
 export { 

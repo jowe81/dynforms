@@ -74,7 +74,67 @@ function getRandomNumber(n, m) {
     return Math.round(randomNumber);
 }
 
+// Go through the filter and replace any encoded values, such as dates.
+function processFilterObject(filter, callback) {
+    for (let key in filter) {
+        if (typeof filter[key] === "object" && filter[key] !== null) {
+            // Recursively search nested objects
+            processFilterObject(filter[key], callback);
+        } else if (typeof filter[key] === "string" && filter[key].startsWith("__")) {
+            filter[key] = callback(filter[key]);
+        }
+    }
+}
+
+function processFilterValue(value) {
+    let result = value;
+
+    const separatorIndex = value.indexOf("-");
+    const keyword = value.substring(2, separatorIndex);
+    const payload = value.substring(separatorIndex + 1);
+    let parsedPayload;
+
+    switch (keyword) {
+        case "DATE":
+            // The payload is time in milliseconds.
+            // Example: '__DATE-1703785527694'
+            result = new Date(parseInt(payload));
+            break;
+
+        case "DATE_DAYS_AGO":
+            const date = new Date();
+            date.setDate(date.getDate() - parseInt(payload));
+            result = date;
+            break;
+
+        case "ARRAY_INCLUDES_ITEM":
+            // The payload is a json stringified string.
+            // Example: '__ARRAY_INCLUDES_ITEM-"favorites"'
+            parsedPayload = JSON.parse(payload);
+            result = { $elemMatch: { $eq: parsedPayload } };
+            break;
+
+        case "ARRAY_INCLUDES_ARRAY_AND":
+            // The payload is a json stringified array.
+            // Example: '__ARRAY_INCLUDES_ARRAY_AND-
+            parsedPayload = JSON.parse(payload);
+            result = { $elemMatch: { $all: parsedPayload } };
+            break;
+
+        case "ARRAY_INCLUDES_ARRAY_OR":
+            // The payload is a json stringified array.
+            // Example: '__ARRAY_INCLUDES_ARRAY_AND-
+            parsedPayload = JSON.parse(payload);
+            result = { $elemMatch: { $in: parsedPayload } };
+            break;
+    }
+    return result;
+}
+
+
 export {
     getBlankCtrlField,
     getItemFromDb,
+    processFilterObject,
+    processFilterValue
 }

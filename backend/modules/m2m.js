@@ -3,14 +3,15 @@
  * This module processes requests from other APIs.
  */
 import { log } from "../helpers/jUtils.js";
-import { getItemFromDb } from "../helpers/helpers.js";
-import {
-    getEnhancedCollection,
-} from "../db/dbutils.js";
+import { getItemFromDb, processFilterObject, processFilterValue } from "../helpers/helpers.js";
+import { getEnhancedCollection } from "../db/dbutils.js";
+import M2mMacros from "./m2mMacros.js";
 
 const maxRecords = 1000;
 
 function M2m(db) {
+    const m2mMacros = M2mMacros(db);
+
     async function processRequest(request) {
         let { clientId, connectionName, collectionName, sessionId, filter, orderBy, settings } = request;
 
@@ -67,59 +68,6 @@ function M2m(db) {
         return {
             totalDocumentCount
         }
-    }
-
-    // Go through the filter and replace any encoded values, such as dates.
-    function processFilterObject(filter, callback) {
-        for (let key in filter) {
-            if (typeof filter[key] === "object" && filter[key] !== null) {
-                // Recursively search nested objects
-                processFilterObject(filter[key], callback);
-            } else if (typeof filter[key] === "string" && filter[key].startsWith("__")) {
-                filter[key] = callback(filter[key]);
-            }
-        }
-        console.log('Resolved Filter: ', filter);
-    }
-
-    function processFilterValue(value) {
-        let result = value;
-
-        const separatorIndex = value.indexOf("-");
-        const keyword = value.substring(2, separatorIndex);
-        const payload = value.substring(separatorIndex + 1);
-        let parsedPayload;
-
-        switch (keyword) {
-            case "DATE":
-                // The payload is time in milliseconds.
-                // Example: '__DATE-1703785527694'
-                result = new Date(parseInt(payload));
-                break;
-
-            case "ARRAY_INCLUDES_ITEM":
-                // The payload is a json stringified string.
-                // Example: '__ARRAY_INCLUDES_ITEM-"favorites"'
-                parsedPayload = JSON.parse(payload);
-                result = { $elemMatch: { $eq: parsedPayload } };
-                break;
-
-            case "ARRAY_INCLUDES_ARRAY_AND":
-                // The payload is a json stringified array.
-                // Example: '__ARRAY_INCLUDES_ARRAY_AND-
-                parsedPayload = JSON.parse(payload);
-                result = { $elemMatch: { $all: parsedPayload } };
-                break;
-
-            case "ARRAY_INCLUDES_ARRAY_OR":
-                // The payload is a json stringified array.
-                // Example: '__ARRAY_INCLUDES_ARRAY_AND-
-                parsedPayload = JSON.parse(payload);
-                result = { $elemMatch: { $in: parsedPayload } };
-                break;
-        }
-
-        return result;
     }
 
     async function retrieveMultiple(connectionName, collectionName, filter, orderBy, settings) {
@@ -308,10 +256,34 @@ function M2m(db) {
         return clientId;
     }
 
+    async function runMacroRequest(request) {
+        let {
+            clientId, // Identifier identifying the app/client who is issueing the request
+            macroId, // Which macro to run
+            connectionName, // Optional target database (use default if undefined)
+            collectionName, // Target collection
+            sessionId, // Optional session identifier
+            filter, // Optional Mongo query filter
+            orderBy, // Optional sort filter
+            settings, // Optional settings
+        } = request.body;
+
+        let data = null;
+
+        switch (settings.macroId) {
+            case '__aggregation':
+                data = await m2mMacros.macroAggregation(collectionName, settings);
+                break;
+        }
+
+        return data;
+    }
+
     return {
         processRequest,
         getLibraryInfo,
         resetRequestCursor,
+        runMacroRequest,
     };
 }
 

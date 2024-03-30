@@ -326,6 +326,19 @@ const initRouter = (express, db) => {
         res.json(result);
     });
 
+    dbRouter.post('/m2m/macro', checkLocalNetwork, async (req, res) => {
+        try {
+            const data = await m2m.runMacroRequest(req);
+
+            const result = { success: true, data };
+            log(`Returning macro results: ${JSON.stringify(result)}`);
+            res.json(result);
+        } catch (error) {
+            console.error("Failed to execute macro", error);
+            res.status(500).send("Failed to execute macro");
+        }
+    });
+
     dbRouter.get("/_ctrlField", checkLocalNetwork, (req, res) => {
         res.json({ __ctrl: getBlankCtrlField()});
     })

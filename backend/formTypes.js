@@ -293,6 +293,7 @@ const formTypes = [
     {
         collectionName: "scriptures",
         title: "Scriptures",
+        allowExport: true,
         fields: [
             {
                 key: "reference",
@@ -340,12 +341,21 @@ const formTypes = [
                 rows: 3,
                 rank: 4,
             },
+            {
+                key: "created_at",
+                label: "Created at",
+                type: "date",
+                readOnly: true,
+                rank: 5,
+                display: true,
+            },
         ],
     },
 
     {
         collectionName: "address_book",
         title: "Address Book",
+        allowExport: true,
         groups: [
             {
                 label: "Record info",
@@ -486,6 +496,7 @@ const formTypes = [
                         rank: 1,
                     },
                     {
+                        label: "Updated at",
                         key: "updated_at",
                         type: "date",
                         rank: 2,
@@ -515,6 +526,7 @@ const formTypes = [
                         rank: 1,
                     },
                     {
+                        label: "Updated at",
                         key: "updated_at",
                         type: "date",
                         rank: 2,
@@ -542,16 +554,17 @@ const formTypes = [
             },
             {
                 key: "created_at",
-                label: "Created",
+                label: "Created at",
                 type: "date",
                 readOnly: true,
                 rank: 10,
                 display: true,
                 groupId: "__info",
+                export: false,
             },
             {
+                label: "Updated at",
                 key: "updated_at",
-                label: "Updated",
                 type: "date",
                 readOnly: true,
                 rank: 11,
@@ -636,16 +649,17 @@ const formTypes = [
     },
     {
         collectionName: "weight_tracking",
+        allowExport: true,
         title: "Weight Tracking",
         fields: [
-            // {
-            //     key: "created_at",
-            //     label: "Measured at",
-            //     type: "date",
-            //     readOnly: true,
-            //     rank: 1,
-            //     display: true,
-            // },
+            {
+                key: "created_at",
+                label: "Measured at",
+                type: "date",
+                readOnly: true,
+                rank: 1,
+                display: true,
+            },
             {
                 key: "lbs",
                 label: "Weight (lbs)",
@@ -653,13 +667,13 @@ const formTypes = [
                 annotation: "pounds",
                 rank: 5,
             },
-            // {
-            //     key: "kg",
-            //     label: "Weight (kg)",
-            //     type: "number",
-            //     annotation: "kilograms",
-            //     rank: 6,
-            // },
+            {
+                key: "kg",
+                label: "Weight (kg)",
+                type: "number",
+                annotation: "kilograms",
+                rank: 6,
+            },
         ],
     },
     {
