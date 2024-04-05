@@ -19,7 +19,7 @@ fi
 mkdir -p "$BACKUP_DIR"
 
 # Generate backup file name with timestamp
-backup_file="$BACKUP_DIR/$(date +"%Y-%m-%d-%H-%M-%S")-$DB_NAME-dump.tar.gz"
+backup_file="$BACKUP_DIR/$(date +"%Y-%m-%d-%H-%M-%S")-$DB_MONGO_DATABASE-dump.tar.gz"
 
 # Dump the MongoDB database
 mongodump --uri="mongodb://$DB_MONGO_HOST" --db="$DB_MONGO_DATABASE" --archive="$backup_file" --gzip
