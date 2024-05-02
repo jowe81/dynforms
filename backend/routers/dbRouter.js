@@ -327,6 +327,7 @@ const initRouter = (express, db) => {
     });
 
     dbRouter.post('/m2m/macro', checkLocalNetwork, async (req, res) => {
+        log(`Processing macro request: ${JSON.stringify(req.body)}`)
         try {
             const data = await m2m.runMacroRequest(req);
 

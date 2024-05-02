@@ -88,11 +88,11 @@ function processFilterObject(filter, callback) {
 
 function processFilterValue(value) {
     let result = value;
-
-    const separatorIndex = value.indexOf("-");
-    const keyword = value.substring(2, separatorIndex);
+    const separatorIndex = value.indexOf("-");    
+    const keyword = value.substring(2, separatorIndex !== -1 ? separatorIndex : undefined);
     const payload = value.substring(separatorIndex + 1);
     let parsedPayload;
+    let date;
 
     switch (keyword) {
         case "DATE":
@@ -102,8 +102,16 @@ function processFilterValue(value) {
             break;
 
         case "DATE_DAYS_AGO":
-            const date = new Date();
+            date = new Date();
             date.setDate(date.getDate() - parseInt(payload));
+            result = date;
+            break;
+
+        case "DATE_CURRENT_YEAR_START":
+            date = new Date();
+            date.setMonth(0); // Set the month to January (0-indexed)
+            date.setDate(1); // Set the day to the 1st
+            date.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
             result = date;
             break;
 
