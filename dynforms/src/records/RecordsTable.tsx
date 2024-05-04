@@ -30,8 +30,10 @@ function RecordsTable() {
     }
 
     useEffect(() => {
-        if (action === 'delete' && recordId) {            
-            dbDeleteRecord(recordId);            
+        if (action === 'delete' && recordId && records?.find((record) => record._id === recordId)) {      
+            if (confirm("Are you sure you want to delete this record?")) {
+                dbDeleteRecord(recordId);            
+            }            
         }
     }, [action, recordId]);
 
