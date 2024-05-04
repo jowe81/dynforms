@@ -666,6 +666,11 @@ const formTypes = [
                 type: "number",
                 annotation: "pounds",
                 rank: 5,
+                relative: {
+                    key: "kg",
+                    factor: 2.20462,
+                    precision: 1, // Store 1 decimal after conversion
+                },
             },
             {
                 key: "kg",
@@ -673,6 +678,11 @@ const formTypes = [
                 type: "number",
                 annotation: "kilograms",
                 rank: 6,
+                relative: {
+                    key: "lbs",
+                    factor: 1 / 2.20462,
+                    precision: 1, // Store 1 decimal after conversion
+                },
             },
         ],
     },

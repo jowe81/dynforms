@@ -369,7 +369,8 @@ export default function useAppData() {
     }
     
     const dbUpdateRecord = async (record: any) => {        
-        console.log(`Updating record in ${appData.collectionName}`, record);
+        fillInRelativeFields(record, appData.formDefinition.fields);
+
         const recordWithUser = { ...record };
         recordWithUser.__user = appData.user;
         return axios
@@ -380,6 +381,29 @@ export default function useAppData() {
             .then(loadRecords)
             .then((data) => console.log("Update and load complete."))
             .catch(axiosError);
+    }
+
+    const fillInRelativeFields = (record: any, fields: any) => {
+        fields.forEach(field => {
+            const key = field.key;
+            const relativeKey = field.relative?.key;
+
+            if (!record[key] && relativeKey) {
+                const factor = field.relative.factor;
+
+                if (record[relativeKey]) {
+                    // Have the related value, fill it into this one.
+                    let relativeValue = record[relativeKey] * factor;
+                    if (!field.relative.precision) {
+                        record[key] = Math.round(relativeValue);
+                    } else {
+                        record[key] = relativeValue.toFixed(field.relative.precision);
+                    }
+                                        
+                    console.log(`Filled in ${key} from ${relativeKey}: ${relativeValue}`);
+                }
+            }
+        })
     }
 
     const loadFormTypes = async () => {

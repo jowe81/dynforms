@@ -182,7 +182,7 @@ function applyFieldsFilter(doc, fields) {
                 break;
 
             case 'number':
-                doc[field.key] = parseInt(value);
+                doc[field.key] = parseFloat(value);
                 break;
 
             case 'date':

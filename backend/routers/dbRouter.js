@@ -192,14 +192,14 @@ const initRouter = (express, db) => {
         castId(record);
 
         try {
-            const result = (await record._id)
-                ? collection.updateOne(
+            const result = record._id
+                ? await collection.updateOne(
                       { _id: record._id },
                       record,
                       null,
                       fields
                   )
-                : collection.insertOne(record, null, null, fields);
+                : await collection.insertOne(record, null, null, fields);
             res.json(result);
         } catch (err) {
             logError(err);
