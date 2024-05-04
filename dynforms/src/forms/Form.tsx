@@ -85,17 +85,17 @@ function Form() {
             <>
                 <div className="form-actions-container">
                     {edited && (
-                        <button onClick={() => navigate("/records")}>
+                        <button onClick={() => navigate("/records")} className="btn-cancel">
                             {edited ? "Cancel & Back" : "Back"}
                         </button>
                     )}
-                    <button onClick={handleSubmit} data-next={-1}>
+                    <button onClick={handleSubmit} data-next={-1} className="btn-save">
                         {edited ? "Save & Previous" : "Previous"}
                     </button>
-                    <button onClick={handleSubmit} data-next={1}>
+                    <button onClick={handleSubmit} data-next={1} className="btn-save">
                         {edited ? "Save & Next" : "Next"}
                     </button>
-                    <button onClick={handleSubmit}>
+                    <button onClick={handleSubmit} className="btn-save">
                         {edited ? "Save & Back" : "Back"}
                     </button>
                 </div>
@@ -104,14 +104,14 @@ function Form() {
     } else {
         actionsJSX = (
             <div className="form-actions-container">
+                <button onClick={() => navigate("/records")} className="btn-cancel">
+                    Cancel
+                </button>
                 {edited && (
-                    <button onClick={handleSubmit}>
+                    <button onClick={handleSubmit} className="btn-save">
                         Save
                     </button>
                 )}
-                <button onClick={() => navigate("/records")}>
-                    Cancel
-                </button>
             </div>
         );
     }

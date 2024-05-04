@@ -132,3 +132,11 @@ input[type="checkbox"] {
     padding-top: 1px;
     padding-bottom: 5px;
 }
+
+.btn-save {
+    background-color: green;
+}
+
+.btn-cancel {
+    background-color: rgba(68, 68, 68, 0.516);
+}
