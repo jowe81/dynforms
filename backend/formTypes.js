@@ -927,6 +927,46 @@ const formTypes = [
             },
         ],
     },
+    {
+        collectionName: "weatherHistory",
+        title: "Weather History",
+        allowExport: true,
+        fields: [
+            {
+                key: "created_at",
+                label: "Measured at",
+                type: "date",
+                readOnly: true,
+                rank: 1,
+                display: true,
+            },
+            {
+                key: "tempC",
+                label: "Temperature (Celsius)",
+                type: "number",
+                readOnly: true,
+                rank: 2,
+            },
+            {
+                key: "updated_at",
+                label: "Updated at",
+                type: "date",
+                readOnly: true,
+                rank: 4,
+                display: false,
+                export: false,
+            },
+            {
+                key: "_id",
+                label: "ID",
+                type: "text",
+                readOnly: true,
+                rank: 5,
+                display: false,
+                export: false,
+            },
+        ],
+    },
 ];
 
 export default formTypes;

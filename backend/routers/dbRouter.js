@@ -169,6 +169,7 @@ const initRouter = (express, db) => {
     dbRouter.post("/post/:collectionName", checkLocalNetwork, async (req, res) => {
         const { collectionName } = req.params;
         const collection = getEnhancedCollection(db, collectionName);
+        const createCtrlField = !!req.query.ctrl;
 
         const formDefinition = formTypes.find(
             (formDefinition) => formDefinition.collectionName === collectionName
@@ -186,8 +187,10 @@ const initRouter = (express, db) => {
             delete record._index;
         }
 
-        // Add meta
-        record.__ctrl = getBlankCtrlField();
+        if (createCtrlField) {
+            // Add meta
+            record.__ctrl = getBlankCtrlField();
+        }
 
         castId(record);
 
@@ -220,6 +223,7 @@ const initRouter = (express, db) => {
 
     dbRouter.post('/m2m/push', checkLocalNetwork, async (req, res) => {
         const { connectionName, collectionName, record } = req.body;
+        const createCtrlField = !!req.query.ctrl;
         
         log(`Push request for: ${collectionName} `);
         const collection = getEnhancedCollection(db, collectionName);
@@ -237,7 +241,9 @@ const initRouter = (express, db) => {
                 result = await collection._updateOne({ _id: record._id }, { $set: { ...record }});
             } else {
                 // Add meta
-                record.__ctrl = getBlankCtrlField();
+                if (createCtrlField) {
+                     record.__ctrl = getBlankCtrlField();
+                }
                 record.created_at = now;
                 record.updated_at = now;
                 result = await collection._insertOne(record);
