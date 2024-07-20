@@ -29,7 +29,7 @@ function DisplayValue(props: any) {
             break;
 
         case 'subfieldArray':
-            if (!value.length) {
+            if (!value?.length) {
                 displayValue = `none`;
             } else if (value.length === 1) {
                 displayValue = value.length + ' item';
