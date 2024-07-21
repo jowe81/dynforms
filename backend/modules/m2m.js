@@ -3,7 +3,7 @@
  * This module processes requests from other APIs.
  */
 import { log } from "../helpers/jUtils.js";
-import { getItemFromDb, processFilterObject, processFilterValue } from "../helpers/helpers.js";
+import { getItemFromDb, traverseObject, replaceEncodedValue } from "../helpers/helpers.js";
 import { getEnhancedCollection } from "../db/dbutils.js";
 import M2mMacros from "./m2mMacros.js";
 
@@ -30,7 +30,7 @@ function M2m(db) {
             filter = {};
         }
 
-        processFilterObject(filter, processFilterValue);
+        traverseObject(filter, replaceEncodedValue);
 
         if (!orderBy) {
             orderBy = {};

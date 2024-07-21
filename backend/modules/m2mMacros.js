@@ -1,7 +1,7 @@
 import { log } from "../helpers/jUtils.js";
 import { getItemFromDb } from "../helpers/helpers.js";
 import { getEnhancedCollection } from "../db/dbutils.js";
-import { processFilterObject, processFilterValue } from "../helpers/helpers.js";
+import { traverseObject, replaceEncodedValue } from "../helpers/helpers.js";
 
 function M2mMacros(db) {
 
@@ -12,7 +12,7 @@ function M2mMacros(db) {
 
         // Run the filter resolution code on each aggregation element.
         settings.aggregation.forEach((element,index) => {
-            processFilterObject(element, processFilterValue);            
+            traverseObject(element, replaceEncodedValue);            
         });
 
         const collection = getEnhancedCollection(db, collectionName);

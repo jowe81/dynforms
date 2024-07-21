@@ -74,19 +74,20 @@ function getRandomNumber(n, m) {
     return Math.round(randomNumber);
 }
 
-// Go through the filter and replace any encoded values, such as dates.
-function processFilterObject(filter, callback) {
-    for (let key in filter) {
-        if (typeof filter[key] === "object" && filter[key] !== null) {
+// Go through the object and run the callback on each field.
+function traverseObject(obj, callback) {
+    for (let key in obj) {
+        if (typeof obj[key] === "object" && obj[key] !== null) {
             // Recursively search nested objects
-            processFilterObject(filter[key], callback);
-        } else if (typeof filter[key] === "string" && filter[key].startsWith("__")) {
-            filter[key] = callback(filter[key]);
+            traverseObject(obj[key], callback);
+        } else if (typeof obj[key] === "string" && obj[key].startsWith("__")) {
+            obj[key] = callback(obj[key]);
         }
     }
 }
 
-function processFilterValue(value) {
+// Replace any encoded values, such as dates.
+function replaceEncodedValue(value) {
     let result = value;
     const separatorIndex = value.indexOf("-");    
     const keyword = value.substring(2, separatorIndex !== -1 ? separatorIndex : undefined);
@@ -143,6 +144,6 @@ function processFilterValue(value) {
 export {
     getBlankCtrlField,
     getItemFromDb,
-    processFilterObject,
-    processFilterValue
+    traverseObject,
+    replaceEncodedValue
 }

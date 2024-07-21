@@ -1,5 +1,6 @@
 import { getFormattedDate, log } from "../helpers/jUtils.js";
-import { getBlankCtrlField, getItemFromDb } from "../helpers/helpers.js";
+import { getBlankCtrlField, getItemFromDb, traverseObject, replaceEncodedValue } from "../helpers/helpers.js";
+
 import { getCsvDataFromCollection } from "../modules/csvExport.js";
 import { ObjectId } from "mongodb";
 import ip from "ip";
@@ -222,15 +223,19 @@ const initRouter = (express, db) => {
     });
 
     dbRouter.post('/m2m/push', checkLocalNetwork, async (req, res) => {
-        const { connectionName, collectionName, record } = req.body;
+        let { connectionName, collectionName, record, clientId } = req.body;
+        if (!clientId) {
+            clientId = 'default';
+        }
         const createCtrlField = !!req.query.ctrl;
         
-        log(`Push request for: ${collectionName} `);
+        log(`Push request for: ${collectionName}, clientId: ${clientId} `);
         const collection = getEnhancedCollection(db, collectionName);
         const update = record._id ? true : false;
         
         castId(record);
-        
+        traverseObject(record, replaceEncodedValue);
+
         let result;
         
         try {
@@ -254,9 +259,9 @@ const initRouter = (express, db) => {
                 collectionName,
                 data: { 
                     records: [record],
-                    libraryInfo: await m2m.getLibraryInfo(collectionName, cache.lastUsedFilter),
+                    libraryInfo: await m2m.getLibraryInfo(collectionName, cache.lastUsedFilter[clientId]),
                 },
-                filter: cache.lastUsedFilter,
+                filter: cache.lastUsedFilter[clientId],
             };
             log(`Returning: ${JSON.stringify(response)}`);
             res.json(response);
@@ -292,6 +297,10 @@ const initRouter = (express, db) => {
             connectionName = 'dynforms';
         }
 
+        if (!clientId) {
+            clientId = "default";
+        }
+
         log(`Processing request for client ${clientId}, collection ${collectionName}, query: ${JSON.stringify(req.query)}, settings: ${JSON.stringify(settings)}, filter: ${JSON.stringify(filter)}, orderBy: ${JSON.stringify(orderBy)}.`);        
 
         const processingResult = await m2m.processRequest({
@@ -305,7 +314,7 @@ const initRouter = (express, db) => {
         });
 
         const resolvedFilter = processingResult.filter;
-        cache.lastUsedFilter = resolvedFilter;
+        cache.lastUsedFilter[clientId] = resolvedFilter;
         const success = !processingResult.error;
         const data = processingResult.data;
         data.libraryInfo = await m2m.getLibraryInfo(collectionName, resolvedFilter);
@@ -338,7 +347,7 @@ const initRouter = (express, db) => {
             const data = await m2m.runMacroRequest(req);
 
             const result = { success: true, data };
-            log(`Returning macro results: ${JSON.stringify(result)}`);
+            log(`Returning macro results: ${data.length} records.`);
             res.json(result);
         } catch (error) {
             console.error("Failed to execute macro", error);
