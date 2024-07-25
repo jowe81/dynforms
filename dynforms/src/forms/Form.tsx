@@ -41,6 +41,11 @@ function Form() {
 
     function handleSubmit(event: any) {
         const next = event.currentTarget.dataset.next;
+        if (!edited) {
+            console.log('Record was not edited - not updating.');
+            navigate("/records"); 
+            return;
+        }
 
         dbUpdateRecord(record)
         .then(() => {
@@ -48,12 +53,11 @@ function Form() {
             if (next) {
                 // This handles both the next and the previous button.
                 adjustCurrentRecord(next).then(() => {
-                    console.log("Adjusted index, now navigating");
+                    console.log("Adjusted index.");
                     navigate('/form');
                     setEdited(false);    
                 });
             } else {
-                console.log("Now navigating");
                 navigate('/records');                
             }
         })

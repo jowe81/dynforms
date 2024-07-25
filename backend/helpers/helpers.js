@@ -80,14 +80,18 @@ function traverseObject(obj, callback) {
         if (typeof obj[key] === "object" && obj[key] !== null) {
             // Recursively search nested objects
             traverseObject(obj[key], callback);
-        } else if (typeof obj[key] === "string" && obj[key].startsWith("__")) {
-            obj[key] = callback(obj[key]);
+        } else if (typeof obj[key] === "string") {
+            obj[key] = callback(key, obj[key]);
         }
     }
 }
 
 // Replace any encoded values, such as dates.
-function replaceEncodedValue(value) {
+function replaceEncodedValue(key, value) {
+    if (!value.startsWith("__")) {
+        return value;
+    }
+    
     let result = value;
     const separatorIndex = value.indexOf("-");    
     const keyword = value.substring(2, separatorIndex !== -1 ? separatorIndex : undefined);
@@ -140,10 +144,58 @@ function replaceEncodedValue(value) {
     return result;
 }
 
+function getChangedDataForHistory(storedRecord, record) {
+    const currentData = extractDataFields(storedRecord);
+    const newData = extractDataFields(record);
+
+    return getChangedData(currentData, newData);    
+};
+
+function extractDataFields(record) {
+    const dataFields = { ...record };
+
+    delete dataFields.__user;
+    delete dataFields.__history;
+    delete dataFields._id;
+    delete dataFields._index;
+    delete dataFields.created_at;
+    delete dataFields.updated_at;
+
+    return dataFields;
+}
+
+function getChangedData(currentData, newData) {
+    const changedData = {};
+
+    if (!currentData) {
+        return newData;
+    }
+
+    traverseObject(newData, (fieldKey) => {
+        const newDataType = typeof newData[fieldKey];
+        const currentDataType = typeof currentData[fieldKey];
+        let changed;
+
+        if (newDataType !== currentDataType) {
+            changed = true;
+        } else {
+            if (newDataType !== "object" && newData[fieldKey] !== currentData[fieldKey]) {
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            changedData[fieldKey] = newData[fieldKey];
+        }
+    });
+
+    return changedData;
+} 
 
 export {
     getBlankCtrlField,
     getItemFromDb,
     traverseObject,
-    replaceEncodedValue
+    replaceEncodedValue,
+    getChangedDataForHistory,
 }

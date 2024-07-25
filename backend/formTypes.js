@@ -196,6 +196,7 @@ const formTypes = [
     {
         collectionName: "system_notes",
         title: "System Notes",
+        historyEnabled: true,
         fields: [
             {
                 key: "category",
@@ -355,6 +356,7 @@ const formTypes = [
     {
         collectionName: "address_book",
         title: "Address Book",
+        historyEnabled: true,
         allowExport: true,
         groups: [
             {
@@ -823,6 +825,7 @@ const formTypes = [
     {
         collectionName: "johannes_medical",
         title: "Johannes Medical",
+        historyEnabled: true,
         allowExport: true,
         fields: [
             {
@@ -931,6 +934,7 @@ const formTypes = [
         collectionName: "weatherHistory",
         title: "Weather History",
         allowExport: true,
+        historyEnabled: true,
         fields: [
             {
                 key: "created_at",

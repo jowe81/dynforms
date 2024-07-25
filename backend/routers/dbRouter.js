@@ -1,5 +1,11 @@
 import { getFormattedDate, log } from "../helpers/jUtils.js";
-import { getBlankCtrlField, getItemFromDb, traverseObject, replaceEncodedValue } from "../helpers/helpers.js";
+import {
+    getBlankCtrlField,
+    getItemFromDb,
+    traverseObject,
+    replaceEncodedValue,
+    getChangedDataForHistory,
+} from "../helpers/helpers.js";
 
 import { getCsvDataFromCollection } from "../modules/csvExport.js";
 import { ObjectId } from "mongodb";
@@ -182,10 +188,16 @@ const initRouter = (express, db) => {
         }
 
         const record = req.body;
+        traverseObject(record, replaceEncodedValue);
 
         // Discard any old indexes that may have come back from the frontend.
         if (record.hasOwnProperty('_index')) {
             delete record._index;
+        }
+
+        // Discard history that may have come back from the frontend - we'll read it off the source instead.
+        if (record.hasOwnProperty('__history')) {
+            delete record.__history;
         }
 
         if (createCtrlField) {
@@ -196,21 +208,44 @@ const initRouter = (express, db) => {
         castId(record);
 
         try {
-            const result = record._id
-                ? await collection.updateOne(
-                      { _id: record._id },
-                      record,
-                      null,
-                      fields
-                  )
-                : await collection.insertOne(record, null, null, fields);
+            let result;
+
+            if (record._id) {
+                // Update.
+                const storedRecord = await collection.findOne({ _id: record._id });
+                
+                let updatingUser = null;
+                if (record.__user) {
+                    updatingUser = record.__user;
+                    delete record.__user;
+                }
+
+                const updatedRecord = storedRecord ? { ...storedRecord, ...record } : { ...record };
+
+                if (formDefinition.historyEnabled) {
+                    // Add in history info.
+                    if (!updatedRecord.__history) {
+                        updatedRecord.__history = [];
+                    }
+
+                    updatedRecord.__history.push({
+                        user: updatingUser,
+                        updated_at: new Date(),
+                        data: getChangedDataForHistory(storedRecord, record),
+                    });
+                }
+
+                await collection.updateOne({ _id: record._id }, updatedRecord, null, fields);
+            } else {
+                result = await collection.insertOne(record, null, null, fields);
+            }
+
             res.json(result);
         } catch (err) {
             logError(err);
             res.status(500).send();
         }
     });
-
 
     dbRouter.post('/m2m/deleteById', checkLocalNetwork, async(req, res) => {
         const { connectionName, collectionName, recordId } = req.body;
