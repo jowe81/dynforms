@@ -951,7 +951,7 @@ const formTypes = [
             {
                 key: "sensorName",
                 label: "Sensor",
-                type: "number",
+                type: "text",
                 readOnly: true,
                 rank: 3,
             },
