@@ -1,4 +1,103 @@
-const formTypes = [
+import { log, parseJSON } from "./helpers/jUtils.js";
+import constants from "./constants.js";
+import { getEnhancedCollection } from "./db/dbutils.js";
+
+async function loadFormTypesFromDb(db) {
+    const collectionName = constants.formDefinitionsCollectionName;
+    const collection = getEnhancedCollection(db, collectionName);
+
+    if (!collection) {
+        log(`Could not get collection ${collectionName}.`, 'red');
+        return [];
+    }
+
+    const records = await collection.find({}).toArray();
+
+    try {
+        const formTypes = [
+            ...records.map((record) => parseJSON(record.form_definition)).sort((a, b) => a.title > b.title ? 1 : -1),
+            formDefinitionsFormType,
+        ];
+
+        return formTypes;
+    } catch (ex) {
+        log(`Error: ${ex.message}`, 'red');
+        return [];
+    }
+
+}
+
+function formatFormDefinitionsRecord(record) {
+    if (!record || !record.form_definition) {
+        return `Empty form definition record - can't format.`;
+    }
+
+    let formDefinition;
+    try {
+        formDefinition = parseJSON(record.form_definition);
+    } catch (ex) {
+        return `Error: ${ex.message}`;
+    }
+
+    if (typeof formDefinition !== 'object') {
+        return null;
+    }
+
+    const {title, collectionName, fields} = formDefinition;
+
+    if (!title) {
+        return `Form definition has no title.`;
+    }
+
+    if (!collectionName) {
+        return `Form definition has no collection name.`;
+    }
+
+    if (!fields) {
+        return `Form definition has no fields.`;
+    }
+
+    record.form_title = title;
+    record.collection_name = collectionName;
+    record.form_definition = JSON.stringify(formDefinition, null, 4);
+
+    return null;
+}
+
+const formDefinitionsFormType = {
+    collectionName: constants.formDefinitionsCollectionName,
+    title: "Form Definitions",
+    fields: [
+        {
+            key: "form_title",
+            label: "Form Title",
+            type: "text",
+            maxLength: 150,
+            readOnly: true,
+            rank: 0,
+        },
+        {
+            key: "collection_name",
+            label: "Collection Name",
+            type: "text",
+            maxLength: 50,
+            readOnly: true,
+            rank: 1,
+        },
+        {
+            key: "form_definition",
+            label: "Form Definition",
+            type: "json",
+            rows: 40,
+            rank: 2,
+        },
+    ],
+};
+
+
+
+    // These are the old hardcoded ones, just here for reference
+const oldHardCodedFormTypes = [
     {
         collectionName: "photos",
         title: "Photos",
@@ -292,67 +391,66 @@ const formTypes = [
         ],
     },
     {
-        collectionName: "scriptures",
-        title: "Scriptures",
-        allowExport: true,
-        fields: [
+        "collectionName": "scriptures",
+        "title": "Scriptures",
+        "allowExport": true,
+        "fields": [
             {
-                key: "reference",
-                label: "Reference",
-                type: "text",
-                annotation: "John 3:16; Psalm 23:1-3,4,6",
-                maxLength: 150,
-                rank: 1,
+                "key": "reference",
+                "label": "Reference",
+                "type": "text",
+                "annotation": "John 3:16; Psalm 23:1-3,4,6",
+                "maxLength": 150,
+                "rank": 1
             },
             {
-                key: "translation",
-                label: "Translation",
-                type: "select",
-                rank: 2,
-                options: [
+                "key": "translation",
+                "label": "Translation",
+                "type": "select",
+                "rank": 2,
+                "options": [
                     {
-                        label: "NIV",
-                        value: "niv",
+                        "label": "NIV",
+                        "value": "niv"
                     },
                     {
-                        label: "NIV (1984)",
-                        value: "niv1984",
+                        "label": "NIV (1984)",
+                        "value": "niv1984"
                     },
                     {
-                        label: "RSV",
-                        value: "rsv",
+                        "label": "RSV",
+                        "value": "rsv"
                     },
                     {
-                        label: "NASB",
-                        value: "nasb",
-                    },
-                ],
+                        "label": "NASB",
+                        "value": "nasb"
+                    }
+                ]
             },
             {
-                key: "text",
-                label: "Text",
-                type: "textarea",
-                rows: 5,
-                rank: 3,
+                "key": "text",
+                "label": "Text",
+                "type": "textarea",
+                "rows": 5,
+                "rank": 3
             },
             {
-                key: "notes",
-                label: "Notes",
-                type: "textarea",
-                rows: 3,
-                rank: 4,
+                "key": "notes",
+                "label": "Notes",
+                "type": "textarea",
+                "rows": 3,
+                "rank": 4
             },
             {
-                key: "created_at",
-                label: "Created at",
-                type: "date",
-                readOnly: true,
-                rank: 5,
-                display: true,
-            },
-        ],
+                "key": "created_at",
+                "label": "Created at",
+                "type": "date",
+                "readOnly": true,
+                "rank": 5,
+                "display": true
+            }
+        ]
     },
-
     {
         collectionName: "address_book",
         title: "Address Book",
@@ -689,140 +787,6 @@ const formTypes = [
         ],
     },
     {
-        collectionName: "outburst_tracking",
-        title: "Outburst Tracking",
-        fields: [
-            {
-                key: "created_at",
-                label: "Observed at",
-                type: "date",
-                readOnly: true,
-                rank: 1,
-                display: true,
-            },
-            {
-                label: "Trigger",
-                key: "trigger",
-                type: "select",
-                rank: 2,
-                defaultValue: "relational",
-                options: [
-                    {
-                        label: "Personal",
-                        value: "personal",
-                    },
-                    {
-                        label: "Relational",
-                        value: "relational",
-                    },
-                    {
-                        label: "Other",
-                        value: "other",
-                    },
-                    {
-                        label: "Unknown",
-                        value: "unknown",
-                    },
-                ],
-            },
-            {
-                label: "Trigger Validity",
-                key: "trigger_validity",
-                type: "select",
-                rank: 3,
-                defaultValue: "none",
-                options: [
-                    {
-                        label: "None",
-                        value: "none",
-                    },
-                    {
-                        label: "Minor",
-                        value: "minor",
-                    },
-                    {
-                        label: "Major",
-                        value: "major",
-                    },
-                ],
-            },
-            {
-                label: "Initial Response",
-                key: "response",
-                type: "select",
-                rank: 4,
-                options: [
-                    {
-                        label: "Contained",
-                        value: "contained",
-                    },
-                    {
-                        label: "Uncontained",
-                        value: "uncontained",
-                    },
-                ],
-            },
-            {
-                label: "Contained After",
-                key: "contained_after",
-                type: "select",
-                defaultValue: "none",
-                rank: 5,
-                options: [
-                    {
-                        label: "Seconds",
-                        value: "seconds",
-                    },
-                    {
-                        label: "Minutes",
-                        value: "minutes",
-                    },
-                    {
-                        label: "Hours",
-                        value: "hours",
-                    },
-                    {
-                        label: "A Day",
-                        value: "a day",
-                    },
-                    {
-                        label: "Days",
-                        value: "days",
-                    },
-                    {
-                        label: "Cumulative (not before next)",
-                        value: "cumulative",
-                    },
-                ],
-            },
-            {
-                label: "Contained By Initiative Of",
-                key: "contained_by_initiative_of",
-                type: "select",
-                defaultValue: "none",
-                rank: 5,
-                options: [
-                    {
-                        label: "Self",
-                        value: "self",
-                    },
-                    {
-                        label: "Other",
-                        value: "other",
-                    },
-                ],
-            },
-            {
-                label: "Notes",
-                key: "notes",
-                type: "textarea",
-                rows: 5,
-                rank: 6,
-                display: true,
-            },
-        ],
-    },
-    {
         collectionName: "johannes_medical",
         title: "Johannes Medical",
         historyEnabled: true,
@@ -1030,4 +994,5 @@ const formTypes = [
     },
 ];
 
-export default formTypes;
+export { loadFormTypesFromDb, formatFormDefinitionsRecord };
+

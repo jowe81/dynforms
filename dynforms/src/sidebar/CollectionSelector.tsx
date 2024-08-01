@@ -9,22 +9,37 @@ function CollectionSelector(props: any) {
     let options: Interfaces.SelectFieldOption[] = [];
 
     if (Array.isArray(appData.formTypes)) {
-        options = appData
-            .formTypes
-            .map((formDefinition: Interfaces.FormType) => { return { label: formDefinition.title, value: formDefinition.collectionName }})
-            .sort((a, b) => a.label > b.label ? 1 : -1);
+        // Add in a spacer between the Form Definitions collection (dynforms__FormDefinitions) and everything after.
+        const spacer = {
+            label: "_".repeat(55),
+            value: "",
+            disabled: true,
+        };
+
+        const formDefsIndex = appData.formTypes.findIndex((formDefinition: Interfaces.FormType) => formDefinition.collectionName === 'dynforms__FormDefinitions');
+        const optionsUntilFormDefs = appData.formTypes
+            .slice(0, formDefsIndex) // Get only the options preceding the form definitions one.
+            .map(formDefinitionToSelectOption);
+
+        const optionsFromFormDefs = appData.formTypes
+            .slice(formDefsIndex)
+            .map(formDefinitionToSelectOption);
+
+        options = [
+            {
+                label: 'Select...',
+                value: '',
+                disabled: true,
+            },
+            spacer,
+            ...optionsUntilFormDefs,            
+        ]
+
+        if (optionsFromFormDefs.length) {
+            options.push(spacer, ...optionsFromFormDefs);
+        }
     }    
-    
-    options.unshift({
-        label: 'Select...',
-        value: '',
-        disabled: true,
-    }, {
-        label: '_'.repeat(55),
-        value: '',
-        disabled: true,
-    });
-    
+        
     const optionsJsx = options.map(
         (option, index) => <option key={index} value={option.value} disabled={option.disabled}>{option.label}</option>
     )
@@ -37,6 +52,10 @@ function CollectionSelector(props: any) {
             { optionsJsx }
         </select>
     )
+}
+
+function formDefinitionToSelectOption(formDefinition: Interfaces.FormType) {
+    return { label: formDefinition.title, value: formDefinition.collectionName };
 }
 
 export default CollectionSelector;

@@ -11,6 +11,7 @@ function Form() {
     const navigate = useNavigate();
     const [ record, setRecord ] = useState({});
     const [ edited, setEdited ] = useState(false);
+    const [ validationErrors, setValidationErrors ] = useState([]);
 
     const { appData, dbUpdateRecord, adjustCurrentRecord } = useAppData();
     const { collectionName } = appData;
@@ -62,7 +63,11 @@ function Form() {
             }
         })
         .catch(err => {
-            console.log('Axios error: ', err);
+            const response = err.response.data;
+
+            if (response.error === 'validation_errors') {
+                setValidationErrors(response.validationErrors);
+            }            
         });
     }
     
@@ -129,6 +134,15 @@ function Form() {
 
                 <ArrayField {...formProps} />
             </div>
+            {validationErrors.length > 0 && (
+                <div className="form-validation-errors-container">
+                    {validationErrors.map((error, index) => (
+                        <div key={index}>
+                            Field "{error.fieldLabel ?? error.fullKey}": {error.message}
+                        </div>
+                    ))}
+                </div>
+            )}
             <div className="form-actions-outer-container">{actionsJSX}</div>
         </div>
     );

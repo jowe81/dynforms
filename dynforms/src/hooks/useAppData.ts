@@ -379,8 +379,7 @@ export default function useAppData() {
                 recordWithUser
             )
             .then(loadRecords)
-            .then((data) => console.log("Update and load complete."))
-            .catch(axiosError);
+            .then((data) => console.log("Update and load complete."));
     }
 
     const fillInRelativeFields = (record: any, fields: any) => {

@@ -188,8 +188,102 @@ const findById = (id, arr) => {
   return findByField('id', id, arr);
 }
 
+function convertJavascriptToJson(jsString) {
+    // Remove single line comments
+    jsString = jsString.replace(/\/\/.*$/gm, "");
+
+    // Remove multi-line comments
+    jsString = jsString.replace(/\/\*[\s\S]*?\*\//g, "");
+
+    // Remove trailing commas
+    jsString = jsString.replace(/,(\s*[}\]])/g, "$1");
+
+    // Add double quotes around keys
+    jsString = jsString.replace(/([\{\s,])([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+
+    return jsString;
+}
+
+function parseJSON(value) {
+    let result;
+    try {
+        // First try parsing it straight.
+        result = JSON.parse(value);
+        return result;
+    } catch (ex) {
+        // Didn't work, attempt conversion.
+    }
+
+    try {
+        // Try parsing it after converting it.
+        result = JSON.parse(convertJavascriptToJson(value));
+        return result;
+    } catch (ex) {
+        // Failed again - give up.
+    }
+}
+
+// From SODA.
+function arrayGet(jsonArray, key, defaultValue) {
+    if (!jsonArray || !key) {
+        return defaultValue;
+    }
+
+    let selectedItem = jsonArray;
+    let convertedKey = key.replace(/\[(\S+?)\]/g, ".$1");
+    let keys = convertedKey.split(".");
+
+    // Go through the array and find the key, if not found pass back the default value
+    let arrayLength = keys.length;
+    for (let i = 0; i < arrayLength; i++) {
+        let selectedKey = keys[i];
+
+        if (
+            selectedItem !== null &&
+            typeof selectedItem !== "undefined" &&
+            typeof selectedItem === "object" &&
+            selectedKey in selectedItem
+        ) {
+            selectedItem = selectedItem[selectedKey];
+        } else if (
+            selectedItem !== null &&
+            typeof selectedItem !== "undefined" &&
+            Array.isArray(selectedItem) &&
+            !isNaN(selectedKey) &&
+            parseInt(selectedKey) < selectedItem.length
+        ) {
+            selectedItem = selectedItem[parseInt(selectedKey)];
+        } else {
+            return defaultValue;
+        }
+    }
+
+    return selectedItem;
+}
+
+function arraySet(jsonArray, key, value) {
+    if (!jsonArray || !key) {
+        return;
+    }
+
+    let data = jsonArray;
+    const keyPath = key.split('.');
+
+    while (keyPath.length > 1) {
+        key = keyPath.shift();
+        if (!data[key]) {
+            data[key] = {}
+        }
+        data = data[key];
+    }
+
+    data[keyPath[0]] = value;
+}
+
 export {
     allAreBoolean,
+    arrayGet,
+    arraySet,
     findByField,
     findById,
     getFileNames,
@@ -197,6 +291,7 @@ export {
     getIdFromObject,
     getSystemConstants,
     pad,
+    parseJSON,
     log,
     scale,    
 }

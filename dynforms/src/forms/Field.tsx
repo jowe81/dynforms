@@ -62,6 +62,7 @@ function Field(props: any) {
             break;
         
         case 'textarea':
+        case 'json':
             jsx =  (<div className="form-element-container">{annotationJsx}<TextareaField {...fieldProps}/></div>);
             break;
             

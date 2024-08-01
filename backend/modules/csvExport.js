@@ -1,4 +1,4 @@
-import formTypes from "../formTypes.js";
+import { loadFormTypesFromDb } from "../formTypes.js";
 import { getEnhancedCollection } from "../db/dbutils.js";
 import { getFormattedDate } from "../helpers/jUtils.js";
 
@@ -8,6 +8,8 @@ async function getCsvDataFromCollection(db, collectionName, orderBy) {
     if (!collection) {
         res.json({ success: false, error: `Could not get collection ${collectionName}.` });
     }
+    
+    const formTypes = await loadFormTypesFromDb(db);      
 
     const formDefinition = formTypes.find((item) => item.collectionName === collectionName);
     if (!formDefinition?.allowExport) {

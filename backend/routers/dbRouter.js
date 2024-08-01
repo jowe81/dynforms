@@ -16,7 +16,8 @@ import {
     getSortObjectFromQueryData,
     getEnhancedCollection,
 } from "../db/dbutils.js";
-import formTypes from "../formTypes.js";
+import { validateRecordData } from "../helpers/backendValidationHelper.js";
+import { loadFormTypesFromDb } from "../formTypes.js";
 import M2m from "../modules/m2m.js";
 
 const initRouter = (express, db) => {
@@ -49,6 +50,7 @@ const initRouter = (express, db) => {
             ? req.ip.split(":").pop()
             : req.ip;
 
+        const formTypes = await loadFormTypesFromDb(db);        
         const formTypesFiltered = filterFormTypes(remoteIp, formTypes);
         log(`Returning the following form definitions to ${remoteIp} (${formTypesFiltered.length}/${formTypes.length}): ${JSON.stringify(formTypesFiltered.map(item => item.collectionName))}`);
         res.json(formTypesFiltered);
@@ -111,6 +113,8 @@ const initRouter = (express, db) => {
         const itemsPerPage = parseInt(req.query.itemsPerPage);
         const page = parseInt(req.query.page) || 1;
         const skip = Math.max((page - 1) * itemsPerPage, 0);
+        
+        const formTypes = await loadFormTypesFromDb(db);
 
         const formDefinition = formTypes.find(
             (formDefinition) => formDefinition.collectionName === collectionName
@@ -176,8 +180,8 @@ const initRouter = (express, db) => {
     dbRouter.post("/post/:collectionName", checkLocalNetwork, async (req, res) => {
         const { collectionName } = req.params;
         const collection = getEnhancedCollection(db, collectionName);
-        const createCtrlField = !!req.query.ctrl;
-
+        const createCtrlField = !!req.query.ctrl;        
+        const formTypes = await loadFormTypesFromDb(db);        
         const formDefinition = formTypes.find(
             (formDefinition) => formDefinition.collectionName === collectionName
         );
@@ -189,6 +193,12 @@ const initRouter = (express, db) => {
 
         const record = req.body;
         traverseObject(record, replaceEncodedValue);
+
+        const validationErrors = validateRecordData(formDefinition, record);
+        if (validationErrors.length) {
+            log(`${validationErrors.length} validation errors: ${JSON.stringify(validationErrors)}`, "red");
+            return res.status(400).json({ error: "validation_errors", validationErrors });
+        }
 
         // Discard any old indexes that may have come back from the frontend.
         if (record.hasOwnProperty('_index')) {
