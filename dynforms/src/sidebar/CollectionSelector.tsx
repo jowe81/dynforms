@@ -9,21 +9,23 @@ function CollectionSelector(props: any) {
     let options: Interfaces.SelectFieldOption[] = [];
 
     if (Array.isArray(appData.formTypes)) {
-        // Add in a spacer between the Form Definitions collection (dynforms__FormDefinitions) and everything after.
         const spacer = {
             label: "_".repeat(55),
             value: "",
             disabled: true,
         };
 
-        const formDefsIndex = appData.formTypes.findIndex((formDefinition: Interfaces.FormType) => formDefinition.collectionName === 'dynforms__FormDefinitions');
-        const optionsUntilFormDefs = appData.formTypes
-            .slice(0, formDefsIndex) // Get only the options preceding the form definitions one.
-            .map(formDefinitionToSelectOption);
+        // Grab all options together by default.
+        let allOptions = appData.formTypes.map(formDefinitionToSelectOption);
+        let optionsUntilFormDefs = [...allOptions];
+        let optionsFromFormDefs = [];
 
-        const optionsFromFormDefs = appData.formTypes
-            .slice(formDefsIndex)
-            .map(formDefinitionToSelectOption);
+        // If the form definitions option is present, put a spacer option before it.
+        const formDefsIndex = allOptions.findIndex((option: any) => option.value === 'dynforms__FormDefinitions');        
+        if (formDefsIndex !== -1) {
+            optionsUntilFormDefs = allOptions.slice(0, formDefsIndex); // Get only the options preceding the form definitions one.
+            optionsFromFormDefs = allOptions.slice(formDefsIndex);
+        }
 
         options = [
             {
