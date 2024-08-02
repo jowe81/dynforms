@@ -19,7 +19,7 @@ import {
 import { validateRecordData } from "../helpers/backendValidationHelper.js";
 import { loadFormTypesFromDb } from "../formTypes.js";
 import M2m from "../modules/m2m.js";
-
+import { inspect } from 'util';
 const initRouter = (express, db) => {
 
     // Initialize data processor for API-2-API requests.

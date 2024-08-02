@@ -1,5 +1,6 @@
 import { getIdFromObject, log } from './jUtils.js';
 import constants from '../constants.js';
+import _ from 'lodash';
 
 async function getItemFromDb(filter, collection) {
     const filterId = getIdFromObject(filter);
@@ -152,7 +153,8 @@ function getChangedDataForHistory(storedRecord, record) {
 };
 
 function extractDataFields(record) {
-    const dataFields = { ...record };
+    const recordCloned = _.cloneDeep(record);
+    const dataFields = { ...recordCloned };
 
     delete dataFields.__user;
     delete dataFields.__history;

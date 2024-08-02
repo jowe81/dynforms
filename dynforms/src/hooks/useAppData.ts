@@ -379,7 +379,13 @@ export default function useAppData() {
                 recordWithUser
             )
             .then(loadRecords)
-            .then((data) => console.log("Update and load complete."));
+            .then((data) => { 
+                console.log("Update and load complete.");
+                if (appData.collectionName === 'dynforms__FormDefinitions') {
+                    console.log("Reloading form definitions...");
+                    loadFormTypes();
+                }
+            });
     }
 
     const fillInRelativeFields = (record: any, fields: any) => {

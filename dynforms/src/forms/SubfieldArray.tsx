@@ -9,7 +9,7 @@ import { Interfaces } from './Form.tsx';
 
 
 function SubfieldArray(props: any) {
-    const { record, updateRecord, fields, keys } = props;
+    const { record, updateRecord, fields, keys, readOnly } = props;
     
     if (!Array.isArray(record)) {
         return;
@@ -64,10 +64,11 @@ function SubfieldArray(props: any) {
                                     fullKey,
                                     keys,
                                     field,
+                                    readOnly, // Form level
                                     record: arrayItem,
                                     itemIndex,
                                     updateRecord,
-                                }
+                                };
                                             
                                 return <Field key={fieldIndex} {...props}></Field>;
                         

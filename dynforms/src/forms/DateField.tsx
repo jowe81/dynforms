@@ -1,6 +1,6 @@
 function DateField(props: any) {
 
-    let { field, record, onChange } = props;
+    let { field, record, onChange, readOnly } = props;
 
     if(!field) {
         return;
@@ -19,7 +19,7 @@ function DateField(props: any) {
                     value={record[field.key] ?? ''} 
                     data-key={field.key}
                     onChange={onChange}
-                    disabled={field.readOnly}
+                    disabled={readOnly || field.readOnly}
                 />                                        
                 </div>            
         </>

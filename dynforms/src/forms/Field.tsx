@@ -15,7 +15,7 @@ import FieldLabel from "./FieldLabel.tsx";
 
 
 function Field(props: any) {
-    const { record, itemIndex, updateRecord, field, keys } = props;
+    const { record, itemIndex, updateRecord, field, readOnly, keys } = props;
 
     if (field.display === false) {
         // For now don't render hidden fields at all.
@@ -42,7 +42,8 @@ function Field(props: any) {
         fullKey,
         keys,
         field,
-        record,        
+        record,  
+        readOnly, // Form level      
         onChange,
     }
 
@@ -58,6 +59,7 @@ function Field(props: any) {
         case 'number':
         case 'filesize':
         case 'birthday':
+        case 'url':
             jsx =  (<div className="form-element-container"><TextField {...fieldProps}/></div>);
             break;
         
@@ -111,6 +113,7 @@ function Field(props: any) {
                             keys={subfieldKeys} 
                             record={subRecord}
                             updateRecord={updateRecord}
+                            readOnly={readOnly}
                             {...field}
                         />
                     </div>

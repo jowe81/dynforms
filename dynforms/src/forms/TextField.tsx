@@ -4,7 +4,7 @@ function TextField(props: any) {
     const { appData } = useAppData();    
     const settings = appData.formDefinition?.settings;
 
-    let {field, record, onChange } = props;
+    let {field, record, onChange, readOnly } = props;
 
     if(!field) {
         return;
@@ -32,7 +32,7 @@ function TextField(props: any) {
                     data-key={key}
                     value={record[key] ?? ''}
                     onChange={onChange}
-                    disabled={field.readOnly}
+                    disabled={readOnly || field.readOnly}
                 />
             </div>
             {preview}

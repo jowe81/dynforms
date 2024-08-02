@@ -391,65 +391,65 @@ const oldHardCodedFormTypes = [
         ],
     },
     {
-        "collectionName": "scriptures",
-        "title": "Scriptures",
-        "allowExport": true,
-        "fields": [
+        collectionName: "scriptures",
+        title: "Scriptures",
+        allowExport: true,
+        fields: [
             {
-                "key": "reference",
-                "label": "Reference",
-                "type": "text",
-                "annotation": "John 3:16; Psalm 23:1-3,4,6",
-                "maxLength": 150,
-                "rank": 1
+                key: "reference",
+                label: "Reference",
+                type: "text",
+                annotation: "John 3:16; Psalm 23:1-3,4,6",
+                maxLength: 150,
+                rank: 1,
             },
             {
-                "key": "translation",
-                "label": "Translation",
-                "type": "select",
-                "rank": 2,
-                "options": [
+                key: "translation",
+                label: "Translation",
+                type: "select",
+                rank: 2,
+                options: [
                     {
-                        "label": "NIV",
-                        "value": "niv"
+                        label: "NIV",
+                        value: "niv",
                     },
                     {
-                        "label": "NIV (1984)",
-                        "value": "niv1984"
+                        label: "NIV (1984)",
+                        value: "niv1984",
                     },
                     {
-                        "label": "RSV",
-                        "value": "rsv"
+                        label: "RSV",
+                        value: "rsv",
                     },
                     {
-                        "label": "NASB",
-                        "value": "nasb"
-                    }
-                ]
+                        label: "NASB",
+                        value: "nasb",
+                    },
+                ],
             },
             {
-                "key": "text",
-                "label": "Text",
-                "type": "textarea",
-                "rows": 5,
-                "rank": 3
+                key: "text",
+                label: "Text",
+                type: "textarea",
+                rows: 5,
+                rank: 3,
             },
             {
-                "key": "notes",
-                "label": "Notes",
-                "type": "textarea",
-                "rows": 3,
-                "rank": 4
+                key: "notes",
+                label: "Notes",
+                type: "textarea",
+                rows: 3,
+                rank: 4,
             },
             {
-                "key": "created_at",
-                "label": "Created at",
-                "type": "date",
-                "readOnly": true,
-                "rank": 5,
-                "display": true
-            }
-        ]
+                key: "created_at",
+                label: "Created at",
+                type: "date",
+                readOnly: true,
+                rank: 5,
+                display: true,
+            },
+        ],
     },
     {
         collectionName: "address_book",
@@ -899,6 +899,7 @@ const oldHardCodedFormTypes = [
         title: "Weather History",
         allowExport: true,
         historyEnabled: true,
+        readOnly: true,
         fields: [
             {
                 key: "created_at",
@@ -971,12 +972,14 @@ const oldHardCodedFormTypes = [
                         key: "tempC",
                         label: "Temp",
                         type: "number",
-                        rank: 0,
+                        readOnly: true,
+                        rank: 1,
                     },
                     {
                         key: "measuredAt",
                         label: "Measured at",
                         type: "date",
+                        readOnly: true,
                         rank: 0,
                     },
                 ],
