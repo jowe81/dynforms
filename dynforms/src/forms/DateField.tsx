@@ -28,7 +28,7 @@ function DateField(props: any) {
                     selected={dbDate ? date : null}
                     showTimeSelect
                     onChange={(date) => onDateChange(date, field.key)}
-                    dateFormat="Pp" // Date and time.
+                    dateFormat="M/d/YYYY h:mm:ss a" // Date and time.
                     disabled={readOnly || field.readOnly}
                     className="date-picker-custom"
                 />
