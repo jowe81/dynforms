@@ -1,6 +1,9 @@
-function DateField(props: any) {
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-    let { field, record, onChange, readOnly } = props;
+
+function DateField(props: any) {
+    let { field, record, onDateChange, readOnly } = props;
 
     if(!field) {
         return;
@@ -9,21 +12,30 @@ function DateField(props: any) {
     if (!record) {
         record = {};
     }
-        
+
+    const dbDate = record[field.key];
+
+    let date = new Date(dbDate);
+    if (isNaN(date.getTime())) {
+        // If no date was set, default to now.
+        date = new Date();
+    }
+
     return (
         <>
-            
             <div>
-                <input 
-                    name={ field.key } 
-                    value={record[field.key] ?? ''} 
-                    data-key={field.key}
-                    onChange={onChange}
+                <DatePicker
+                    selected={dbDate ? date : null}
+                    showTimeSelect
+                    onChange={(date) => onDateChange(date, field.key)}
+                    dateFormat="Pp" // Date and time.
                     disabled={readOnly || field.readOnly}
-                />                                        
-                </div>            
+                    className="date-picker-custom"
+                />
+            </div>
         </>
-    )
+    );
 }
+
 
 export default DateField;

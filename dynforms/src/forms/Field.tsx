@@ -25,27 +25,37 @@ function Field(props: any) {
     const path = keys.join('.');
     const fullKey = path ? `${path}.${field.key}` : field.key; 
 
-    function onChange(event: any) {        
-        const key = event?.currentTarget?.dataset?.key;        
-        
+    // Return an array of keys that together make up the full key to the current field.
+    function getFullKeySet(key: any) {
         // The itemIndex will be undefined if the field isn't part of an array; it then needs to be excluded from the keyset.
-        const fullKeySet = [ ...keys, itemIndex, key ].filter(item => ![undefined, null].includes(item));
+        return [...keys, itemIndex, key].filter((item) => ![undefined, null].includes(item));
+    }
 
-        let keyToValue = Object.keys(event.target).includes('checked') ? 'checked' : 'value';
-
+    // General handilng for changes in most fields.
+    function onChange(event: any) {        
+        const key = event?.currentTarget?.dataset?.key;                
+        const keyToValue = Object.keys(event.target).includes('checked') ? 'checked' : 'value';
         const fieldValue = event.target[keyToValue];
 
-        updateRecord(fullKeySet, fieldValue);        
+        updateRecord(getFullKeySet(key), fieldValue);        
+    }
+
+    // Special handling for date fields because of the picker.
+    function onDateChange(date: any, key: any) {
+        const fieldValue = date.toISOString();
+
+        updateRecord(getFullKeySet(key), fieldValue);        
     }
 
     const fieldProps = {
         fullKey,
         keys,
         field,
-        record,  
-        readOnly, // Form level      
+        record,
+        readOnly, // Form level
         onChange,
-    }
+        onDateChange,
+    };
 
     const subfieldKeys = [ ...keys, field.key ];
     const subRecord = record[field.key as keyof Object];

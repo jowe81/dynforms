@@ -172,10 +172,15 @@ function applyFieldsFilter(doc, fields) {
     if (!fields) {
         fields = [];
     }
-    
+
     fields.forEach(field => {
         const value = doc[field.key];
-        
+        if (value === '') {
+            // No value was provided. Remove the key.
+            delete doc[field.key];
+            return;
+        }
+
         switch (field.type) {
             case 'boolean':                
                 doc[field.key] = !!value;
@@ -216,7 +221,7 @@ function applyFieldsFilter(doc, fields) {
 
         }
 
-        console.log(`${field.key} -> ${field.type}: ${value} -> ${doc[field.key]}`)
+        console.log(`applyFieldsFilter: ${field.key} -> ${field.type}: ${value} -> ${doc[field.key]}`)
     })
 }
 

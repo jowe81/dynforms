@@ -9,7 +9,6 @@ function DisplayValue(props: any) {
 
     const { appData } = useAppData();
     
-    const displayFields = appData.formDefinition?.fields.filter((field: Interfaces.Field) => field.display !== false);
     const settings = appData.formDefinition?.settings;
 
     
@@ -21,7 +20,7 @@ function DisplayValue(props: any) {
             break;
 
         case 'date':
-            displayValue = new Date(value).toLocaleString();
+            displayValue = value ? new Date(value).toLocaleString() : '';
             break;
 
         case 'filesize':

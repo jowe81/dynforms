@@ -1,6 +1,6 @@
 input, textarea, select {    
     width: 100%;
-    margin: 5px;    
+    margin: 5px;        
 }
 
 input[type="checkbox"] {
@@ -148,4 +148,9 @@ input[type="checkbox"] {
     margin-right: 15px;
     margin-top: 15px;
     border: 1px solid rgb(247, 113, 113);
+}
+
+/* Remove the width constraint on the wrapper so the input behaves same as other inputs */
+.react-datepicker-wrapper {
+    width: 100%;
 }
