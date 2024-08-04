@@ -41,7 +41,7 @@ function RecordsTable() {
         return
     }
 
-    const showAddedBy = true;
+    const showAddedBy = shouldShowAddedBy(records);
 
     const getHeaderRow = (displayFields: Interfaces.Field[]) => {
         
@@ -113,6 +113,11 @@ function RecordsTable() {
         </>
         
     )
+}
+
+// Does at least one record have a __user field?
+function shouldShowAddedBy(records: any) {
+    return records.filter((record: any) => record.__user).length > 0;
 }
 
 export default RecordsTable;
