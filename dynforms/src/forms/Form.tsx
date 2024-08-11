@@ -215,7 +215,7 @@ export namespace Interfaces {
 
     export type FieldTypeString = 
         'text' | 'phone' | 'email' |
-        'textarea'|'boolean'|'date'|'select'|'array'|'subfieldArray'|'number'|'filesize' |
+        'textarea'|'boolean'|'date'|'select'|'array'|'subfieldArray'|'number'|'filesize'|'richText'|'canvas'|'signature' |
         'group';
     
     export type Field = BaseField | BooleanField | TextField | TextareaField | SubfieldArray | SelectField | ArrayField;

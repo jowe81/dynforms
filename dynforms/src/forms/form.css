@@ -1,6 +1,10 @@
 input, textarea, select {    
     width: 100%;
-    margin: 5px;        
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+canvas {
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 input[type="checkbox"] {
@@ -153,4 +157,13 @@ input[type="checkbox"] {
 /* Remove the width constraint on the wrapper so the input behaves same as other inputs */
 .react-datepicker-wrapper {
     width: 100%;
+}
+.quill {
+    background-color: white;
+}
+
+.field-canvas canvas {
+    margin-right: 5px;
+    margin-top: 4px;
+    background: white;
 }

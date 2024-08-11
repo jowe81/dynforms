@@ -48,4 +48,23 @@ function arrayGet(jsonArray: any, key: string, defaultValue: any) {
     return selectedItem;
 }
 
-export { arrayGet, traverseObject };
+function arraySet(jsonArray: any, key: string, value: any) {
+    if (!jsonArray || !key) {
+        return;
+    }
+
+    let data = jsonArray;
+    const keyPath = key.split(".");
+
+    while (keyPath.length > 1) {
+        key = keyPath.shift();
+        if (!data[key]) {
+            data[key] = {};
+        }
+        data = data[key];
+    }
+
+    data[keyPath[0]] = value;
+}
+
+export { arrayGet, arraySet, traverseObject };

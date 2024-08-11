@@ -3,7 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 
 function DateField(props: any) {
-    let { field, record, onDateChange, readOnly } = props;
+    let { field, record, onValueChange, readOnly } = props;
 
     if(!field) {
         return;
@@ -27,7 +27,7 @@ function DateField(props: any) {
                 <DatePicker
                     selected={dbDate ? date : null}
                     showTimeSelect
-                    onChange={(date) => onDateChange(date, field.key)}
+                    onChange={(date) => onValueChange(date, field.key)}
                     dateFormat="M/d/YYYY h:mm:ss a" // Date and time.
                     disabled={readOnly || field.readOnly}
                     className="date-picker-custom"

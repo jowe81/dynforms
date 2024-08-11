@@ -40,6 +40,24 @@ function DisplayValue(props: any) {
         case 'group':
             displayValue = <Group field={field} record={record} />
             break;
+
+        case 'richText':
+            if (value) {
+                displayValue = value.length > 50 ? value.substring(0, 50) + "..." : value;
+            }
+            break;
+
+        case 'canvas':
+            if (value) {
+                displayValue = `image present`;
+            }
+            break;
+
+        case 'signature':
+            if (value) {
+                displayValue = `signature present`;
+            }            
+            break;
     }
 
     if (settings?.images.showImages && field.isImagePath) {        
