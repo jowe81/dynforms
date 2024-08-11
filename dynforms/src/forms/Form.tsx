@@ -29,6 +29,24 @@ function Form() {
             setRecord(dbRecord ? dbRecord : initializeRecord(formDefinition.fields));
         }        
     }, [collectionName, recordId]);
+    
+    useEffect(() => {
+        // Focus on the first element if its a new record.
+        if (recordId) {
+            return;
+        }
+
+        // With help from ChatGPT
+        const formElement = document.querySelector(".form-container");
+        if (formElement) {
+            const firstFocusableElement = formElement.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+                "input, textarea, select"
+            );
+            if (firstFocusableElement) {
+                firstFocusableElement.focus();
+            }
+        }
+    }, []);
 
     function updateRecord(fullKeySet: String[], data: any, supressSetEdited = false) {
         const newRecord = {...record};        
