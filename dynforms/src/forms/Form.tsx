@@ -40,7 +40,7 @@ function Form() {
         const formElement = document.querySelector(".form-container");
         if (formElement) {
             const firstFocusableElement = formElement.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
-                "input, textarea, select"
+                "input:not(:disabled), textarea:not(:disabled), select:not(:disabled)"
             );
             if (firstFocusableElement) {
                 firstFocusableElement.focus();
